@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
+import static org.knou.keyproject.common.Util.printBoldLine;
+
 // 2023.6.30(금) 1h50
 
 /**
@@ -14,6 +16,11 @@ import java.util.Scanner;
  */
 public class RequestApp {
     Scanner scanner = new Scanner(System.in);
+    String unit;
+    LocalDateTime startDate;
+    String frequencyDetailsInput;
+    LocalDateTime endDate;
+    int numOfWorkDays;
 
     public void view() {
         while (true) {
@@ -25,6 +32,7 @@ public class RequestApp {
             1. 선형적 상관 관계 e.g. 체중 조절이 시간과 정비례하지 않을 수 있음 -> 그런 경우 어떻게 계산해서 + 어떤 정보를 사용자에게 응답할 것인가?
             2. 1회독 후 복습이 필요한 경우
             3. 구간별 난이도가 다른 경우
+            4. 동영상 강의 1개(자격증, 공무원 시험 등)나 단원별(knou 교재 등), 주차별 학습량(knou 커리큘럼)이 고르게/비슷비슷하게 분배되어있다고 가정
              */
 
             // 2023.7.1(토) 15h55 ~ 17h10 측정 가능한 일에 대한 간단 로직 구현
@@ -57,13 +65,56 @@ public class RequestApp {
         System.out.print("수행 목표 대상은 무엇인가요? (예시: 책/교과서/수험서/악보/원고 등 pages, 과목/단어/문제 등 개수, 자격증, 체중 등) > ");
         String countableObject = scanner.nextLine();
 
-        System.out.print("목표 수량 > ");
+        System.out.print("목표 수량/분량 > ");
         int countableQuantity = Integer.parseInt(scanner.nextLine());
 
+        // 2023.7.8(토) 11h5 보완
+        System.out.print("측정 단위 > ");
+        unit = scanner.nextLine();
+
         // 목표 기간 설정
-        System.out.print("언제부터 시작할 예정인가요? (입력 형식 = YYYY-MM-DD) > ");
-        String startDateInput = scanner.nextLine();
-        LocalDateTime startDate = dateFormatter(startDateInput);
+        System.out.print("시작일을 알고 있나요? (1. 네 2. 아니오) > ");
+        int knowStartDate = Integer.parseInt(scanner.nextLine());
+
+        switch (knowStartDate) {
+            case 1:
+                System.out.print("언제부터 시작할 예정인가요? (입력 형식 = YYYY-MM-DD) > ");
+                String startDateInput = scanner.nextLine();
+                startDate = dateFormatter(startDateInput);
+                break;
+            case 2:
+                // 시작일이 아직 미정인 경우, 수행 빈도에 따라, 금일~달성 기한/기간까지 or 달성 기한이 정해져 있지 않은 경우 하루에 얼마큼의 단위씩 수행할 수 있을지에 따라, 분량을 알려줌
+        }
+
+        // 활동/수행 빈도 설정
+        System.out.print("어떤 빈도로 수행할 예정인가요? 1. 특정 요일 선택 2. x일마다 1회 3. 주/월 x회 > ");
+        int frequencyInput = Integer.parseInt(scanner.nextLine());
+        System.out.print("구체적인 활동/수행 빈도를 입력해 주세요 ");
+        double frequencyDetails = 0.0;
+
+        switch (frequencyInput) {
+            case 1:
+                System.out.print("(예시: 월화수목금토일, 월수금, 월화수목금 등) > ");
+                frequencyDetailsInput = scanner.nextLine() + "마다";
+                frequencyDetails = (frequencyDetailsInput.length() - 2) / 7.0;
+                break;
+            case 2:
+                System.out.print("(예시: 2일마다 1회, 5일마다 2회 등) > ");
+                frequencyDetailsInput = scanner.nextLine() + "씩";
+                String[] inputs1 = frequencyDetailsInput.split(" ");
+                frequencyDetails = (double) Character.getNumericValue(inputs1[1].charAt(0)) / Character.getNumericValue(inputs1[0].charAt(0));
+                break;
+            case 3:
+                System.out.print("(예시: 주 2회, 월 10회 등) > ");
+                frequencyDetailsInput = scanner.nextLine();
+                String[] inputs2 = frequencyDetailsInput.split(" ");
+                if (inputs2[0].equals("주")) {
+                    frequencyDetails = Character.getNumericValue(inputs2[1].charAt(0)) / 7.0;
+                } else if (inputs2[0].equals("월")) {
+                    frequencyDetails = Character.getNumericValue(inputs2[1].charAt(0)) / 30.0;
+                }
+                break;
+        }
 
         int numOfWorkDays = planNumOfWorkDays(countableQuantity, startDate);
 
@@ -71,8 +122,12 @@ public class RequestApp {
 //        System.out.print("1주일에 며칠 공부 예정인가요? > ");
 //        int workDaysPerWeek = Integer.parseInt(scanner.nextLine());
 
-        double quantityPerDay = countableQuantity / numOfWorkDays;
-        System.out.println(countableObject + " " + countableQuantity + "단위 목표 달성을 위해서는 " + numOfWorkDays + "일동안 매일 " + quantityPerDay + "단위만큼 수행해야 합니다");
+        double quantityPerDay = countableQuantity / numOfWorkDays / frequencyDetails;
+        System.out.println(countableObject + " " + countableQuantity + unit + " 분량 목표 달성을 위해서는 "
+                + startDate + "부터 " + endDate + "까지 총 " + numOfWorkDays + "일동안 "
+                + frequencyDetailsInput + " "
+                + quantityPerDay + unit + "만큼 수행해야 합니다");
+        printBoldLine();
     }
 
     // 기타 정량적 측정이 어려운 과제 e.g. 곰인형 만들기, 그림/디자인 작업, 안무/춤 등
@@ -91,14 +146,46 @@ public class RequestApp {
         int isDeadlineSet = Integer.parseInt(scanner.nextLine());
 //        Map<Boolean, Integer> result = new HashMap<>();
 
-        LocalDateTime deadlineDate = null;
         int quantityPerDayPredicted = 0;
 
         switch (isDeadlineSet) {
             case 1: // 목표 기간을 아는/목표 기간이 정해진 경우 e.g. 시험, 발표회, 면접 등
-                System.out.print("달성 목표 날짜 (입력 형식 = YYYY-MM-DD) > ");
-                String deadlineInput = scanner.nextLine();
-                deadlineDate = dateFormatter(deadlineInput);
+                System.out.print("목표 기한 종류 (1. 특정 날짜 / 2. 기간(x일/주/개월 등)) > ");
+                int deadlineType = Integer.parseInt(scanner.nextLine());
+
+                if (deadlineType == 1) {
+                    System.out.print("달성 목표 날짜 (입력 형식 = YYYY-MM-DD) > ");
+                    String deadlineInput = scanner.nextLine();
+                    endDate = dateFormatter(deadlineInput);
+                } else {
+                    System.out.print("달성 목표 기간 (입력 형식 = xx일/주/개월) > ");
+                    String deadlineInput = scanner.nextLine();
+                    int deadlinePeriod = 0;
+                    String deadlinePeriodUnit = "";
+
+                    StringBuilder nums = new StringBuilder();
+                    StringBuilder unit = new StringBuilder();
+                    for (int i = 0; i < deadlineInput.length(); i++) {
+                        char ch = deadlineInput.charAt(i);
+
+                        if (Character.isDigit(ch)) {
+                            nums.append(ch);
+                        } else {
+                            unit.append(ch);
+                        }
+                    }
+
+                    deadlinePeriod = Integer.parseInt(nums.toString());
+                    deadlinePeriodUnit = unit.toString();
+                    LocalDateTime today = LocalDateTime.now();
+                    if (deadlinePeriodUnit.equals("주")) {
+                        endDate = today.plusWeeks(deadlinePeriod);
+                    } else if (deadlinePeriodUnit.equals("개월")) {
+                        endDate = today.plusMonths(deadlinePeriod);
+                    } else {
+                        endDate = today.plusDays(deadlinePeriod);
+                    }
+                }
 
                 /* 사용자로부터 간단하게 입력 받는 경우
                 System.out.print("목표 기간 > ");
@@ -113,10 +200,9 @@ public class RequestApp {
 //                return result;
         }
 
-        int numOfWorkDays = 0;
         switch (isDeadlineSet) {
             case 1:
-                numOfWorkDays = (int) ChronoUnit.DAYS.between(startDate, deadlineDate);
+                numOfWorkDays = (int) ChronoUnit.DAYS.between(startDate, endDate);
                 break;
             case 2:
                 numOfWorkDays = countableQuantity / quantityPerDayPredicted;
