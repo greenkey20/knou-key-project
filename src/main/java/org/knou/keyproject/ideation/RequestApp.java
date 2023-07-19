@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
-import static org.knou.keyproject.common.Util.printBoldLine;
+import static org.knou.keyproject.global.Util.printBoldLine;
 
 // 2023.6.30(금) 1h50
 

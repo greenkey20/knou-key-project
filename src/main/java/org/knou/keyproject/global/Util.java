@@ -1,4 +1,4 @@
-package org.knou.keyproject.common;
+package org.knou.keyproject.global;
 
 public class Util {
     public static void printLine() {
