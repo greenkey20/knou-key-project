@@ -1,10 +1,10 @@
-<!--PR 제목 예시: feat - #issue번호: 주요 내용-->
+(PR 제목 예시: feat - #issue번호: 주요 내용)
 
 ## 개요
 - 
 
-Related to: #<!--issue번호-->
-<!--또는 Resolves: #issue번호-->
+Related to: #
+(또는 Resolves: #issue번호)
 
 ## PR 유형
 어떤 변경 사항이 있나요?
