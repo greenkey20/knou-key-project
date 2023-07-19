@@ -7,7 +7,7 @@ assignees: greenkey20
 
 ---
 
-## To do List
+## To-do List
 <!--해당 Issue를 해결하기 위해 수행해야 할 To do list를 작성해주세요.-->
 - [ ] 
 - [ ] 
