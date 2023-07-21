@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.action.entity.Action;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.scrap.entity.Scrap;
+import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Plan {
+public class Plan extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planId;
@@ -61,7 +62,7 @@ public class Plan {
     private String deadlinePeriod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PLAN_ID", referencedColumnName = "PARENT_PLAN_ID")
+    @JoinColumn(name = "PARENT_PLAN_ID"/*, referencedColumnName = "PARENT_PLAN_ID"*/)
     private Plan parentPlan;
 
     @OneToMany(mappedBy = "parentPlan", fetch = FetchType.LAZY)
@@ -69,6 +70,6 @@ public class Plan {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @ColumnDefault(value = "ACTIVE")
+    @ColumnDefault(value = "'ACTIVE'")
     private PlanStatus status; // A(Active) = 수행 중, C(Complete) = 완료, P(Pause) = 일시 정지, G(Give up) = 중도 포기, N(No) = 삭제
 }
