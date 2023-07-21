@@ -42,40 +42,15 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public enum Gender {
-        MALE(1),
-        FEMALE(2),
-        OTHERS(3);
-
-        @Getter
-        private int num;
-
-        Gender(int num) {
-            this.num = num;
-        }
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault(value = "ACTIVE")
     private MemberStatus status;
 
-    public enum MemberStatus {
-        ACTIVE(1),
-        QUIT(2),
-        BANNED(3);
-
-        @Getter
-        private int num;
-
-        MemberStatus(int num) {
-            this.num = num;
-        }
-    }
-
-    // 코드스테이츠 컨텐츠 방식
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    // 2023.7.21(금) 18h15 수정 = 도서관 references 책
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     private String profileImageUrl;
 
