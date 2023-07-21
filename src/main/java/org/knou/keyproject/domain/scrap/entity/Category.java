@@ -2,6 +2,7 @@ package org.knou.keyproject.domain.scrap.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Category {
+public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;

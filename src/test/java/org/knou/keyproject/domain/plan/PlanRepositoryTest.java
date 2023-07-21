@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,5 +52,30 @@ public class PlanRepositoryTest {
         Plan plan = planList.get(0);
         assertThat(plan.getObject()).isEqualTo(object);
         assertThat(plan.getFrequencyDetail()).isEqualTo(frequencyDetail);
+    }
+
+    // 2023.7.22(토) 2h10
+    @Test
+    @DisplayName("BaseTimeEntity 등록")
+    public void saveBaseTimeEntityTest() {
+        // given
+        LocalDateTime now = LocalDateTime.of(2023, 7, 22, 2, 15, 0);
+        planRepository.save(Plan.builder()
+                .isMeasurable(true)
+                .object("정보처리기사 실기 합격")
+                .frequencyType(FrequencyType.TIMES)
+                .frequencyDetail("주 6회")
+                .hasDeadline(false)
+                .status(PlanStatus.ACTIVE)
+                .build());
+
+        // when
+        List<Plan> planList = planRepository.findAll();
+
+        // then
+        Plan plan = planList.get(0);
+        System.out.println(">>>>>>> createdDate = " + plan.getCreatedAt() + ", lastModifiedDate = " + plan.getLastModifiedAt()); // >>>>>>> createdDate = 2023-07-22T02:19:30.113246, lastModifiedDate = 2023-07-22T02:19:30.113246
+        assertThat(plan.getCreatedAt().isAfter(now));
+        assertThat(plan.getLastModifiedAt().isAfter(now));
     }
 }

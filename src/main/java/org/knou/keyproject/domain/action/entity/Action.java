@@ -3,6 +3,7 @@ package org.knou.keyproject.domain.action.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 // 2023.7.22(토) 0h30
 @Builder
@@ -10,7 +11,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Action {
+public class Action extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long actionId;
