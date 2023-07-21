@@ -3,7 +3,9 @@ package org.knou.keyproject.domain.plan.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.knou.keyproject.domain.action.entity.Action;
 import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.scrap.entity.Scrap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,13 +26,19 @@ public class Plan {
     @JoinColumn(name = "MEMBER_ID")
     private Member planner;
 
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    private List<Action> actionList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    private List<Scrap> scrapList = new ArrayList<>();
+
     @Column(nullable = false)
     private Boolean isMeasurable; // true = 측정 가능한 일 vs false = 측정 어려운 일
 
     @Column(nullable = false)
     private String object; // 수행 목표 대상
 
-    // 측정 가능한 일인 경우
+    // 측정 가능한 일인 경우(2023.7.21(금) 현재 ERD 상에는 별도 테이블로 작성되어있음)
     private Long totalQuantity;
     private String unit;
 

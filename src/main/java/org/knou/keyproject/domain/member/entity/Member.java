@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.scrap.entity.Scrap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,8 +21,11 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @OneToMany(mappedBy = "planner")
-    private List<Plan> plans = new ArrayList<>();
+    @OneToMany(mappedBy = "planner", cascade = CascadeType.ALL)
+    private List<Plan> planList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Scrap> scrapList = new ArrayList<>();
 
     @Column(nullable = false)
     private String memberPlatform;
