@@ -1,0 +1,14 @@
+div {
+    border: 1px solid green;
+    box-sizing: border-box;
+}
+
+/* 전체 영역 */
+.outer {
+    border: 1px solid green;
+    width: 360px;
+    margin: auto;
+    height: auto;
+    padding-top: 30px;
+    padding-left: 20px;
+}
