@@ -5,7 +5,7 @@
     <title>allo</title>
 </head>
 <body>
-<%--<h3>INDEX 페이지</h3>--%>
+<h3>INDEX 페이지</h3>
 hello, Spring Boot app with JSP!
 </body>
 </html>
