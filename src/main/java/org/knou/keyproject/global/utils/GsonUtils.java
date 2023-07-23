@@ -1,4 +1,4 @@
-package org.knou.keyproject.global;
+package org.knou.keyproject.global.utils;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
