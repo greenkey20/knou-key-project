@@ -1,6 +1,6 @@
-package org.knou.keyproject.global;
+package org.knou.keyproject.global.utils;
 
-public class Utils {
+public class PrintLineUtils {
     public static void printLine() {
         System.out.println("-".repeat(40));
     }
