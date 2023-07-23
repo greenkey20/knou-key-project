@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor/*(access = AccessLevel.PROTECTED)*/
 @Entity
 public class Member extends BaseTimeEntity {
     @Id

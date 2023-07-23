@@ -23,13 +23,14 @@
 
     <%--    <p>* 표시는 필수 입력 사항입니다.</p>--%>
 
-    <form id="calculatorNewEnrollForm" action="newPlanInsert.pl" method="post">
+<%--    <c:url var="new_plan_insert_url" value="newPlanInsert.pl" />--%>
+    <form id="calculatorNewEnrollForm" action="newPlanInsert.pl" method="post" modelAttribute="plan">
 
         <p class="question">무엇을 준비하고 계신가요?</p>
         <div id="is-measurable">
-            <input type="radio" name="isMeasurable" value="1" onclick="selectIsMeasurable()"> 측정 가능한 일
-            <input type="radio" name="isMeasurable" value="0" onclick="selectIsMeasurable()"> 측정이 어려운 일
-            <input type="radio" name="isMeasurable" value="2" onclick="selectIsMeasurable()"> 잘 모르겠어요
+            <input type="radio" name="isMeasurableNum" value="1" onclick="selectIsMeasurable()"> 측정 가능한 일
+            <input type="radio" name="isMeasurableNum" value="0" onclick="selectIsMeasurable()"> 측정이 어려운 일
+            <input type="radio" name="isMeasurableNum" value="2" onclick="selectIsMeasurable()"> 잘 모르겠어요
         </div>
         <br>
 
@@ -61,12 +62,12 @@
             <br>
 
             <span class="question">목표 수량/분량을 기재해 주세요</span>
-            <input type="number" min="1" required>
+            <input type="number" name="totalQuantity" min="1" required>
             <br>
             <br>
 
             <span class="question">측정 단위를 입력해 주세요</span>
-            <input type="text" required>
+            <input type="text" name="unit" required>
             <br>
             <br>
 
@@ -87,9 +88,9 @@
 
             <div class="question">어떤 빈도로 수행할 예정인가요?</div>
             <div id="frequency-type">
-                <input type="radio" name="frequencyType" value="1" onclick="selectFrequencyType()"> 특정 요일 선택
-                <input type="radio" name="frequencyType" value="2" onclick="selectFrequencyType()"> x일마다 1회
-                <input type="radio" name="frequencyType" value="3" onclick="selectFrequencyType()"> 주/월 x회
+                <input type="radio" name="frequencyTypeNum" value="1" onclick="selectFrequencyType()"> 특정 요일 선택
+                <input type="radio" name="frequencyTypeNum" value="2" onclick="selectFrequencyType()"> x일마다 1회
+                <input type="radio" name="frequencyTypeNum" value="3" onclick="selectFrequencyType()"> 주/월 x회
             </div>
             <br>
             <br>
@@ -113,8 +114,8 @@
             <div id="yes-deadline" style="display: none">
                 <div class="question">목표 기한의 종류를 알려주세요</div>
                 <div id="deadline-type">
-                    <input type="radio" name="deadlineType" value="1" onclick="selectDeadlineType()"> 특정 날짜
-                    <input type="radio" name="deadlineType" value="2" onclick="selectDeadlineType()"> 기간 (x일/주/개월 등)
+                    <input type="radio" name="deadlineTypeNum" value="1" onclick="selectDeadlineType()"> 특정 날짜
+                    <input type="radio" name="deadlineTypeNum" value="2" onclick="selectDeadlineType()"> 기간 (x일/주/개월 등)
                 </div>
                 <br>
                 <br>
@@ -136,15 +137,22 @@
 
             <div id="no-deadline" style="display: none">
                 <span class="question">1회당/하루에 얼마나 수행할 수 있을 것 같나요?</span>
-                <input type="number" min="1">
+                <input type="number" name="quantityPerDayPredicted" min="1">
                 <br>
                 <br>
             </div>
         </div> <!--측정 가능한 일인 경우, 추가 질문들을 담은 div 영역 끝-->
 
         <%-- loginUser 속성 값 있으면 아래와 같이 작성자 정보 입력 --%>
-        <input type="hidden" name="plannerId" value="${ loginUser.userNo }">
-        <%-- 없으면 '저장하려면 로그인이 필요합니다' 모달 창 띄움 + 회원 가입이 필요한 경우 회원 가입 링크도 넣기 --%>
+        <c:choose>
+            <c:when test="${ empty loginUser }">
+                <input type="hidden" name="plannerId" value="${ loginUser.userNo }">
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="plannerId" value="">
+            </c:otherwise>
+        </c:choose>
+        <%-- 없으면 '저장하려면 로그인이 필요합니다' 모달 창 띄움 + 회원 가입이 필요한 경우 회원 가입 링크도 넣기(이건 계산 결과 페이지에서) --%>
 
         <!--2022.3.17(목) 14h20-->
         <div align="center">

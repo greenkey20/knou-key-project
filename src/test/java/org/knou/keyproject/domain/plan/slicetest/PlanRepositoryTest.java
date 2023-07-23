@@ -1,4 +1,4 @@
-package org.knou.keyproject.domain.plan;
+package org.knou.keyproject.domain.plan.slicetest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
