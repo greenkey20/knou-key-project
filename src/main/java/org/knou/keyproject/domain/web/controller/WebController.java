@@ -19,7 +19,12 @@ import java.util.List;
 @Validated
 @Controller
 public class WebController {
+    @RequestMapping("/")
+    public String index() {
+        return "index";
+    }
 
+    // JSP 세팅 확인용
     @RequestMapping("/page")
     public String page() {
         return "common/page";

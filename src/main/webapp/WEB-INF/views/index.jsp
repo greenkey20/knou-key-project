@@ -14,7 +14,8 @@
 <div class="outer">
     <br>
     <br>
-    <h3>무엇을 계획하고 계신가요?</h3>
+    <h3>어떤 활동을 계획하고 계신가요?</h3>
+    활동 계획을 세워보아요~
     <br>
     <button onclick="location.href='calculatorNew.pl'">새로 계산하기</button>
     <br>
