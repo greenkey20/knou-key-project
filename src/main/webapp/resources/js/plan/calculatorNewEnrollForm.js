@@ -5,14 +5,14 @@
 
 // 2023.7.23(일) 10h20
 function selectIsMeasurable() {
-    let $valueIsMeasurable = $("#is-measurable input[type=radio]:checked").val();
+    let $valueIsMeasurableNum = $("#is-measurable input[type=radio]:checked").val();
 
-    if ($valueIsMeasurable == 1) {
+    if ($valueIsMeasurableNum == 1) {
         // 측정 가능한 일 관련 질문들을 보여주는 div hidden -> 보이게
         $("#not-measurable-result").hide();
         $("#measurable-questions").show();
         // $("#measurable-questions").css("display", "block");
-    } else if ($valueIsMeasurable == 0 || $valueIsMeasurable == 2) {
+    } else if ($valueIsMeasurableNum == 0 || $valueIsMeasurableNum == 2) {
         $("#measurable-questions").hide();
         // let text = "서비스 준비 중입니다";
         // $("#result-measurable").html(text);
@@ -63,8 +63,8 @@ function selectHasDeadline() {
 // 2023.7.23(일) 16h25
 
 function selectDeadlineType() {
-    let $valueDeadlineType = $("#deadline-type input[type=radio]:checked").val();
-    if ($valueDeadlineType == 1) {
+    let $valueDeadlineTypeNum = $("#deadline-type input[type=radio]:checked").val();
+    if ($valueDeadlineTypeNum == 1) {
         $("#deadline-type-period").hide();
         $("#deadline-type-date").show();
     } else {

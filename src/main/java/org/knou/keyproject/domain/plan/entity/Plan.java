@@ -8,6 +8,7 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor/*(access = AccessLevel.PROTECTED)*/
 @Entity
 public class Plan extends BaseTimeEntity {
     @Id
@@ -24,7 +25,7 @@ public class Plan extends BaseTimeEntity {
     private Long planId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(columnDefinition = "INTEGER", name = "MEMBER_ID")
     private Member planner;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
@@ -43,7 +44,7 @@ public class Plan extends BaseTimeEntity {
     private Long totalQuantity;
     private String unit;
 
-    private LocalDateTime startDate; // 시작일
+    private LocalDate startDate; // 시작일
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -58,8 +59,10 @@ public class Plan extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private DeadlineType deadlineType; // D(Date) = 특정 날짜, P(Period) = 기간
 
-    private LocalDateTime deadlineDate;
+    private LocalDate deadlineDate;
     private String deadlinePeriod;
+
+    private Long quantityPerDayPredicted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_PLAN_ID"/*, referencedColumnName = "PARENT_PLAN_ID"*/)
@@ -72,4 +75,32 @@ public class Plan extends BaseTimeEntity {
     @Column(nullable = false)
     @ColumnDefault(value = "'ACTIVE'")
     private PlanStatus status; // A(Active) = 수행 중, C(Complete) = 완료, P(Pause) = 일시 정지, G(Give up) = 중도 포기, N(No) = 삭제
+
+    // 2023.7.23(일) 21h40
+    /*
+    public void setIsMeasurable(Boolean isMeasurable) {
+        this.isMeasurable = isMeasurable;
+    }
+
+    // 2023.7.23(일) 21h50
+    public void setFrequencyType(FrequencyType frequencyType) {
+        this.frequencyType = frequencyType;
+    }
+
+    public void setHasDeadline(Boolean hasDeadline) {
+        this.hasDeadline = hasDeadline;
+    }
+
+    public void setDeadlineType(DeadlineType deadlineType) {
+        this.deadlineType = deadlineType;
+    }
+
+    public void setPlanner(Member planner) {
+        this.planner = planner;
+    }
+    */
+
+    public void setPlanId(Long planId) {
+        this.planId = planId;
+    }
 }
