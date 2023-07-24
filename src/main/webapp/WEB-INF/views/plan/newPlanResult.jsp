@@ -34,7 +34,7 @@
         </c:choose>
 
         ${ savedPlan.deadlineDate }까지 총 ${ savedPlan.totalDurationDays } 기간 중
-        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfTimes }회 동안 매번 ${ quantityPerDay }만큼 수행해야 합니다.
+        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회 매번 ${ savedDate.quantityPerDay }만큼 수행해야 합니다.
     </div>
 
     <!--JSP/Java로 달력 만들기-->

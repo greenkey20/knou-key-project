@@ -6,6 +6,7 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.entity.Calculator;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
@@ -28,7 +29,11 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Transactional
     public Plan saveNewPlan(PlanPostRequestDto requestDto) {
-        return planRepository.save(requestDto.toEntity());
+//        Plan planToSave = requestDto.toEntity();
+        Calculator calculator = new Calculator(requestDto);
+        Plan calculatedPlan = calculator.calculateNewPlan();
+
+        return planRepository.save(calculatedPlan);
     }
 
     // 2023.7.24(월) 17h40

@@ -16,6 +16,7 @@ import java.util.List;
 // 2023.7.19(수) 18h20 -> 2023.7.20(목) 17h v1
 @Builder
 @Getter
+//@Setter // 2023.7.24(월) 22h 계산기 구현하며 고민하다가 추가
 @AllArgsConstructor
 @NoArgsConstructor/*(access = AccessLevel.PROTECTED)*/
 @Entity
@@ -41,7 +42,7 @@ public class Plan extends BaseTimeEntity {
     private String object; // 수행 목표 대상
 
     // 측정 가능한 일인 경우(2023.7.21(금) 현재 ERD 상에는 별도 테이블로 작성되어있음)
-    private Long totalQuantity;
+    private Integer totalQuantity;
     private String unit;
 
     @Column(nullable = false)
@@ -65,7 +66,7 @@ public class Plan extends BaseTimeEntity {
     private LocalDate deadlineDate;
     private String deadlinePeriod;
 
-    private Long quantityPerDayPredicted;
+    private Integer quantityPerDayPredicted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_PLAN_ID"/*, referencedColumnName = "PARENT_PLAN_ID"*/)
@@ -79,10 +80,11 @@ public class Plan extends BaseTimeEntity {
     @ColumnDefault(value = "'ACTIVE'")
     private PlanStatus status; // A(Active) = 수행 중, C(Complete) = 완료, P(Pause) = 일시 정지, G(Give up) = 중도 포기, N(No) = 삭제
 
-    // 2023.7.24(월) 1h45
+    // 2023.7.24(월) 1h45 활동 계획 계산 결과 관련 추가
     private Integer totalDurationDays;
-    private Integer totalNumOfTimes;
-    private Long quantityPerDay;
+    private Integer totalNumOfActions;
+    private Integer quantityPerDay;
+    private Double frequencyFactor;
 
     // 2023.7.23(일) 21h40
     /*
@@ -104,7 +106,7 @@ public class Plan extends BaseTimeEntity {
     }
     */
 
-    // 2023.7.24(월) 17h44
+    // 2023.7.24(월) 17h45
     public void setPlanner(Member planner) {
         this.planner = planner;
     }
@@ -120,5 +122,30 @@ public class Plan extends BaseTimeEntity {
     // controller 테스트 시 추가
     public void setPlanId(Long planId) {
         this.planId = planId;
+    }
+
+    // 2023.7.24(월) 22h 계산기 구현하며 고민하다 추가
+    public void setDeadlineDate(LocalDate deadlineDate) {
+        this.deadlineDate = deadlineDate;
+    }
+
+    public void setFrequencyDetail(String frequencyDetail) {
+        this.frequencyDetail = frequencyDetail;
+    }
+
+    public void setTotalDurationDays(Integer totalDurationDays) {
+        this.totalDurationDays = totalDurationDays;
+    }
+
+    public void setTotalNumOfActions(Integer totalNumOfActions) {
+        this.totalNumOfActions = totalNumOfActions;
+    }
+
+    public void setQuantityPerDay(Integer quantityPerDay) {
+        this.quantityPerDay = quantityPerDay;
+    }
+
+    public void setFrequencyFactor(Double frequencyFactor) {
+        this.frequencyFactor = frequencyFactor;
     }
 }
