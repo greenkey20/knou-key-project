@@ -12,6 +12,8 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.exception.BusinessLogicException;
 import org.knou.keyproject.global.exception.ExceptionCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,30 +38,34 @@ public class PlanServiceImpl implements PlanService {
         return planRepository.save(calculatedPlan);
     }
 
-    // 2023.7.24(월) 17h40
+    // 2023.7.24(월) 17h40 -> 22h40 startDate 입력에 따른 계산 결과 반영
     @Override
-    public Plan saveMyNewPlan(MyPlanPostRequestDto requestDto) {
+    public void saveMyNewPlan(MyPlanPostRequestDto requestDto) {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
         
         Member findMember = memberRepository.findById(requestDto.getPlannerId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         findPlan.setPlanner(findMember);
 
+        findPlan.setStatus(PlanStatus.ACTIVE);
+
         if (!findPlan.getHasStartDate()) {
             findPlan.setStartDate(requestDto.getStartDate());
         }
 
-        findPlan.setStatus(PlanStatus.ACTIVE);
+        Calculator calculator = new Calculator(findPlan);
+        findPlan = calculator.calculateNewPlan();
 
-        return planRepository.save(findPlan);
+        planRepository.save(findPlan);
     }
 
     public Plan findVerifiedPlan(Long planId) {
         return planRepository.findById(planId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.PLAN_NOT_FOUND));
     }
 
-    // 2023.7.24(월) 17h20 자동 기본 구현만 해둠
+    // 2023.7.24(월) 17h20 자동 기본 구현만 해둠 -> 23h10 내용 구현
     @Override
-    public List<Plan> findMemberPlans(Long memberId, int currentPage, int size) {
-        return null;
+    public List<Plan> findPlansByMember(Long memberId, int currentPage, int size) {
+        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return planRepository.findByMemberId(memberId, PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()));
     }
 }
