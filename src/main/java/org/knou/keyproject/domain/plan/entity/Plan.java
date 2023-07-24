@@ -44,6 +44,9 @@ public class Plan extends BaseTimeEntity {
     private Long totalQuantity;
     private String unit;
 
+    @Column(nullable = false)
+    private Boolean hasStartDate;
+
     private LocalDate startDate; // 시작일
 
     @Enumerated(EnumType.STRING)
@@ -76,6 +79,11 @@ public class Plan extends BaseTimeEntity {
     @ColumnDefault(value = "'ACTIVE'")
     private PlanStatus status; // A(Active) = 수행 중, C(Complete) = 완료, P(Pause) = 일시 정지, G(Give up) = 중도 포기, N(No) = 삭제
 
+    // 2023.7.24(월) 1h45
+    private Integer totalDurationDays;
+    private Integer totalNumOfTimes;
+    private Long quantityPerDay;
+
     // 2023.7.23(일) 21h40
     /*
     public void setIsMeasurable(Boolean isMeasurable) {
@@ -94,12 +102,22 @@ public class Plan extends BaseTimeEntity {
     public void setDeadlineType(DeadlineType deadlineType) {
         this.deadlineType = deadlineType;
     }
+    */
 
+    // 2023.7.24(월) 17h44
     public void setPlanner(Member planner) {
         this.planner = planner;
     }
-    */
 
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStatus(PlanStatus status) {
+        this.status = status;
+    }
+
+    // controller 테스트 시 추가
     public void setPlanId(Long planId) {
         this.planId = planId;
     }

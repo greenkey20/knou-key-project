@@ -42,7 +42,7 @@ public class PlanRepositoryTest {
                 .frequencyType(FrequencyType.DATE)
                 .frequencyDetail(frequencyDetail)
                 .hasDeadline(false)
-                .status(PlanStatus.ACTIVE)
+                .status(PlanStatus.RESULT)
                 .build());
 
         // when
@@ -66,7 +66,7 @@ public class PlanRepositoryTest {
                 .frequencyType(FrequencyType.TIMES)
                 .frequencyDetail("주 6회")
                 .hasDeadline(false)
-                .status(PlanStatus.ACTIVE)
+                .status(PlanStatus.RESULT)
                 .build());
 
         // when
