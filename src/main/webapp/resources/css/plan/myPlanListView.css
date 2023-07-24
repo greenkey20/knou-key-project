@@ -17,6 +17,10 @@ div {
     padding-right: 20px;
 }
 
+.object {
+   float: left;
+}
+
 /* 중간~우측 내용 영역 */
 /*.content {*/
 /*    width: 1000px;*/
@@ -29,11 +33,6 @@ div {
 /*.footer {*/
 /*    clear: both;*/
 /*}*/
-
-#new-plan-calculator-result {
-    border: 1px yellow;
-    background-color: lightgreen;
-}
 
 .greenBtn {
     background-color: rgb(182, 238, 86);
