@@ -6,17 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <title>활동 계획 계산 결과</title>
-    <link rel="stylesheet" href="resources/css/plan/newPlanResult.css">
+    <link rel="stylesheet" href="resources/css/plan/newPlanResultView.css">
 </head>
 <body>
 <!--2023.7.24(월) 0h55 파일 생성 + 작업 시작-->
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<script src="resources/js/plan/newPlanResult.js"></script>
+<script src="resources/js/plan/newPlanResultView.js"></script>
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
-    <h2>활동 계획 계산기</h2>
+    <h2>활동 계획 계산 결과</h2>
     <br>
 
     <div id="new-plan-calculator-result">

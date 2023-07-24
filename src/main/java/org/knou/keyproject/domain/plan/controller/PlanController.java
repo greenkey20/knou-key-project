@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -50,11 +51,11 @@ public class PlanController {
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         Plan savedPlan = planService.saveNewPlan(requestDto);
 
-        mv.addObject("savedPlan", savedPlan).setViewName("plan/newPlanResult");
+        mv.addObject("savedPlan", savedPlan).setViewName("plan/newPlanResultView");
         return mv;
 
 //        if (savedPlan != null) {
-//            return "plan/newPlanResult";
+//            return "plan/newPlanResultView";
 //        } else {
 //            model.addAttribute("errorMsg", "활동 계획 계산에 실패했습니다");
 //            return "common/errorPage";
@@ -81,8 +82,9 @@ public class PlanController {
     @GetMapping("myPlanList.pl")
     public ModelAndView getMyPlanList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage, HttpServletRequest request, ModelAndView mv) {
         Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();
-        List<Plan> myPlanList = planService.findPlansByMember(memberId, currentPage, SIZE);
-        mv.addObject("myPlanList", myPlanList).setViewName("plan/myPlanListView");
+        List<MyPlanListResponseDto> list = planService.findPlansByMember(memberId, currentPage, SIZE);
+
+        mv.addObject("list", list).setViewName("plan/myPlanListView");
         return mv;
     }
 }
