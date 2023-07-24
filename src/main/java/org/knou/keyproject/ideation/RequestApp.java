@@ -99,7 +99,7 @@ public class RequestApp {
             case 1:
                 System.out.print("(예시: 월화수목금토일, 월수금, 월화수목금 등) > ");
                 frequencyDetailsInput = scanner.nextLine() + "요일마다";
-                frequencyDetails = (frequencyDetailsInput.length() - 2) / 7.0;
+                frequencyDetails = (frequencyDetailsInput.length() - 4) / 7.0;
                 break;
             case 2:
                 System.out.print("(예시: 2일마다 1회, 5일마다 2회 등) > ");

@@ -26,7 +26,7 @@ public class PlanPostRequestDto {
 //    private Long plannerId;
     private int isMeasurableNum;
     private String object;
-    private Long totalQuantity;
+    private Integer totalQuantity;
     private String unit;
     private int hasStartDate;
 
@@ -42,16 +42,16 @@ public class PlanPostRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadlineDate;
     private String deadlinePeriod;
-    private Long quantityPerDayPredicted;
+    private Integer quantityPerDayPredicted;
 
 //    public PlanPostRequestDto(MemberRepository memberRepository) {
 //        this.memberRepository = memberRepository;
 //    }
 
     @Builder
-    public PlanPostRequestDto(int isMeasurableNum, String object, Long totalQuantity, String unit,
+    public PlanPostRequestDto(int isMeasurableNum, String object, Integer totalQuantity, String unit,
                               int hasStartDate, LocalDate startDate, int frequencyTypeNum, String frequencyDetail,
-                              int hasDeadline, int deadlineTypeNum, LocalDate deadlineDate, String deadlinePeriod, Long quantityPerDayPredicted) {
+                              int hasDeadline, int deadlineTypeNum, LocalDate deadlineDate, String deadlinePeriod, Integer quantityPerDayPredicted) {
         this.isMeasurableNum = isMeasurableNum;
         this.object = object;
         this.totalQuantity = totalQuantity;
@@ -67,6 +67,7 @@ public class PlanPostRequestDto {
         this.quantityPerDayPredicted = quantityPerDayPredicted;
     }
 
+    // view로부터 입력받은 정보만 Plan 객체에 맞춰서 (변환하고) 채움
     public Plan toEntity() {
 //        Plan plan0 = new Plan();
         // 2023.7.23(일) 22h55 코드스테이츠 컨텐츠 보다가 mapper 코드 보니 아래와 같이 setter 없이 값 세팅 가능..
