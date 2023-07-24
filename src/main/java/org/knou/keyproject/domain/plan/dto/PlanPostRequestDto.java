@@ -28,6 +28,7 @@ public class PlanPostRequestDto {
     private String object;
     private Long totalQuantity;
     private String unit;
+    private int hasStartDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd") // yyyy-MM-dd'T'00:mm:ss
     private LocalDate startDate;
@@ -49,12 +50,13 @@ public class PlanPostRequestDto {
 
     @Builder
     public PlanPostRequestDto(int isMeasurableNum, String object, Long totalQuantity, String unit,
-                              LocalDate startDate, int frequencyTypeNum, String frequencyDetail,
+                              int hasStartDate, LocalDate startDate, int frequencyTypeNum, String frequencyDetail,
                               int hasDeadline, int deadlineTypeNum, LocalDate deadlineDate, String deadlinePeriod, Long quantityPerDayPredicted) {
         this.isMeasurableNum = isMeasurableNum;
         this.object = object;
         this.totalQuantity = totalQuantity;
         this.unit = unit;
+        this.hasStartDate = hasStartDate;
         this.startDate = startDate;
         this.frequencyTypeNum = frequencyTypeNum;
         this.frequencyDetail = frequencyDetail;
@@ -87,6 +89,13 @@ public class PlanPostRequestDto {
         plan.object(object);
         plan.totalQuantity(totalQuantity);
         plan.unit(unit);
+
+        if (hasStartDate == 1) {
+            plan.hasStartDate(true);
+        } else {
+            plan.hasStartDate(false);
+        }
+
         plan.startDate(startDate);
 
         switch (frequencyTypeNum) {
@@ -119,7 +128,7 @@ public class PlanPostRequestDto {
             plan.quantityPerDayPredicted(quantityPerDayPredicted);
         }
 
-        plan.status(PlanStatus.ACTIVE);
+        plan.status(PlanStatus.RESULT);
 
         return plan.build();
     }
@@ -127,10 +136,11 @@ public class PlanPostRequestDto {
     @Override
     public String toString() {
         return "PlanPostRequestDto{" +
-                ", isMeasurableNum=" + isMeasurableNum +
+                "isMeasurableNum=" + isMeasurableNum +
                 ", object='" + object + '\'' +
                 ", totalQuantity=" + totalQuantity +
                 ", unit='" + unit + '\'' +
+                ", hasStartDate=" + hasStartDate +
                 ", startDate=" + startDate +
                 ", frequencyTypeNum=" + frequencyTypeNum +
                 ", frequencyDetail='" + frequencyDetail + '\'' +

@@ -4,11 +4,12 @@ import lombok.Getter;
 
 // 2023.7.21(금) 18h10
 public enum PlanStatus {
-    ACTIVE(1),
-    COMPLETE(2),
-    PAUSE(3),
-    GIVEUP(4),
-    DELETE(5);
+    RESULT(1),
+    ACTIVE(2),
+    COMPLETE(3),
+    PAUSE(4),
+    GIVEUP(5),
+    DELETE(6);
 
     @Getter
     private final Integer num;

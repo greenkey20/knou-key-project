@@ -3,7 +3,8 @@ package org.knou.keyproject.global.exception;
 import lombok.Getter;
 
 public enum ExceptionCode {
-    MEMBER_NOT_FOUND(404, "User not found");
+    MEMBER_NOT_FOUND(404, "User not found"),
+    PLAN_NOT_FOUND(404, "Plan not found");
 
     @Getter
     private int status;
