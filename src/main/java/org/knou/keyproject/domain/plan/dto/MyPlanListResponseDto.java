@@ -21,6 +21,7 @@ public class MyPlanListResponseDto {
     private Integer totalNumOfActions;
     private String frequencyDetail;
     private Integer quantityPerDay;
+    private String unit;
 
     public MyPlanListResponseDto(Plan entity) {
         this.planId = entity.getPlanId();
@@ -33,5 +34,6 @@ public class MyPlanListResponseDto {
         this.totalNumOfActions = entity.getTotalNumOfActions();
         this.frequencyDetail = entity.getFrequencyDetail();
         this.quantityPerDay = entity.getQuantityPerDay();
+        this.unit = entity.getUnit();
     }
 }

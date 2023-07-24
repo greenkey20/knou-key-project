@@ -34,7 +34,22 @@
                 <tbody>
                     <tr>
                         <td class="title">상태</td>
-                        <td>${ p.status }</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${ p.status eq 'ACTIVE' }">
+                                        수행 중 (일정대로 진행하고 있어요 등등)<!--통계 데이터 만든 다음에 작성-->
+                                </c:when>
+                                <c:when test="${ p.status eq 'COMPLETE' }">
+                                    완료했어요!
+                                </c:when>
+                                <c:when test="${ p.status eq 'PAUSE' }">
+                                    일시 정지 중이에요
+                                </c:when>
+                                <c:otherwise>
+                                    포기했어요 ㅠㅠ
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
                     <tr>
                         <td class="title">기간</td>
@@ -49,7 +64,7 @@
                     </tr>
                     <tr>
                         <td class="title">매 회 수행 분량</td>
-                        <td>${ p.quantityPerDay }</td>
+                        <td>${ p.quantityPerDay } ${ p.unit }</td>
                     </tr>
                     <tr>
                         <td class="title">진행률</td>
