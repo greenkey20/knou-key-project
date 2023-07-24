@@ -10,7 +10,6 @@ import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,17 +63,16 @@ public class PlanController {
     }
 
     // 2023.7.24(월) 17h
-
     /**
      * 활동 계획 계산 결과를 '나의 일정'에 저장하는 요청을 처리하는 메서드
      *
      * @return
      */
     @RequestMapping(value = "myNewPlanInsert.pl", method = RequestMethod.POST)
-    public String postMyNewPlan(@ModelAttribute("plan") MyPlanPostRequestDto requestDto, HttpSession session, Model model) {
+    public String postMyNewPlan(@ModelAttribute("plan") MyPlanPostRequestDto requestDto, HttpSession session) {
         log.info(requestDto.toString()); // 2023.7.24(월) 17h55 테스트 시 MyPlanPostRequestDto{planId=2, plannerId=null, startDate=2023-07-25} 찍힘
 
-        Plan savedMyPlan = planService.saveMyNewPlan(requestDto);
+        planService.saveMyNewPlan(requestDto);
 
         session.setAttribute("alertMsg", "해당 활동 계획이 나의 일정에 성공적으로 저장되었습니다!");
         return "redirect:myPlanList.pl";
@@ -83,7 +81,7 @@ public class PlanController {
     @GetMapping("myPlanList.pl")
     public ModelAndView getMyPlanList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage, HttpServletRequest request, ModelAndView mv) {
         Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();
-        List<Plan> myPlanList = planService.findMemberPlans(memberId, currentPage, SIZE);
+        List<Plan> myPlanList = planService.findPlansByMember(memberId, currentPage, SIZE);
         mv.addObject("myPlanList", myPlanList).setViewName("plan/myPlanListView");
         return mv;
     }

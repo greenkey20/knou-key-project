@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 // 2023.7.24(월) 19h50
 public class Calculator {
     private PlanPostRequestDto requestDto;
+    private Plan plan;
 
     // 계산 대상들을 멤버변수로 갖고 있음, 이 값은 requestDto로부터 그냥 넘어온 값 쓰면 안 되거나 거기에 없음
     private LocalDate startDate;
@@ -19,8 +20,17 @@ public class Calculator {
     private Integer quantityPerDay;
 
     // 생성자
+    public Calculator() {
+    }
+
     public Calculator(PlanPostRequestDto requestDto) {
         this.requestDto = requestDto;
+//        this.plan = null;
+    }
+
+    public Calculator(Plan plan) {
+        this.plan = plan;
+//        this.requestDto = null;
     }
 
     /**
@@ -30,8 +40,13 @@ public class Calculator {
      */
     public Plan calculateNewPlan() {
         // 현재로써는 측정 가능한 일만 이 계산기를 호출함
+        Plan planToCalculate;
 
-        Plan planToCalculate = requestDto.toEntity();
+        if (requestDto != null) {
+            planToCalculate = requestDto.toEntity();
+        } else {
+            planToCalculate = plan;
+        }
 
         setStartDate(planToCalculate); // 사용자가 아직 시작일을 모른다고 한 경우, 일단 금일 시작을 기준으로 계산 결과 알려줌
         // 2023.7.24(월) 22h 결국 setter 메서드 몇 개 만들어서 처리하기로 함
@@ -40,11 +55,13 @@ public class Calculator {
         setDeadlineDate(planToCalculate);
         planToCalculate.setDeadlineDate(deadlineDate);
 
-        setFrequencyDetail(planToCalculate);
-        planToCalculate.setFrequencyDetail(frequencyDetail);
+        if (planToCalculate.getStatus() == PlanStatus.RESULT) {
+            setFrequencyDetail(planToCalculate);
+            planToCalculate.setFrequencyDetail(frequencyDetail);
 
-        setFrequencyFactor(planToCalculate);
-        planToCalculate.setFrequencyFactor(frequencyFactor);
+            setFrequencyFactor(planToCalculate);
+            planToCalculate.setFrequencyFactor(frequencyFactor);
+        }
 
         setTotalDurationDays();
         planToCalculate.setTotalDurationDays(totalDurationDays);
@@ -80,7 +97,7 @@ public class Calculator {
     }
 
     public void setStartDate(Plan planToCalculate) {
-        if (!planToCalculate.getHasStartDate()) {
+        if (!planToCalculate.getHasStartDate() && planToCalculate.getStatus() == PlanStatus.RESULT) {
             startDate = LocalDate.now();
         } else {
             startDate = planToCalculate.getStartDate();
