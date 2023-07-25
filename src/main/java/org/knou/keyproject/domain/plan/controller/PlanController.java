@@ -1,5 +1,8 @@
 package org.knou.keyproject.domain.plan.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
+import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.entity.DateData;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
@@ -15,7 +20,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -26,7 +35,8 @@ import java.util.List;
 public class PlanController {
     private final PlanService planService;
     private final int SIZE = 10;
-
+    private final int THIS_YEAR = LocalDate.now().getYear();
+    private final int THIS_MONTH = LocalDate.now().getMonthValue();
 
     // 2023.7.23(일) 0h50
     @GetMapping("calculatorNew.pl")
@@ -49,7 +59,7 @@ public class PlanController {
         log.info(requestDto.toString()); // 2023.7.23(일) 23h10 현재 view로부터 값 안 넘어오고 있음 PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=0, object='null', totalQuantity=null, unit='null', startDate=null, frequencyTypeNum=0, frequencyDetail='null', hasDeadline=0, deadlineTypeNum=0, deadlineDate=null, deadlinePeriod='null', quantityPerDayPredicted=null}
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
-        Plan savedPlan = planService.saveNewPlan(requestDto);
+        NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
 
         mv.addObject("savedPlan", savedPlan).setViewName("plan/newPlanResultView");
         return mv;
@@ -64,6 +74,7 @@ public class PlanController {
     }
 
     // 2023.7.24(월) 17h
+
     /**
      * 활동 계획 계산 결과를 '나의 일정'에 저장하는 요청을 처리하는 메서드
      *
@@ -86,5 +97,70 @@ public class PlanController {
 
         mv.addObject("list", list).setViewName("plan/myPlanListView");
         return mv;
+    }
+
+    // 2023.7.25(화) 12h35
+    @ResponseBody
+    @RequestMapping(value = "calendar.pl", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    public String ajaxGetCalendar(int year, int month) {
+        DateData individualDay;
+        DateData searchDate;
+        LocalDate today = LocalDate.now();
+
+        if (year == 0 && month == 0) {
+            searchDate = new DateData(String.valueOf(today.getYear()), String.valueOf(today.getMonthValue()), String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
+        } else {
+            searchDate = new DateData(String.valueOf(year), String.valueOf(month), "1", LocalDate.of(year, month, 1).getDayOfWeek().getValue(), null);
+        }
+
+        Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate);
+
+        List<DateData> dateDataList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
+        JsonObject obj = new JsonObject();
+
+        // 월요일부터 해당 월 시작일 요일 전까지 빈칸으로 채움 -> 나는 추후에 지난 달 날짜로 채우고 싶다! // todo
+        for (int i = 1; i < todayInfo.get("startDay"); i++) {
+            individualDay = new DateData(null, null, null, i, null);
+            dateDataList.add(individualDay);
+        }
+
+        int dayInt = todayInfo.get("startDay"); // 해당 월 1일의 요일
+
+        for (int i = todayInfo.get("startDate"); i <= todayInfo.get("endDate"); i++) {
+            if (dayInt % 7 != 0) {
+                dayInt = dayInt % 7;
+            } else {
+                dayInt = 7;
+            }
+
+            if (i == todayInfo.get("todayDate")) {
+                individualDay = new DateData(String.valueOf(searchDate.getYear()), String.valueOf(searchDate.getMonth()), String.valueOf(i), dayInt, "today");
+            } else {
+                individualDay = new DateData(String.valueOf(searchDate.getYear()), String.valueOf(searchDate.getMonth()), String.valueOf(i), dayInt, "normalDay");
+            }
+
+            dateDataList.add(individualDay);
+            dayInt++;
+        }
+
+        // 월 마지막 날 요일부터 일요일까지 빈칸으로 채움 -> 나는 추후에 다음 달 날짜로 채우고 싶다! // todo
+        int delim = dateDataList.size() % 7;
+        if (delim != 0) {
+            for (int i = 0; i < 7 - delim; i++) {
+                individualDay = new DateData(null, null, null, null, null);
+                dateDataList.add(individualDay);
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("dateDataList", dateDataList);
+        result.put("todayInfo", todayInfo);
+
+        log.info("individual day 첫번째 요소 = " + dateDataList.get(0).toString()); // todo
+        log.info("individual day 11번째 요소 = " + dateDataList.get(11).toString()); // todo
+        log.info("todayInfo에 저장된 startKey 키에 해당하는 value = " + todayInfo.get("startDay")); // todo
+//        return result;
+
+        return new Gson().toJson(dateDataList);
     }
 }
