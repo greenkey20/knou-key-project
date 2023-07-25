@@ -35,6 +35,10 @@ div {
     background-color: lightgreen;
 }
 
+.holiday {
+    color: seagreen;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }
