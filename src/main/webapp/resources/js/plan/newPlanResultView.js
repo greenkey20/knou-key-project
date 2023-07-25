@@ -13,7 +13,7 @@ function checkLogin() {
 
 // 2023.7.25(화) 12h50
 $(function () { // 문서가 로드되면
-    getCalendar();
+    // getCalendar();
 });
 
 function getCalendar() {
