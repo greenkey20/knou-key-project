@@ -41,18 +41,19 @@
 
             </c:otherwise>
         </c:choose>
-        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회 매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
+        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회
+        매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
     </div>
 
     <!--2023.7.25(화) 11h45-->
     <!--JSP/Java로 달력 만들기-->
     <div class="calendar" align="center">
         <div class="navigation">
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear - 1 }&month=${ todayInfo.searchMonth }">&lt;&lt;</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.prevMonth }">&lt;</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear - 1 }&month=${ todayInfo.searchMonth }">↞</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.prevMonth }">⬅️</a>
             <span class="thisYM"> ${ todayInfo.searchYear }. ${ todayInfo.searchMonth } </span>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.nextMonth }">&gt;</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear + 1 }&month=${ todayInfo.searchMonth }">&gt;&gt;</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.nextMonth }">➡️</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear + 1 }&month=${ todayInfo.searchMonth }">↠</a>
         </div>
 
         <table class="calendarBody">
@@ -68,7 +69,35 @@
             </tr>
             </thead>
             <tbody>
-            <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳-->
+            <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳 vs 2023.7.25(화) 21h55 ajax로 안 하기로 함(할 필요 없음)-->
+            <c:forEach var="date" items="${ dateDataList }">
+                <c:choose>
+                    <c:when test="${ date.day % 7 eq 0 }">
+                        <c:when test="${ date.value } eq 'today' ">
+                            <tr><td class="holiday today" align="left"> ${ date.date } </td>
+                        </c:when>
+                        <c:otherwise>
+                            <tr><td class="holiday today" align="left"> ${ date.date } </td>
+                        </c:otherwise>
+                    </c:when>
+                    <c:when test="${ date.day % 7 == 6}">
+                        <c:when test="${ date.value } eq 'today' ">
+                            <td class="today" align="left"> ${ date.date } </td></tr>
+                        </c:when>
+                        <c:otherwise>
+                            <td align="left"> ${ date.date } </td>&lt;/tr>
+                        </c:otherwise>
+                    </c:when>
+                    <c:otherwise>
+                        <c:when test="${ date.value } eq 'today' ">
+                            <td class="today" align="left"> ${ date.date } </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td align="left"> ${ date.date } </td>
+                        </c:otherwise>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
             </tbody>
         </table>
     </div>
