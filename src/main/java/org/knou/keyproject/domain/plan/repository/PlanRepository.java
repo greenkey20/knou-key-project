@@ -8,5 +8,5 @@ import java.util.List;
 
 // 2023.7.22(토) 1h55
 public interface PlanRepository extends JpaRepository<Plan, Long> {
-    List<Plan> findByMemberId(Long memberId, PageRequest of);
+    List<Plan> findByMemberMemberId(Long memberId, PageRequest of);
 }

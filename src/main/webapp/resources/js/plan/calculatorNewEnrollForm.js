@@ -3,6 +3,10 @@
 // 	$("input[type=radio]").click(function() {
 // 		console.log("라디오 버튼이 클릭됨");
 
+$(function () { // 문서가 로드되면
+
+})
+
 // 2023.7.23(일) 10h20
 function selectIsMeasurable() {
     let $valueIsMeasurableNum = $("#is-measurable input[type=radio]:checked").val();
@@ -61,7 +65,6 @@ function selectHasDeadline() {
     }
 }
 // 2023.7.23(일) 16h25
-
 function selectDeadlineType() {
     let $valueDeadlineTypeNum = $("#deadline-type input[type=radio]:checked").val();
     if ($valueDeadlineTypeNum == 1) {
