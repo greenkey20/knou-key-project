@@ -56,7 +56,7 @@
             <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year + 1}&month=${ dateDataList[10].month }">➡️</a>
         </div>
 
-        <table class="calendarBody">
+        <table class="calendarBody" border="gray">
             <thead>
             <tr bgcolor="#9acd32">
                 <td class="day holiday">일</td>
@@ -85,8 +85,51 @@
             </c:forEach>
             </tbody>
         </table>
+
+        <br>
+        <br>
+        <br>
+
+        <h3> 활동일 목록 예시 </h3>
+        <table class="actionDaysTable" border="black">
+            <tbody>
+                <c:forEach var="day" items="${ actionDays }" varStatus="status">
+                <c:if test="${ day.value eq 'action' }">
+                    <tr>
+                    <td class="holiday"> ${ status.count } </td>
+                        <td> <input type="checkbox" class="check"> </td>
+                        <td>
+                                ${ day.year }. ${ day.month }. ${ day.date }
+                            <c:choose>
+                                <c:when test="${ day.day == 1 }"> (월) </c:when>
+                                <c:when test="${ day.day == 2 }"> (화) </c:when>
+                                <c:when test="${ day.day == 3 }"> (수) </c:when>
+                                <c:when test="${ day.day == 4 }"> (목) </c:when>
+                                <c:when test="${ day.day == 5 }"> (금) </c:when>
+                                <c:when test="${ day.day == 6 }"> (토) </c:when>
+                                <c:otherwise> (일) </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${ not status.last }">
+                                    ${ savedPlan.quantityPerDay } ${ savedPlan.unit }
+                                </c:when>
+                                <c:otherwise>
+                                    ${ savedPlan.totalQuantity - savedPlan.quantityPerDay * (status.count - 1) } ${savedPlan.unit}
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                </c:if>
+                </c:forEach>
+            </tbody>
+        </table>
     </div>
 
+    <div class="actionDaysList">
+
+    </div>
 
     <!--2023.7.24(월) 15h-->
     <!--하단 버튼-->

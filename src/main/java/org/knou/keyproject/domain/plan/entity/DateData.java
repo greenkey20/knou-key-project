@@ -1,9 +1,6 @@
 package org.knou.keyproject.domain.plan.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,21 +23,33 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @Entity
 public class DateData {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long dateDateId;
 
-    String year = "";
-    String month = "";
-    String date = ""; // 날짜
-    Integer day = -1; // 요일
-    String value = "";
-    String schedule = "";
-    String scheduleDetail = "";
+    // 2023.7.26(수) 2h 이런저런 생각하다가 추가해봄
+    String year;
+    Integer month ;
+    String date; // 날짜
+    Integer day; // 요일
+    String value;
+    String schedule;
+    String scheduleDetail;
+
+    // 2023.7.26(수) 3h15 수정
+    String dataFormat = String.format("%s-%02d-%s", year, month, date);
+//    public void setDataFormat(String year, String month, String date) {
+//        if (Integer.parseInt(month) < 10) {
+//            month = "0" + month;
+//        }
+//
+//        this.dataFormat = year + "-" + month + "-" + date;
+//    }
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
     Plan plan;
 
-    public DateData(String year, String month, String date, Integer day, String value) {
+    public DateData(String year, Integer month, String date, Integer day, String value) {
         this.year = year;
         this.month = month;
         this.date = date;
@@ -51,7 +60,7 @@ public class DateData {
     public Map<String, Integer> todayInfo(DateData dateData) {
         Map<String, Integer> todayDataMap = new HashMap<>();
 
-        LocalDate searchDate = LocalDate.of(Integer.parseInt(dateData.getYear()), Integer.parseInt(dateData.getMonth()), 1);
+        LocalDate searchDate = LocalDate.of(Integer.parseInt(dateData.getYear()), dateData.getMonth(), 1);
 
         int startDate = searchDate.with(firstDayOfMonth()).getDayOfMonth();
         int endDate = searchDate.with(lastDayOfMonth()).getDayOfMonth();
@@ -62,7 +71,7 @@ public class DateData {
         int todayMonth = today.getMonthValue();
 
         int searchYear = Integer.parseInt(dateData.getYear());
-        int searchMonth = Integer.parseInt(dateData.getMonth());
+        int searchMonth = dateData.getMonth();
 
         int todayDate = 0;
         if (todayYear == searchYear && todayMonth == searchMonth) {

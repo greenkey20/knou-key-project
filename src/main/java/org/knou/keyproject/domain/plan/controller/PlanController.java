@@ -57,11 +57,20 @@ public class PlanController {
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
+        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDays().toString());
+        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDays().size());
 
         // 2023.7.25(화) 21h45
-        List<DateData> dateDataList = Calendar.getCalendar();
+        List<DateData> dateDataList = Calendar.getCalendar(savedPlan.getActionDays());
 
-        mv.addObject("savedPlan", savedPlan).addObject("dateDataList", dateDataList).setViewName("plan/newPlanResultView"); // 2023.7.25(화) 21h40 생각 = 여기에서 달력 출력할 정보도 같이 넘겨준다..
+        // 2023.7.26(수) 3h35
+        List<DateData> actionDays = savedPlan.getActionDays();
+
+        mv
+                .addObject("savedPlan", savedPlan)
+                .addObject("dateDataList", dateDataList)
+                .addObject("actionDays", actionDays)
+                .setViewName("plan/newPlanResultView"); // 2023.7.25(화) 21h40 생각 = 여기에서 달력 출력할 정보도 같이 넘겨준다..
         return mv;
 
 //        if (savedPlan != null) {
@@ -107,7 +116,7 @@ public class PlanController {
                                          ModelAndView mv) {
         LocalDate today = LocalDate.now();
 
-        DateData searchDate = new DateData(String.valueOf(year), String.valueOf(month), String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
+        DateData searchDate = new DateData(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
         Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
@@ -130,9 +139,9 @@ public class PlanController {
             }
 
             if (i == todayInfo.get("todayDate")) {
-                individualDay = new DateData(String.valueOf(searchDate.getYear()), String.valueOf(searchDate.getMonth()), String.valueOf(i), dayInt, "today");
+                individualDay = new DateData(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, "today");
             } else {
-                individualDay = new DateData(String.valueOf(searchDate.getYear()), String.valueOf(searchDate.getMonth()), String.valueOf(i), dayInt, "normalDay");
+                individualDay = new DateData(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, "normalDay");
             }
 
             dateDataList.add(individualDay);
