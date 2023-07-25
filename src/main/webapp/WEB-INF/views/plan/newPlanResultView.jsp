@@ -49,11 +49,11 @@
     <!--JSP/Java로 달력 만들기-->
     <div class="calendar" align="center">
         <div class="navigation">
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] - 1 }&month=${ todayInfo[searchMonth] }">⬅️</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] }&month=${ todayInfo[prevMonth] }">←</a>
-            <span class="thisYM"> ${ todayInfo[searchYear] }. ${ todayInfo[searchMonth] } </span>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] }&month=${ todayInfo[nextMonth] }">→</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] + 1 }&month=${ todayInfo[searchMonth] }">➡️</a>
+            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year - 1 }&month=${ dateDataList[10].month }">⬅️</a>
+            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year }&month=${ dateDataList[10].month - 1 }">←</a>
+            <span class="thisYM"> ${ dateDataList[10].year }. ${ dateDataList[10].month } </span>
+            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year }&month=${ dateDataList[10].month + 1 }">→</a>
+            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year + 1}&month=${ dateDataList[10].month }">➡️</a>
         </div>
 
         <table class="calendarBody">
