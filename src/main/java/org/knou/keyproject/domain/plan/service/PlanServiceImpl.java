@@ -6,6 +6,7 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
+import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.Calculator;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -32,12 +33,12 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public Plan saveNewPlan(PlanPostRequestDto requestDto) {
+    public NewPlanResponseDto saveNewPlan(PlanPostRequestDto requestDto) {
 //        Plan planToSave = requestDto.toEntity();
         Calculator calculator = new Calculator(requestDto);
         Plan calculatedPlan = calculator.calculateNewPlan();
 
-        return planRepository.save(calculatedPlan);
+        return new NewPlanResponseDto(planRepository.save(calculatedPlan));
     }
 
     // 2023.7.24(월) 17h40 -> 22h40 startDate 입력에 따른 계산 결과 반영
@@ -47,7 +48,7 @@ public class PlanServiceImpl implements PlanService {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
 
         Member findMember = memberRepository.findById(requestDto.getPlannerId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        findPlan.setPlanner(findMember);
+        findPlan.setMember(findMember);
 
         findPlan.setStatus(PlanStatus.ACTIVE);
 
@@ -55,8 +56,8 @@ public class PlanServiceImpl implements PlanService {
             findPlan.setStartDate(requestDto.getStartDate());
         }
 
-        Calculator calculator = new Calculator(findPlan);
-        findPlan = calculator.calculateNewPlan();
+        Calculator calculator = new Calculator();
+        findPlan = calculator.calculateRealNewPlan(findPlan);
 
         planRepository.save(findPlan);
     }
@@ -69,7 +70,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        return planRepository.findByMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
+        return planRepository.findByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
                 .stream()
                 .map(MyPlanListResponseDto::new)
                 .collect(Collectors.toList());

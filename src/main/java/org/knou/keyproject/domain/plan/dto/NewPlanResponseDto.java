@@ -3,37 +3,42 @@ package org.knou.keyproject.domain.plan.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.knou.keyproject.domain.plan.entity.Plan;
-import org.knou.keyproject.domain.plan.entity.PlanStatus;
 
 import java.time.LocalDate;
 
-// 2023.7.25(화) 0h10
+// 2023.7.25(화) 17H45
 @Getter
 @NoArgsConstructor
-public class MyPlanListResponseDto {
+public class NewPlanResponseDto {
     private Long planId;
-    private String nickname;
+
     private String object;
-    private Boolean isMeasurable;
-    private PlanStatus status;
-    private LocalDate startDate;
-    private LocalDate deadlineDate;
-    private Integer totalNumOfActions;
-    private String frequencyDetail;
-    private Integer quantityPerDay;
+    private Integer totalQuantity;
     private String unit;
 
-    public MyPlanListResponseDto(Plan entity) {
+    private Boolean hasStartDate;
+    private LocalDate startDate;
+    private LocalDate deadlineDate;
+
+    private Boolean hasDeadline;
+    private Integer totalDurationDays;
+
+    private String frequencyDetail;
+    private Integer totalNumOfActions;
+    private Integer quantityPerDay;
+
+    public NewPlanResponseDto(Plan entity) {
         this.planId = entity.getPlanId();
-        this.nickname = entity.getMember().getNickname();
         this.object = entity.getObject();
-        this.isMeasurable = entity.getIsMeasurable();
-        this.status = entity.getStatus(); // 0h30 나의 질문 = String으로 저장해둔 enum 값이 String으로 잘 넘어가는지 궁금하다
+        this.totalQuantity = entity.getTotalQuantity();
+        this.unit = entity.getUnit();
+        this.hasStartDate = entity.getHasStartDate();
         this.startDate = entity.getStartDate();
         this.deadlineDate = entity.getDeadlineDate();
-        this.totalNumOfActions = entity.getTotalNumOfActions();
+        this.hasDeadline = entity.getHasDeadline();
+        this.totalDurationDays = entity.getTotalDurationDays();
         this.frequencyDetail = entity.getFrequencyDetail();
+        this.totalNumOfActions = entity.getTotalNumOfActions();
         this.quantityPerDay = entity.getQuantityPerDay();
-        this.unit = entity.getUnit();
     }
 }
