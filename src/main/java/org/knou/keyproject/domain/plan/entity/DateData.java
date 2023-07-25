@@ -1,5 +1,9 @@
 package org.knou.keyproject.domain.plan.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,7 +23,11 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class DateData {
+    @Id
+    Long dateDateId;
+
     String year = "";
     String month = "";
     String date = ""; // 날짜
@@ -27,6 +35,10 @@ public class DateData {
     String value = "";
     String schedule = "";
     String scheduleDetail = "";
+
+    // 2023.7.26(수) 0h
+    @ManyToOne(fetch = FetchType.LAZY)
+    Plan plan;
 
     public DateData(String year, String month, String date, Integer day, String value) {
         this.year = year;

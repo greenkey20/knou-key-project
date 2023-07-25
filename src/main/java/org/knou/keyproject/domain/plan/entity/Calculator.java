@@ -39,6 +39,7 @@ public class Calculator {
     // 2023.7.25(목) '나의 일정'에 저장하며 시작일이 새로 지정된 경우 호출되는 메서드
     public Plan calculateRealNewPlan(Plan planToCalculate) {
         setDeadlineDate(planToCalculate);
+        planToCalculate.setActionDaysList();
         return planToCalculate;
     }
 
@@ -51,7 +52,6 @@ public class Calculator {
     public Plan calculateNewPlan() {
         // 현재로써는 측정 가능한 일만 이 계산기를 호출함
         Plan planToCalculate = planToCalculate = requestDto.toEntity();
-        ;
 
 //        if (requestDto != null) {
 //            planToCalculate = requestDto.toEntity();
@@ -83,6 +83,8 @@ public class Calculator {
 
         setQuantityPerDay(planToCalculate);
 //        planToCalculate.setQuantityPerDay(quantityPerDay);
+
+        planToCalculate.setActionDaysList();
 
         return planToCalculate;
         // 2023.7.24(월) 21h35 아래와 같은 return문을 썼는데, 아무래도 이건 아닌 것 같아..
@@ -201,12 +203,26 @@ public class Calculator {
             case TIMES:
                 words = frequencyDetail.split(" "); // 예시) 주 2회, 월 10회 등
 
+                // 2023.7.26(수) 1h 횟수가 2자리 수 이상인 경우를 위해 로직 수정 필요했음
+                // x(x)회의 숫자 x(x) 뽑아내야 함
+                String obj = words[1];
+                StringBuilder nums = new StringBuilder();
+
+                // 아래 반복문도 deadlinePeriod 문자열로부터 deadline 뽑아낼 때, TIMES 빈도로부터 활동일 뽑아낼 때 등 비슷하게 사용되므로, 메서드로 추출 가능?!
+                for (int i = 0; i < obj.length(); i++) {
+                    char ch = obj.charAt(i);
+
+                    if (Character.isDigit(ch)) {
+                        nums.append(ch);
+                    }
+                }
+
                 switch (words[0]) {
                     case "주":
-                        frequencyFactor = Character.getNumericValue(words[1].charAt(0)) / 7.0;
+                        frequencyFactor = Integer.parseInt(nums.toString()) / 7.0;
                         break;
                     case "월":
-                        frequencyFactor = Character.getNumericValue(words[1].charAt(0)) / (365 / 12.0);
+                        frequencyFactor = Integer.parseInt(nums.toString()) / (365 / 12.0);
                         break;
                 }
         }
