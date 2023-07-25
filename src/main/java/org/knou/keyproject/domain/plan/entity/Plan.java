@@ -2,6 +2,7 @@ package org.knou.keyproject.domain.plan.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.action.entity.Action;
 import org.knou.keyproject.domain.member.entity.Member;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // 2023.7.19(수) 18h20 -> 2023.7.20(목) 17h v1
+@Slf4j
 @Builder
 @Getter
 //@Setter // 2023.7.24(월) 22h 계산기 구현하며 고민하다가 추가
@@ -153,26 +155,45 @@ public class Plan extends BaseTimeEntity {
     @Column
     List<DateData> actionDays = new ArrayList<>();
 
+    // 2023.7.26(수) 2h35
+    public List<DateData> getActionDays() {
+        if (this.actionDays == null) {
+            return new ArrayList<>();
+        }
+
+        return this.actionDays;
+    }
+
+    // 2023.7.26(수) 3h 빈도 정보 잘 들어가고 start~dead 순회 잘 하는데, actionList가 비는 것에 대해 디버깅하다가 참고로 써봄
+//    public void setActionDays(List<DateData> actionDays) {
+//        this.actionDays = actionDays;
+//    }
+
     public void setActionDaysList() {
-//        List<DateData> actionDays = new ArrayList<>();
+        List<DateData> actionDays = new ArrayList<>();
+
         switch (this.frequencyType) {
             case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
-                getActionDaysWithFrequencyTypeDATE();
+                actionDays = getActionDaysWithFrequencyTypeDATE(actionDays);
                 break;
             case EVERY: // EVERY-TIMES 계산 원리는 비슷
-                getActionDaysWithFrequencyTypeEVERY();
+                actionDays = getActionDaysWithFrequencyTypeEVERY(actionDays);
                 break;
             case TIMES:
-                getActionDaysWithFrequencyTypeTIMES();
+                actionDays = getActionDaysWithFrequencyTypeTIMES(actionDays);
                 break;
         }
+
+        this.actionDays = actionDays;
     }
 
     /**
      * 주/월 x회마다 활동하는 경우의 활동일 리스트 만드는 메서드
      * e.g. 주 3회, 월 10회 등
+     *
+     * @return
      */
-    private void getActionDaysWithFrequencyTypeTIMES() {
+    private List<DateData> getActionDaysWithFrequencyTypeTIMES(List<DateData> actionDays) {
         // timeUnit 관련 데이터 가공
         char timeUnit = this.frequencyDetail.charAt(0);
 
@@ -203,52 +224,61 @@ public class Plan extends BaseTimeEntity {
 
         // 빈도 조건에 맞는 활동일 찾기
         for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(interval)) {
-            this.actionDays.add(changeActionDateIntoActionDateData(date));
+            actionDays.add(changeActionDateIntoActionDateData(date));
 
             for (int i = 1; i < times; i++) {
                 int plusDay = interval / times;
-                this.actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
+                actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
             }
         }
+        return actionDays;
     }
 
     /**
      * 매 x일마다 활동하는 경우의 활동일 리스트 만드는 메서드
      * e.g. 2일마다 1회, 5일마다 2회, 10일마다 3회 등
+     *
+     * @return
      */
-    private void getActionDaysWithFrequencyTypeEVERY() {
+    private List<DateData> getActionDaysWithFrequencyTypeEVERY(List<DateData> actionDays) {
         int interval = Character.getNumericValue(frequencyDetail.split(" ")[0].charAt(0));
         int times = Character.getNumericValue(frequencyDetail.split(" ")[1].charAt(0));
 
         for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(interval)) {
-            this.actionDays.add(changeActionDateIntoActionDateData(date));
+            actionDays.add(changeActionDateIntoActionDateData(date));
 
             for (int i = 1; i < times; i++) {
                 int plusDay = interval / times;
-                this.actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
+                actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
             }
         }
+        return actionDays;
     }
 
-    private void getActionDaysWithFrequencyTypeDATE() {
+    private List<DateData> getActionDaysWithFrequencyTypeDATE(List<DateData> actionDays) {
         // 활동하는 요일들의 정수 값을 리스트로 받음
         String daysStr = this.frequencyDetail.substring(0, this.frequencyDetail.length() - 4);
         List<Integer> daysList = getActionWeekdays(daysStr);
+        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
 
         for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(1)) {
             // 순회 중인 날이 해당 요일이면 활동일 리스트에 담음
             int dayOfDate = date.getDayOfWeek().getValue();
+            log.info("순회 중인 date의 요일 번호 = " + dayOfDate);
 
             if (daysList.contains(dayOfDate)) {
-                this.actionDays.add(changeActionDateIntoActionDateData(date));
+                actionDays.add(changeActionDateIntoActionDateData(date));
             }
         }
+
+        log.info("순회 마치고 actionDays 리스트 = " + getActionDays());
+        return actionDays;
     }
 
     private DateData changeActionDateIntoActionDateData(LocalDate date) {
         return new DateData(
                 String.valueOf(date.getYear()),
-                String.valueOf(date.getMonthValue()),
+                date.getMonthValue(),
                 String.valueOf(date.getDayOfMonth()),
                 date.getDayOfWeek().getValue(),
                 "action"
