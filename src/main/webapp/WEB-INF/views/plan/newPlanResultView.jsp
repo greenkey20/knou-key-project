@@ -49,11 +49,11 @@
     <!--JSP/Java로 달력 만들기-->
     <div class="calendar" align="center">
         <div class="navigation">
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear - 1 }&month=${ todayInfo.searchMonth }">↞</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.prevMonth }">⬅️</a>
-            <span class="thisYM"> ${ todayInfo.searchYear }. ${ todayInfo.searchMonth } </span>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.nextMonth }">➡️</a>
-            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear + 1 }&month=${ todayInfo.searchMonth }">↠</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] - 1 }&month=${ todayInfo[searchMonth] }">⬅️</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] }&month=${ todayInfo[prevMonth] }">←</a>
+            <span class="thisYM"> ${ todayInfo[searchYear] }. ${ todayInfo[searchMonth] } </span>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] }&month=${ todayInfo[nextMonth] }">→</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo[searchYear] + 1 }&month=${ todayInfo[searchMonth] }">➡️</a>
         </div>
 
         <table class="calendarBody">
@@ -73,28 +73,13 @@
             <c:forEach var="date" items="${ dateDataList }">
                 <c:choose>
                     <c:when test="${ date.day % 7 eq 0 }">
-                        <c:when test="${ date.value } eq 'today' ">
-                            <tr><td class="holiday today" align="left"> ${ date.date } </td>
-                        </c:when>
-                        <c:otherwise>
-                            <tr><td class="holiday today" align="left"> ${ date.date } </td>
-                        </c:otherwise>
+                        <tr><td class="holiday today" align="left"> ${ date.date } </td>
                     </c:when>
                     <c:when test="${ date.day % 7 == 6}">
-                        <c:when test="${ date.value } eq 'today' ">
-                            <td class="today" align="left"> ${ date.date } </td></tr>
-                        </c:when>
-                        <c:otherwise>
-                            <td align="left"> ${ date.date } </td>&lt;/tr>
-                        </c:otherwise>
+                            <td align="left"> ${ date.date } </td></tr>
                     </c:when>
                     <c:otherwise>
-                        <c:when test="${ date.value } eq 'today' ">
-                            <td class="today" align="left"> ${ date.date } </td>
-                        </c:when>
-                        <c:otherwise>
                             <td align="left"> ${ date.date } </td>
-                        </c:otherwise>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
