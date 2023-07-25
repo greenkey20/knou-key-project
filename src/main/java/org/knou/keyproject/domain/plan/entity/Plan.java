@@ -9,7 +9,6 @@ import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class Plan extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "INTEGER", name = "MEMBER_ID")
-    private Member planner;
+    private Member member;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     private List<Action> actionList = new ArrayList<>();
@@ -107,8 +106,8 @@ public class Plan extends BaseTimeEntity {
     */
 
     // 2023.7.24(월) 17h45
-    public void setPlanner(Member planner) {
-        this.planner = planner;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public void setStartDate(LocalDate startDate) {

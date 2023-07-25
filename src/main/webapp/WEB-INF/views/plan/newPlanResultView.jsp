@@ -33,11 +33,45 @@
             </c:otherwise>
         </c:choose>
 
-        ${ savedPlan.deadlineDate }까지 총 ${ savedPlan.totalDurationDays } 기간 중
-        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회 매번 ${ savedDate.quantityPerDay }만큼 수행해야 합니다.
+        <c:choose>
+            <c:when test="${ savedPlan.hasDeadline }">
+                ${ savedPlan.deadlineDate }까지 총 ${ savedPlan.totalDurationDays } 일 기간 중
+            </c:when>
+            <c:otherwise>
+
+            </c:otherwise>
+        </c:choose>
+        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회 매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
     </div>
 
+    <!--2023.7.25(화) 11h45-->
     <!--JSP/Java로 달력 만들기-->
+    <div class="calendar" align="center">
+        <div class="navigation">
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear - 1 }&month=${ todayInfo.searchMonth }">&lt;&lt;</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.prevMonth }">&lt;</a>
+            <span class="thisYM"> ${ todayInfo.searchYear }. ${ todayInfo.searchMonth } </span>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear }&month=${ todayInfo.nextMonth }">&gt;</a>
+            <a class="naviYM" href="calendar.pl?year=${ todayInfo.searchYear + 1 }&month=${ todayInfo.searchMonth }">&gt;&gt;</a>
+        </div>
+
+        <table class="calendarBody">
+            <thead>
+            <tr bgcolor="#9acd32">
+                <td class="day holiday">일</td>
+                <td class="day">월</td>
+                <td class="day">화</td>
+                <td class="day">수</td>
+                <td class="day">목</td>
+                <td class="day">금</td>
+                <td class="day">토</td>
+            </tr>
+            </thead>
+            <tbody>
+            <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳-->
+            </tbody>
+        </table>
+    </div>
 
 
     <!--2023.7.24(월) 15h-->
@@ -56,7 +90,8 @@
         <input type="hidden" name="planId" value="${ savedPlan.planId }">
 
         <div align="center">
-            <button type="submit" class="greenBtn">나의 일정에 추가</button> <!--onclick="location.href='myNewPlanInsert.pl'"-->
+            <button type="submit" class="greenBtn">나의 일정에 추가</button>
+            <!--onclick="location.href='myNewPlanInsert.pl'"-->
             <button type="button" onclick="location.href='calculatorNew.pl'">새로 계산하기</button>
         </div>
     </form>
