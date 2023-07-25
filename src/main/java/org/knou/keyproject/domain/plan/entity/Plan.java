@@ -147,4 +147,150 @@ public class Plan extends BaseTimeEntity {
     public void setFrequencyFactor(Double frequencyFactor) {
         this.frequencyFactor = frequencyFactor;
     }
+
+    // 2023.7.25(화) 23h50
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    @Column
+    List<DateData> actionDays = new ArrayList<>();
+
+    public void setActionDaysList() {
+//        List<DateData> actionDays = new ArrayList<>();
+        switch (this.frequencyType) {
+            case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
+                getActionDaysWithFrequencyTypeDATE();
+                break;
+            case EVERY: // EVERY-TIMES 계산 원리는 비슷
+                getActionDaysWithFrequencyTypeEVERY();
+                break;
+            case TIMES:
+                getActionDaysWithFrequencyTypeTIMES();
+                break;
+        }
+    }
+
+    /**
+     * 주/월 x회마다 활동하는 경우의 활동일 리스트 만드는 메서드
+     * e.g. 주 3회, 월 10회 등
+     */
+    private void getActionDaysWithFrequencyTypeTIMES() {
+        // timeUnit 관련 데이터 가공
+        char timeUnit = this.frequencyDetail.charAt(0);
+
+        int interval = 0;
+
+        switch (timeUnit) {
+            case '주':
+                interval = 7;
+                break;
+            case '월':
+                interval = 30;
+                break;
+        }
+
+        // 활동 횟수 관련 데이터 가공
+        String obj = this.frequencyDetail.split(" ")[1];
+        StringBuilder nums = new StringBuilder();
+
+        for (int i = 0; i < obj.length(); i++) {
+            char ch = obj.charAt(i);
+
+            if (Character.isDigit(ch)) {
+                nums.append(ch);
+            }
+        }
+
+        int times = Integer.parseInt(nums.toString());
+
+        // 빈도 조건에 맞는 활동일 찾기
+        for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(interval)) {
+            this.actionDays.add(changeActionDateIntoActionDateData(date));
+
+            for (int i = 1; i < times; i++) {
+                int plusDay = interval / times;
+                this.actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
+            }
+        }
+    }
+
+    /**
+     * 매 x일마다 활동하는 경우의 활동일 리스트 만드는 메서드
+     * e.g. 2일마다 1회, 5일마다 2회, 10일마다 3회 등
+     */
+    private void getActionDaysWithFrequencyTypeEVERY() {
+        int interval = Character.getNumericValue(frequencyDetail.split(" ")[0].charAt(0));
+        int times = Character.getNumericValue(frequencyDetail.split(" ")[1].charAt(0));
+
+        for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(interval)) {
+            this.actionDays.add(changeActionDateIntoActionDateData(date));
+
+            for (int i = 1; i < times; i++) {
+                int plusDay = interval / times;
+                this.actionDays.add(changeActionDateIntoActionDateData(date.plusDays(plusDay)));
+            }
+        }
+    }
+
+    private void getActionDaysWithFrequencyTypeDATE() {
+        // 활동하는 요일들의 정수 값을 리스트로 받음
+        String daysStr = this.frequencyDetail.substring(0, this.frequencyDetail.length() - 4);
+        List<Integer> daysList = getActionWeekdays(daysStr);
+
+        for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(1)) {
+            // 순회 중인 날이 해당 요일이면 활동일 리스트에 담음
+            int dayOfDate = date.getDayOfWeek().getValue();
+
+            if (daysList.contains(dayOfDate)) {
+                this.actionDays.add(changeActionDateIntoActionDateData(date));
+            }
+        }
+    }
+
+    private DateData changeActionDateIntoActionDateData(LocalDate date) {
+        return new DateData(
+                String.valueOf(date.getYear()),
+                String.valueOf(date.getMonthValue()),
+                String.valueOf(date.getDayOfMonth()),
+                date.getDayOfWeek().getValue(),
+                "action"
+        );
+    }
+
+    private List<Integer> getActionWeekdays(String daysStr) {
+        List<Integer> daysList = new ArrayList<>();
+        int day = -1;
+
+        for (int i = 0; i < daysStr.length(); i++) {
+            char ch = daysStr.charAt(i);
+
+            switch (ch) {
+                case '월':
+                    day = 1;
+                    daysList.add(day);
+                    break;
+                case '화':
+                    day = 2;
+                    daysList.add(day);
+                    break;
+                case '수':
+                    day = 3;
+                    daysList.add(day);
+                    break;
+                case '목':
+                    day = 4;
+                    daysList.add(day);
+                    break;
+                case '금':
+                    day = 5;
+                    daysList.add(day);
+                    break;
+                case '토':
+                    day = 6;
+                    daysList.add(day);
+                    break;
+                default:
+            }
+        }
+
+        return daysList;
+    }
 }
