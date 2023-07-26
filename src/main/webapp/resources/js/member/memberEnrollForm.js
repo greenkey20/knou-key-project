@@ -9,6 +9,7 @@ $(function () { // 문서가 로드되면
             $("#error_password1").text("사용 가능합니다").css("color", "green");
         } else {
             $("#error_password1").text("영문자, 숫자, 특수문자(!@#$%^) 모두 포함하여 총 8~15자로 입력하세요").css("color", "purple");
+            // $("#error_password1").hide();
         }
     })
 

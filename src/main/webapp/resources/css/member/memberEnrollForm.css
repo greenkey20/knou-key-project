@@ -36,6 +36,12 @@ div {
     color: yellowgreen;
 }
 
+.info {
+    width: 250px;
+    text-align: center;
+    vertical-align: top;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }
