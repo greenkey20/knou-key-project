@@ -60,11 +60,16 @@ public class Member extends BaseTimeEntity {
 
     private String profileImageUrl;
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private LocalDateTime lastLoginAt;
 
     // 2023.7.26(수) 23h20 회원 가입 구현 시 추가
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // 2023.7.27(목) 0h40 로그인 구현 시 추가
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }
