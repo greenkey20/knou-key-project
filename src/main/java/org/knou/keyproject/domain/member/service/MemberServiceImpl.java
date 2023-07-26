@@ -25,7 +25,6 @@ public class MemberServiceImpl implements MemberService {
 //    private final PasswordEncoder passwordEncoder;
 
     @Override
-
     public boolean checkDuplicateEmail(String checkEmail) {
         Optional<Member> optionalMember = memberRepository.findByEmail(checkEmail);
 
@@ -48,14 +47,18 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long createMember(MemberPostRequestDto requestDto) {
         Member member = requestDto.toEntity();
-        verifyExistingMember(member.getEmail());
+
+        Member savedMember;
+        if (verifyExistingMember(member.getEmail()) == null) { // 중복 회원이 없으면, 정상 가입 가능!
+            return memberRepository.save(member).getMemberId();
+        } else {
+            return null;
+        }
 
         // Spring Security는 추후 추가하기로 함
 //        String encryptedPassword = passwordEncoder.encode(member.getPassword());
 //        member.setPassword(encryptedPassword);
 
-        Member savedMember = memberRepository.save(member);
-        return savedMember.getMemberId();
     }
 
     // 2023.7.27(목) 0h20
@@ -63,15 +66,19 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member loginMember(MemberLoginRequestDto requestDto) {
         Member findMember = findVerifiedMember(requestDto.getEmail());
-
-//        if (encryptedPW == db에 저장된 PW) {
-        if (findMember.getPassword().equals(requestDto.getPassword())) {
-            findMember.setLastLoginAt(LocalDateTime.now());
-            findMember = memberRepository.save(findMember);
-            return findMember;
+        if (findMember != null) {
+            if (findMember.getPassword().equals(requestDto.getPassword())) {
+                findMember.setLastLoginAt(LocalDateTime.now());
+                findMember = memberRepository.save(findMember);
+                return findMember;
+            } else {
+//            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_USER); // 0h50 현재와 같은 SSR 방식에서는 이렇게 예외 처리하면 500에러 화면으로 가는 거구나..
+                return null;
+            }
         } else {
-            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_USER);
+            return null;
         }
+//        if (encryptedPW == db에 저장된 PW) {
     }
 
     /**
@@ -79,14 +86,11 @@ public class MemberServiceImpl implements MemberService {
      *
      * @param email
      */
-    private void verifyExistingMember(String email) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if (optionalMember.isPresent()) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
-        }
+    private Member verifyExistingMember(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
     }
 
     private Member findVerifiedMember(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        return memberRepository.findByEmail(email).orElse(null);
     }
 }

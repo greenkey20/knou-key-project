@@ -73,14 +73,20 @@ public class MemberController {
     }
 
     @RequestMapping(value = "newMemberInsert.me", method = RequestMethod.POST)
-    public String postMember(@ModelAttribute("member") MemberPostRequestDto requestDto, HttpSession session) {
+    public ModelAndView postMember(@ModelAttribute("member") MemberPostRequestDto requestDto, HttpSession session, ModelAndView mv) {
 //        log.info("회원 가입 처리할 컨트롤러에 들어온 정보 = " + requestDto); // 회원 가입 처리할 컨트롤러에 들어온 정보 = MemberPostRequestDto{email='green@gmail.com', nickname='greensoy', password='qwer1234^', age=38, gender=FEMALE}
 //        log.info("회원 가입 처리할 컨트롤러 메서드에 들어옴");
         Long memberId = memberService.createMember(requestDto);
 //        return new ResponseEntity(memberId, HttpStatus.CREATED); // 이번 프로젝트처럼 화면을 서버에서 넘겨줄 때는 사용하기 부적합
 
-        session.setAttribute("alertMsg", "성공적으로 회원 가입이 되었습니다!");
-        return "redirect:/";
+        if (memberId != null) {
+//            session.setAttribute("alertMsg", "성공적으로 회원 가입이 되었습니다!");
+            mv.setViewName("redirect:/");
+        } else {
+            mv.addObject("errorMsg", "회원 가입에 실패했습니다").setViewName("common/errorPage");
+        }
+
+        return mv;
     }
 
     @ResponseBody
