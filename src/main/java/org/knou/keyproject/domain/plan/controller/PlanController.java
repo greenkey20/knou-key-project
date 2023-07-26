@@ -9,8 +9,9 @@ import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.entity.ActionDate;
 import org.knou.keyproject.domain.plan.entity.Calendar;
-import org.knou.keyproject.domain.plan.entity.DateData;
+import org.knou.keyproject.domain.plan.entity.DateType;
 import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -57,19 +58,19 @@ public class PlanController {
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
-        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDays().toString());
-        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDays().size());
+        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
+        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
-        List<DateData> dateDataList = Calendar.getCalendar(savedPlan.getActionDays());
+        List<ActionDate> calendarDatesList = Calendar.getCalendar(savedPlan.getActionDates());
 
         // 2023.7.26(수) 3h35
-        List<DateData> actionDays = savedPlan.getActionDays();
+        List<ActionDate> actionDatesList = savedPlan.getActionDates();
 
         mv
                 .addObject("savedPlan", savedPlan)
-                .addObject("dateDataList", dateDataList)
-                .addObject("actionDays", actionDays)
+                .addObject("calendarDatesList", calendarDatesList)
+                .addObject("actionDatesList", actionDatesList)
                 .setViewName("plan/newPlanResultView"); // 2023.7.25(화) 21h40 생각 = 여기에서 달력 출력할 정보도 같이 넘겨준다..
         return mv;
 
@@ -116,17 +117,17 @@ public class PlanController {
                                          ModelAndView mv) {
         LocalDate today = LocalDate.now();
 
-        DateData searchDate = new DateData(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
+        ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
         Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
-        List<DateData> dateDataList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
-        DateData individualDay;
+        List<ActionDate> actionDateList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
+        ActionDate individualDay;
 
         // 월요일부터 해당 월 시작일 요일 전까지 빈칸으로 채움 -> 나는 추후에 지난 달 날짜로 채우고 싶다! // todo
         for (int i = 0; i < todayInfo.get("startDay"); i++) {
-            individualDay = new DateData(null, null, null, i, null);
-            dateDataList.add(individualDay);
+            individualDay = new ActionDate(null, null, null, i, null);
+            actionDateList.add(individualDay);
         }
 
         int dayInt = todayInfo.get("startDay"); // 해당 월 1일의 요일
@@ -139,30 +140,30 @@ public class PlanController {
             }
 
             if (i == todayInfo.get("todayDate")) {
-                individualDay = new DateData(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, "today");
+                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.TODAY);
             } else {
-                individualDay = new DateData(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, "normalDay");
+                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
             }
 
-            dateDataList.add(individualDay);
+            actionDateList.add(individualDay);
             dayInt++;
         }
 
         // 월 마지막 날 요일부터 일요일까지 빈칸으로 채움 -> 나는 추후에 다음 달 날짜로 채우고 싶다! // todo
-        int delim = dateDataList.size() % 7;
+        int delim = actionDateList.size() % 7;
         if (delim != 0) {
             for (int i = 0; i < 7 - delim; i++) {
-                individualDay = new DateData(null, null, null, null, null);
-                dateDataList.add(individualDay);
+                individualDay = new ActionDate(null, null, null, null, null);
+                actionDateList.add(individualDay);
             }
         }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("dateDataList", dateDataList);
+        result.put("dateDataList", actionDateList);
         result.put("todayInfo", todayInfo);
 
-//        return new Gson().toJson(dateDataList);
-        mv.addObject(dateDataList).setViewName("plan/newPlanResultView");
+//        return new Gson().toJson(actionDateList);
+        mv.addObject(actionDateList).setViewName("plan/newPlanResultView");
         return mv;
     }
 }

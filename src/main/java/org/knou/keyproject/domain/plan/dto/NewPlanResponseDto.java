@@ -2,7 +2,7 @@ package org.knou.keyproject.domain.plan.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.knou.keyproject.domain.plan.entity.DateData;
+import org.knou.keyproject.domain.plan.entity.ActionDate;
 import org.knou.keyproject.domain.plan.entity.Plan;
 
 import java.time.LocalDate;
@@ -28,7 +28,7 @@ public class NewPlanResponseDto {
     private String frequencyDetail;
     private Integer totalNumOfActions;
     private Integer quantityPerDay;
-    private List<DateData> actionDays;
+    private List<ActionDate> actionDates;
 
     public NewPlanResponseDto(Plan entity) {
         this.planId = entity.getPlanId();
@@ -43,6 +43,6 @@ public class NewPlanResponseDto {
         this.frequencyDetail = entity.getFrequencyDetail();
         this.totalNumOfActions = entity.getTotalNumOfActions();
         this.quantityPerDay = entity.getQuantityPerDay();
-        this.actionDays = entity.getActionDays();
+        this.actionDates = entity.getActionDatesList();
     }
 }

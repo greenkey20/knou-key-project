@@ -4,40 +4,38 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
-// 2023.7.25(화) 14h
+// 2023.7.25(화) 14h -> 2023.7.26(수) 14h20 내 프로그램 내에서의 의미에 맞게 이름 변경
 //@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class DateData {
+public class ActionDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long dateDateId;
+    private Long actionDateId;
 
-    // 2023.7.26(수) 2h 이런저런 생각하다가 추가해봄
-    String year;
-    Integer month ;
-    String date; // 날짜
-    Integer day; // 요일
-    String value;
-    String schedule;
-    String scheduleDetail;
+    private String year;
+    private Integer month;
+    private String date; // 날짜
+    private Integer day; // 요일 -> 요일도 enum(original 타입)으로 해 두면 더 관리가 수월할까?
 
-    // 2023.7.26(수) 3h15 수정
-    String dataFormat = String.format("%s-%02d-%s", year, month, date);
-//    public void setDataFormat(String year, String month, String date) {
+    @Enumerated(EnumType.STRING)
+    @Column
+    private DateType dateType; // 달력 생성 시 today, normal day 등 ou actionDatesList 생성 시 action 등
+
+    private String schedule; // 달력 생성 시 action
+
+    // 2023.7.26(수) 2h 이런저런 생각하다가 추가해봄 -> 3h15 수정
+    private String dataFormat = String.format("%s-%02d-%s", year, month, date);
+    //    public void setDataFormat(String year, String month, String date) {
 //        if (Integer.parseInt(month) < 10) {
 //            month = "0" + month;
 //        }
@@ -45,22 +43,30 @@ public class DateData {
 //        this.dataFormat = year + "-" + month + "-" + date;
 //    }
 
+    // 2023.7.26(수) 14h25 추가
+    private String actionDetail; // 메모
+
+    private Integer planActionQuantity; // 계획 수행 분량
+    private Boolean isDone; // 수행 여부 <- JSP 체크박스
+    Integer realActionQuantity; // 실제 수행 분량
+
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PLAN_ID")
     Plan plan;
 
-    public DateData(String year, Integer month, String date, Integer day, String value) {
+    public ActionDate(String year, Integer month, String date, Integer day, DateType dateType) {
         this.year = year;
         this.month = month;
         this.date = date;
         this.day = day;
-        this.value = value;
+        this.dateType = dateType;
     }
 
-    public Map<String, Integer> todayInfo(DateData dateData) {
+    public Map<String, Integer> todayInfo(ActionDate actionDate) {
         Map<String, Integer> todayDataMap = new HashMap<>();
 
-        LocalDate searchDate = LocalDate.of(Integer.parseInt(dateData.getYear()), dateData.getMonth(), 1);
+        LocalDate searchDate = LocalDate.of(Integer.parseInt(actionDate.getYear()), actionDate.getMonth(), 1);
 
         int startDate = searchDate.with(firstDayOfMonth()).getDayOfMonth();
         int endDate = searchDate.with(lastDayOfMonth()).getDayOfMonth();
@@ -70,8 +76,8 @@ public class DateData {
         int todayYear = today.getYear();
         int todayMonth = today.getMonthValue();
 
-        int searchYear = Integer.parseInt(dateData.getYear());
-        int searchMonth = dateData.getMonth();
+        int searchYear = Integer.parseInt(actionDate.getYear());
+        int searchMonth = actionDate.getMonth();
 
         int todayDate = 0;
         if (todayYear == searchYear && todayMonth == searchMonth) {
@@ -119,14 +125,20 @@ public class DateData {
 
     @Override
     public String toString() {
-        return "DateData{" +
-                "year='" + year + '\'' +
-                ", month='" + month + '\'' +
+        return "ActionDate{" +
+                "actionDateId=" + actionDateId +
+                ", year='" + year + '\'' +
+                ", month=" + month +
                 ", date='" + date + '\'' +
                 ", day=" + day +
-                ", value='" + value + '\'' +
+                ", dateType=" + dateType +
                 ", schedule='" + schedule + '\'' +
-                ", scheduleDetail='" + scheduleDetail + '\'' +
+                ", dataFormat='" + dataFormat + '\'' +
+                ", actionDetail='" + actionDetail + '\'' +
+                ", planActionQuantity=" + planActionQuantity +
+                ", isDone=" + isDone +
+                ", realActionQuantity=" + realActionQuantity +
+                ", plan=" + plan +
                 '}';
     }
 }

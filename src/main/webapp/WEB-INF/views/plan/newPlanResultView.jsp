@@ -49,11 +49,11 @@
     <!--JSP/Java로 달력 만들기-->
     <div class="calendar" align="center">
         <div class="navigation">
-            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year - 1 }&month=${ dateDataList[10].month }">⬅️</a>
-            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year }&month=${ dateDataList[10].month - 1 }">←</a>
-            <span class="thisYM"> ${ dateDataList[10].year }. ${ dateDataList[10].month } </span>
-            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year }&month=${ dateDataList[10].month + 1 }">→</a>
-            <a class="naviYM" href="calendar.pl?year=${ dateDataList[10].year + 1}&month=${ dateDataList[10].month }">➡️</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year - 1 }&month=${ calendarDatesList[10].month }">⬅️</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ calendarDatesList[10].month - 1 }">←</a>
+            <span class="thisYM"> ${ calendarDatesList[10].year }. ${ calendarDatesList[10].month } </span>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ calendarDatesList[10].month + 1 }">→</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year + 1}&month=${ calendarDatesList[10].month }">➡️</a>
         </div>
 
         <table class="calendarBody" border="gray">
@@ -70,7 +70,7 @@
             </thead>
             <tbody>
             <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳 vs 2023.7.25(화) 21h55 ajax로 안 하기로 함(할 필요 없음)-->
-            <c:forEach var="date" items="${ dateDataList }">
+            <c:forEach var="date" items="${ calendarDatesList }">
                 <c:choose>
                     <c:when test="${ date.day % 7 eq 0 }">
                         <tr><td class="holiday today" align="left"> ${ date.date } </td>
@@ -90,14 +90,21 @@
         <br>
         <br>
 
-        <h3> 활동일 목록 예시 </h3>
-        <table class="actionDaysTable" border="black">
+        <h4> 활동일 목록 예시 </h4>
+        <table class="actionDatesListTable" border="black">
+            <thead>
+                <tr>
+<%--                    <td>수행 여부</td>--%>
+                    <td>활동 수행 예정일</td>
+                    <td>수행 예정 분량</td>
+                </tr>
+            </thead>
             <tbody>
-                <c:forEach var="day" items="${ actionDays }" varStatus="status">
-                <c:if test="${ day.value eq 'action' }">
+                <c:forEach var="day" items="${ actionDatesList }" varStatus="status">
+                <c:if test="${ day.dateType.toString() eq 'ACTION' }">
                     <tr>
                     <td class="holiday"> ${ status.count } </td>
-                        <td> <input type="checkbox" class="check"> </td>
+<%--                        <td> <input type="checkbox" class="check"> </td>--%>
                         <td>
                                 ${ day.year }. ${ day.month }. ${ day.date }
                             <c:choose>
@@ -127,7 +134,7 @@
         </table>
     </div>
 
-    <div class="actionDaysList">
+    <div class="actionDatesListList">
 
     </div>
 
