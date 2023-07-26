@@ -19,25 +19,26 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 //@RequiredArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
+@Builder
 public class PlanPostRequestDto {
-//    private MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 //
-//    private Long plannerId;
-    private int isMeasurableNum;
+    private Long memberId;
+    private Integer isMeasurableNum;
     private String object;
     private Integer totalQuantity;
     private String unit;
-    private int hasStartDate;
+    private Integer hasStartDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd") // yyyy-MM-dd'T'00:mm:ss
     private LocalDate startDate;
 
-    private int frequencyTypeNum;
+    private Integer frequencyTypeNum;
     private String frequencyDetail;
 
-    private int hasDeadline;
-    private int deadlineTypeNum;
+    private Integer hasDeadline;
+    private Integer deadlineTypeNum;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadlineDate;
@@ -48,24 +49,25 @@ public class PlanPostRequestDto {
 //        this.memberRepository = memberRepository;
 //    }
 
-    @Builder
-    public PlanPostRequestDto(int isMeasurableNum, String object, Integer totalQuantity, String unit,
-                              int hasStartDate, LocalDate startDate, int frequencyTypeNum, String frequencyDetail,
-                              int hasDeadline, int deadlineTypeNum, LocalDate deadlineDate, String deadlinePeriod, Integer quantityPerDayPredicted) {
-        this.isMeasurableNum = isMeasurableNum;
-        this.object = object;
-        this.totalQuantity = totalQuantity;
-        this.unit = unit;
-        this.hasStartDate = hasStartDate;
-        this.startDate = startDate;
-        this.frequencyTypeNum = frequencyTypeNum;
-        this.frequencyDetail = frequencyDetail;
-        this.hasDeadline = hasDeadline;
-        this.deadlineTypeNum = deadlineTypeNum;
-        this.deadlineDate = deadlineDate;
-        this.deadlinePeriod = deadlinePeriod;
-        this.quantityPerDayPredicted = quantityPerDayPredicted;
-    }
+//    @Builder
+//    public PlanPostRequestDto(Long memberId, Integer isMeasurableNum, String object, Integereger totalQuantity, String unit,
+//                              Integer hasStartDate, LocalDate startDate, Integer frequencyTypeNum, String frequencyDetail,
+//                              Integer hasDeadline, Integer deadlineTypeNum, LocalDate deadlineDate, String deadlinePeriod, Integereger quantityPerDayPredicted) {
+//        this.memberId = memberId;
+//        this.isMeasurableNum = isMeasurableNum;
+//        this.object = object;
+//        this.totalQuantity = totalQuantity;
+//        this.unit = unit;
+//        this.hasStartDate = hasStartDate;
+//        this.startDate = startDate;
+//        this.frequencyTypeNum = frequencyTypeNum;
+//        this.frequencyDetail = frequencyDetail;
+//        this.hasDeadline = hasDeadline;
+//        this.deadlineTypeNum = deadlineTypeNum;
+//        this.deadlineDate = deadlineDate;
+//        this.deadlinePeriod = deadlinePeriod;
+//        this.quantityPerDayPredicted = quantityPerDayPredicted;
+//    }
 
     // view로부터 입력받은 정보만 Plan 객체에 맞춰서 (변환하고) 채움
     public Plan toEntity() {
@@ -73,13 +75,13 @@ public class PlanPostRequestDto {
         // 2023.7.23(일) 22h55 코드스테이츠 컨텐츠 보다가 mapper 코드 보니 아래와 같이 setter 없이 값 세팅 가능..
         Plan.PlanBuilder plan = Plan.builder();
 
-//        Member planner = new Member();
-//
-//        if (plannerId != null) {
-//            planner = memberRepository.findById(plannerId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-//        }
-//
-//        plan.planner(planner);
+        Member findMember = null;
+
+        if (memberId != null) {
+            findMember = memberRepository.findById(memberId).orElse(null);
+        }
+
+        plan.member(findMember);
 
         if (isMeasurableNum == 1) {
             plan.isMeasurable(true);

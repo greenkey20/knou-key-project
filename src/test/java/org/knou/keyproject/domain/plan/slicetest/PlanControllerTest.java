@@ -40,19 +40,19 @@ public class PlanControllerTest {
     @DisplayName("활동 계획 계산 테스트")
     public void postNewPlanTest() throws Exception {
         // given
-        PlanPostRequestDto requestDto = PlanPostRequestDto.builder()
-//                .plannerId(null)
-                .isMeasurableNum(1)
-                .object("자바의 정석 완독")
-                .totalQuantity(998L)
-                .unit("페이지")
-                .startDate(LocalDate.of(2023, 7, 23))
-                .frequencyTypeNum(1)
-                .frequencyDetail("월화수목금")
-                .hasDeadline(1)
-                .deadlineTypeNum(2)
-                .deadlinePeriod("40일")
-                .build();
+//        PlanPostRequestDto requestDto = PlanPostRequestDto.builder()
+////                .plannerId(null)
+//                .isMeasurableNum(1)
+//                .object("자바의 정석 완독")
+//                .totalQuantity(998L)
+//                .unit("페이지")
+//                .startDate(LocalDate.of(2023, 7, 23))
+//                .frequencyTypeNum(1)
+//                .frequencyDetail("월화수목금")
+//                .hasDeadline(1)
+//                .deadlineTypeNum(2)
+//                .deadlinePeriod("40일")
+//                .build();
 
         // 코드스테이츠 '슬라이스 테스트' 학습 자료 참고
         /*
@@ -72,8 +72,8 @@ public class PlanControllerTest {
          */
 
         // 2023.7.23(일) 23h 코드스테이츠 'mockito' 학습 자료 참고
-        Plan plan = requestDto.toEntity();
-        plan.setPlanId(1L);
+//        Plan plan = requestDto.toEntity();
+//        plan.setPlanId(1L);
     }
 
 }
