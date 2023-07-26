@@ -115,19 +115,22 @@ public class PlanController {
     public ModelAndView getArrowCalendar(@RequestParam(name = "year", defaultValue = "2023") int year,
                                          @RequestParam(name = "month", defaultValue = "7") int month,
                                          ModelAndView mv) {
+//        log.info("calendar.pl 처리하는 controller에 들어오는 request params 값 = year " + year + ", month " + month);
+        if (month == 0) month = 12;
+
         LocalDate today = LocalDate.now();
 
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
         Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
-        List<ActionDate> actionDateList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
+        List<ActionDate> calendarDatesList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
         ActionDate individualDay;
 
         // 월요일부터 해당 월 시작일 요일 전까지 빈칸으로 채움 -> 나는 추후에 지난 달 날짜로 채우고 싶다! // todo
         for (int i = 0; i < todayInfo.get("startDay"); i++) {
             individualDay = new ActionDate(null, null, null, i, null);
-            actionDateList.add(individualDay);
+            calendarDatesList.add(individualDay);
         }
 
         int dayInt = todayInfo.get("startDay"); // 해당 월 1일의 요일
@@ -145,25 +148,26 @@ public class PlanController {
                 individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
             }
 
-            actionDateList.add(individualDay);
+            calendarDatesList.add(individualDay);
             dayInt++;
         }
 
         // 월 마지막 날 요일부터 일요일까지 빈칸으로 채움 -> 나는 추후에 다음 달 날짜로 채우고 싶다! // todo
-        int delim = actionDateList.size() % 7;
+        int delim = calendarDatesList.size() % 7;
         if (delim != 0) {
             for (int i = 0; i < 7 - delim; i++) {
                 individualDay = new ActionDate(null, null, null, null, null);
-                actionDateList.add(individualDay);
+                calendarDatesList.add(individualDay);
             }
         }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("dateDataList", actionDateList);
+        result.put("calendarDatesList", calendarDatesList);
+//        log.info("calendar.pl 처리하는 controller에서 만들어진 calendarDatesList = " + calendarDatesList);
         result.put("todayInfo", todayInfo);
 
 //        return new Gson().toJson(actionDateList);
-        mv.addObject(actionDateList).setViewName("plan/newPlanResultView");
+        mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/newPlanResultView");
         return mv;
     }
 }
