@@ -27,50 +27,54 @@ div {
 /*    font-weight: 900;*/
 /*}*/
 
-#content1 {
-    margin:auto;
-    width: 360px;
-}
+/*#content1 {*/
+/*    margin: auto;*/
+/*    width: 360px;*/
+/*}*/
 
 /* 입력폼 */
-.box {
-    display: block;
-    width: 100px;
-    height: 51px;
-    border: solid 1px #dadada;
-    padding: 10px 14px 10px 14px;
-    box-sizing: border-box;
-    position: relative;
-}
+/*.box {*/
+/*    display: block;*/
+/*    width: 100px;*/
+/*    height: 51px;*/
+/*    border: solid 1px #dadada;*/
+/*    padding: 10px 14px 10px 14px;*/
+/*    box-sizing: border-box;*/
+/*    position: relative;*/
+/*}*/
 
-.int {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 29px;
-    border: none;
-    font-size: 13px;
-}
+/*.int {*/
+/*    display: block;*/
+/*    position: relative;*/
+/*    width: 100%;*/
+/*    height: 29px;*/
+/*    border: none;*/
+/*    font-size: 13px;*/
+/*}*/
 
 /* 로그인 버튼 */
-.btn_area {
-    margin: 30px 0 91px;
+/*.btn_area {*/
+/*    margin: 30px 0 91px;*/
+/*}*/
+
+.greenBtn {
+    background-color: rgb(182, 238, 86);
 }
 
-#btnLogin {
-    width: 100%;
-    padding: 21px 17px;
-    border: 0;
-    color: #fff;
-    border-radius: 7px;
-    background-color: rgb(255, 163, 63);
-    font-size: 18px;
-    font-weight: 900;
-}
+/*#btnLogin {*/
+/*    width: 100%;*/
+/*    padding: 21px 17px;*/
+/*    border: 0;*/
+/*    color: #fff;*/
+/*    border-radius: 7px;*/
+/*    background-color: rgb(255, 163, 63);*/
+/*    font-size: 18px;*/
+/*    font-weight: 900;*/
+/*}*/
 
-.link{
-    text-align: right;
-    font-size:15px;
-    color:rgb(243, 156, 18);
-    margin:10px 0px;
+.link {
+    /*text-align: right;*/
+    font-size: 15px;
+    color: forestgreen;
+    /*margin: 10px 0px;*/
 }

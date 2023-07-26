@@ -94,7 +94,7 @@
         <table class="actionDatesListTable" border="black">
             <thead>
                 <tr>
-<%--                    <td>수행 여부</td>--%>
+                    <td>No</td>
                     <td>활동 수행 예정일</td>
                     <td>수행 예정 분량</td>
                 </tr>
