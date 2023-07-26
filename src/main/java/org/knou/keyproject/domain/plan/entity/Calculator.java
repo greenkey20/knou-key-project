@@ -39,7 +39,7 @@ public class Calculator {
     // 2023.7.25(목) '나의 일정'에 저장하며 시작일이 새로 지정된 경우 호출되는 메서드
     public Plan calculateRealNewPlan(Plan planToCalculate) {
         setDeadlineDate(planToCalculate);
-        planToCalculate.setActionDaysList();
+        planToCalculate.setActionDatesList();
         return planToCalculate;
     }
 
@@ -84,7 +84,7 @@ public class Calculator {
         setQuantityPerDay(planToCalculate);
 //        planToCalculate.setQuantityPerDay(quantityPerDay);
 
-        planToCalculate.setActionDaysList();
+        planToCalculate.setActionDatesList();
 
         return planToCalculate;
         // 2023.7.24(월) 21h35 아래와 같은 return문을 썼는데, 아무래도 이건 아닌 것 같아..
