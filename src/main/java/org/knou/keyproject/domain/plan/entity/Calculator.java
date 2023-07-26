@@ -267,4 +267,6 @@ public class Calculator {
 
         planToCalculate.setQuantityPerDay(quantityPerDay);
     }
+
+    // 2023.7.26(수) 18h15 활동일 리스트 구하는 메서드들 Plan 엔티티 클래스로부터 여기로 분리?!
 }
