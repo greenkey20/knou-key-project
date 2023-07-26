@@ -22,12 +22,12 @@ function getCalendar() {
 
     $.ajax({
         url: "calendar.pl", // ?year=" + $now.getFullYear() + "&month=" + $now.getMonth(),
-        type: "get",
+        // type: "get",
         data: {
             year: $now.getFullYear(),
             month: $now.getMonth() + 1
         },
-        dataType: "JSON",
+        // dataType: "JSON",
         success: function (result) {
             console.log("ajax result = " + result); // todo
 
