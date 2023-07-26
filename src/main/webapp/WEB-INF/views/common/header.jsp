@@ -44,16 +44,17 @@
                         <a href="myPage.cmm">My Page</a> | <a href="logout.me">로그아웃</a>
                     </div>
 
-                    <div class="navi_area">
-                        <div class="group_navi">
-                            <ul class="list_navi">
-                                <li class="navi_item"><a href="#" class="link navi">HOME</a></li>
-                                <li class="navi_item"><a href="saladListView.cmm" class="link navi">나의 일정</a></li>
-                                <li class="navi_item"><a href="communityList.co" class="link navi">Statistics</a></li>
-                                    <%--                <li class="navi_item"><a href="list.no" class="link navi">My Page</a></li>--%>
-                            </ul>
-                        </div>
-                    </div>
+                    <!--2023.7.27(목) 1h20 위 메뉴로도 충분할 것 같은 바, 주석 처리함-->
+<%--                    <div class="navi_area">--%>
+<%--                        <div class="group_navi">--%>
+<%--                            <ul class="list_navi">--%>
+<%--                                <li class="navi_item"><a href="#" class="link navi">HOME</a></li>--%>
+<%--                                <li class="navi_item"><a href="saladListView.cmm" class="link navi">나의 일정</a></li>--%>
+<%--                                <li class="navi_item"><a href="communityList.co" class="link navi">Statistics</a></li>--%>
+<%--                                    &lt;%&ndash;                <li class="navi_item"><a href="list.no" class="link navi">My Page</a></li>&ndash;%&gt;--%>
+<%--                            </ul>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
                 </c:otherwise>
             </c:choose>
         </div>

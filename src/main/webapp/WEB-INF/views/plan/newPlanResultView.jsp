@@ -35,13 +35,13 @@
 
         <c:choose>
             <c:when test="${ savedPlan.hasDeadline }">
-                ${ savedPlan.deadlineDate }까지 총 ${ savedPlan.totalDurationDays } 일 기간 중
+                ${ savedPlan.deadlineDate }까지 ${ savedPlan.totalDurationDays } 일 기간 중
             </c:when>
             <c:otherwise>
 
             </c:otherwise>
         </c:choose>
-        ${ savedPlan.frequencyDetail } ${ savedPlan.totalNumOfActions }회
+        ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회/일
         매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
     </div>
 
@@ -98,7 +98,7 @@
             <br>
         </c:if>
 
-        <input type="hidden" name="plannerId" value="${ loginUser.userNo }">
+        <input type="hidden" name="memberId" value="${ loginUser.memberId }">
         <input type="hidden" name="planId" value="${ savedPlan.planId }">
 
         <div align="center">
