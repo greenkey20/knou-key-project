@@ -54,7 +54,11 @@
                     <tr>
                         <td class="title">기간</td>
                         <td>
-                            ${ p.startDate } ~ ${ p.deadlineDate }<br>
+                            ${ p.startDate } ~ ${ p.deadlineDate } 
+                                <span>
+                                    <c:if test="${ !p.hasDeadLine }">(종료 기간을 지정하지 않았어요)</c:if>
+                                </span>
+                            <br>
                             (총 ${ p.totalNumOfActions }회)
                         </td>
                     </tr>
