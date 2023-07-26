@@ -7,13 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.authenticator.SavedRequest;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
+import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
+import org.knou.keyproject.domain.member.service.MemberService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -24,6 +23,7 @@ import java.io.IOException;
 @Validated
 @Controller
 public class MemberController {
+    private final MemberService memberService;
 
     @RequestMapping(value = "loginPage.me", method = RequestMethod.GET)
     public String loginPage(HttpServletRequest request) {
@@ -60,5 +60,16 @@ public class MemberController {
     @GetMapping("enroll.me")
     public String enroll() {
         return "member/memberEnrollForm";
+    }
+
+    @RequestMapping(value = "newMemberInsert.me", method = RequestMethod.POST)
+    public void postNewMember(@ModelAttribute("member") MemberPostRequestDto requestDto) {
+        log.info("회원 가입 처리할 컨트롤러 메서드에 들어옴");
+    }
+
+    @ResponseBody
+    @RequestMapping("idCheck.me")
+    public String ajaxCheckDuplicateEmail(String checkEmail) {
+        return memberService.checkDuplicateEmail(checkEmail) ? "N" : "Y"; // 중복 검사의 참 = 중복 있음 = 사용할 수 없음
     }
 }

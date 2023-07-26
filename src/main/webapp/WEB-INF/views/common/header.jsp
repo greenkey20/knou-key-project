@@ -35,15 +35,13 @@
                 <c:when test="${ empty loginUser }">
                     <!-- 로그인 전 -->
                     <div class="service_area">
-                        <a href="loginPage.me">로그인</a>
-                        <a href="enroll.me">회원 가입</a>
+                        <a href="loginPage.me">로그인</a> | <a href="enroll.me">회원 가입</a>
                     </div>
                 </c:when>
                 <c:otherwise>
                     <!-- 로그인 후 -->
                     <div class="service_area">
-                        <a href="logout.me">로그아웃</a>
-                        <a href="myPage.cmm">My Page</a>
+                        <a href="myPage.cmm">My Page</a> | <a href="logout.me">로그아웃</a>
                     </div>
 
                     <div class="navi_area">
