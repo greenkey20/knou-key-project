@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
 import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
+import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +37,27 @@ public class MemberController {
 
     @RequestMapping(value = "login.me", method = RequestMethod.POST)
     public ModelAndView loginMember(@ModelAttribute("member") MemberLoginRequestDto requestDto, ModelAndView mv, HttpSession session) {
+        // 2023.7.27(목) 0h10 로직 구현
+        log.info("로그인 처리할 컨트롤러에 들어온 정보 = " + requestDto);
+        log.info("로그인 처리할 컨트롤러 메서드에 들어옴");
 
+        Member loginMember = memberService.loginMember(requestDto);
+        if (loginMember != null) {
+            session.setAttribute("loginUser", loginMember);
+            session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!");
+            mv.setViewName("redirect:/");
+        } else {
+            mv.addObject("errorMsg", "로그인 실패").setViewName("common/errorPage");
+        }
 
         String prevPage = (String) session.getAttribute("prevPage");
-        if (prevPage != null) {
-            session.removeAttribute("prevPage");
-            mv.setViewName("redirect:" + session.getAttribute("prevPage"));
-        } else {
-            mv.setViewName("redirect:/");
-        }
+        log.info("loginMember 컨트롤러 메서드에서 prevPage = " + prevPage); // 0h40 현재 loginMember 컨트롤러 메서드에서 prevPage = http://localhost:8080/ 찍히는데, 왜 아래와 같이 분기 시 로그인 후 http://localhost:8080/null로 가는 걸까?
+//        if (prevPage != null) {
+//            session.removeAttribute("prevPage");
+//            mv.setViewName("redirect:" + session.getAttribute("prevPage"));
+//        } else {
+//            mv.setViewName("redirect:/");
+//        }
 
         return mv;
     }
