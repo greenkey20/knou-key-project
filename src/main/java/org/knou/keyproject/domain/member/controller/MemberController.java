@@ -27,7 +27,7 @@ public class MemberController {
         // 로그인 후 이전 페이지로 되돌아가기 위해 Referer 헤더 값을 session의 prevPage 속성 값으로 저장
         String referer = request.getHeader("Referer");
 
-        if (referer != null && referer.contains("/login")) {
+        if (referer != null && !referer.contains("/login")) {
             request.getSession().setAttribute("prevPage", referer);
         }
 
@@ -60,11 +60,14 @@ public class MemberController {
     }
 
     @RequestMapping(value = "newMemberInsert.me", method = RequestMethod.POST)
-    public ResponseEntity postMember(@ModelAttribute("member") MemberPostRequestDto requestDto) {
-        log.info("회원 가입 처리할 컨트롤러에 들어온 정보 = " + requestDto);
-        log.info("회원 가입 처리할 컨트롤러 메서드에 들어옴");
+    public String postMember(@ModelAttribute("member") MemberPostRequestDto requestDto, HttpSession session) {
+//        log.info("회원 가입 처리할 컨트롤러에 들어온 정보 = " + requestDto); // 회원 가입 처리할 컨트롤러에 들어온 정보 = MemberPostRequestDto{email='green@gmail.com', nickname='greensoy', password='qwer1234^', age=38, gender=FEMALE}
+//        log.info("회원 가입 처리할 컨트롤러 메서드에 들어옴");
         Long memberId = memberService.createMember(requestDto);
-        return new ResponseEntity(memberId, HttpStatus.CREATED);
+//        return new ResponseEntity(memberId, HttpStatus.CREATED); // 이번 프로젝트처럼 화면을 서버에서 넘겨줄 때는 사용하기 부적합
+
+        session.setAttribute("alertMsg", "성공적으로 회원 가입이 되었습니다!");
+        return "redirect:/";
     }
 
     @ResponseBody
