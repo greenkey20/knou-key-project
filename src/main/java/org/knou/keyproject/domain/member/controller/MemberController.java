@@ -1,21 +1,18 @@
 package org.knou.keyproject.domain.member.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.authenticator.SavedRequest;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
 import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
 import org.knou.keyproject.domain.member.service.MemberService;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.io.IOException;
 
 // 2023.7.24(월) 15h5
 @Slf4j
@@ -63,13 +60,22 @@ public class MemberController {
     }
 
     @RequestMapping(value = "newMemberInsert.me", method = RequestMethod.POST)
-    public void postNewMember(@ModelAttribute("member") MemberPostRequestDto requestDto) {
+    public ResponseEntity postMember(@ModelAttribute("member") MemberPostRequestDto requestDto) {
+        log.info("회원 가입 처리할 컨트롤러에 들어온 정보 = " + requestDto);
         log.info("회원 가입 처리할 컨트롤러 메서드에 들어옴");
+        Long memberId = memberService.createMember(requestDto);
+        return new ResponseEntity(memberId, HttpStatus.CREATED);
     }
 
     @ResponseBody
     @RequestMapping("idCheck.me")
     public String ajaxCheckDuplicateEmail(String checkEmail) {
         return memberService.checkDuplicateEmail(checkEmail) ? "N" : "Y"; // 중복 검사의 참 = 중복 있음 = 사용할 수 없음
+    }
+
+    @ResponseBody
+    @RequestMapping("nicknameCheck.me")
+    public String ajaxCheckDuplicateNickname(String checkNickname) {
+        return memberService.checkDuplicateNickname(checkNickname) ? "N" : "Y";
     }
 }
