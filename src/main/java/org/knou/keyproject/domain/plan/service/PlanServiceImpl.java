@@ -47,7 +47,7 @@ public class PlanServiceImpl implements PlanService {
     public void saveMyNewPlan(MyPlanPostRequestDto requestDto) {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
 
-        Member findMember = memberRepository.findById(requestDto.getPlannerId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         findPlan.setMember(findMember);
 
         findPlan.setStatus(PlanStatus.ACTIVE);

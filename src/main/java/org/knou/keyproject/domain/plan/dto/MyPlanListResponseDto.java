@@ -17,6 +17,7 @@ public class MyPlanListResponseDto {
     private Boolean isMeasurable;
     private PlanStatus status;
     private LocalDate startDate;
+    private Boolean hasDeadline;
     private LocalDate deadlineDate;
     private Integer totalNumOfActions;
     private String frequencyDetail;
@@ -30,6 +31,7 @@ public class MyPlanListResponseDto {
         this.isMeasurable = entity.getIsMeasurable();
         this.status = entity.getStatus(); // 0h30 나의 질문 = String으로 저장해둔 enum 값이 String으로 잘 넘어가는지 궁금하다
         this.startDate = entity.getStartDate();
+        this.hasDeadline = entity.getHasDeadline();
         this.deadlineDate = entity.getDeadlineDate();
         this.totalNumOfActions = entity.getTotalNumOfActions();
         this.frequencyDetail = entity.getFrequencyDetail();

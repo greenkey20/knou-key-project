@@ -1,7 +1,6 @@
 package org.knou.keyproject.domain.plan.dto;
 
 import lombok.*;
-import org.knou.keyproject.domain.plan.entity.Plan;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -13,15 +12,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MyPlanPostRequestDto {
     private Long planId;
-    private Long plannerId;
+    private Long memberId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Builder
-    public MyPlanPostRequestDto(Long planId, Long plannerId, LocalDate startDate) {
+    public MyPlanPostRequestDto(Long planId, Long memberId, LocalDate startDate) {
         this.planId = planId;
-        this.plannerId = plannerId;
+        this.memberId = memberId;
         this.startDate = startDate;
     }
 
@@ -29,7 +28,7 @@ public class MyPlanPostRequestDto {
     public String toString() {
         return "MyPlanPostRequestDto{" +
                 "planId=" + planId +
-                ", plannerId=" + plannerId +
+                ", memberId=" + memberId +
                 ", startDate=" + startDate +
                 '}';
     }

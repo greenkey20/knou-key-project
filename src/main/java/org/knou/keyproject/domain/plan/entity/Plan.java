@@ -28,7 +28,7 @@ public class Plan extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(columnDefinition = "INTEGER", name = "MEMBER_ID")
     private Member member;
 
@@ -64,6 +64,7 @@ public class Plan extends BaseTimeEntity {
     private Boolean hasDeadline;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private DeadlineType deadlineType; // D(Date) = 특정 날짜, P(Period) = 기간
 
     private LocalDate deadlineDate;
