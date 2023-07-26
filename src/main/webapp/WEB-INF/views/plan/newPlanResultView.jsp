@@ -49,11 +49,11 @@
     <!--JSP/Java로 달력 만들기-->
     <div class="calendar" align="center">
         <div class="navigation">
-            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year - 1 }&month=${ calendarDatesList[10].month }">⬅️</a>
-            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ calendarDatesList[10].month - 1 }">←</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year - 1 }&month=${ calendarDatesList[10].month % 12 }">⬅️</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ (calendarDatesList[10].month - 1) % 12 }">←</a>
             <span class="thisYM"> ${ calendarDatesList[10].year }. ${ calendarDatesList[10].month } </span>
-            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ calendarDatesList[10].month + 1 }">→</a>
-            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year + 1}&month=${ calendarDatesList[10].month }">➡️</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year }&month=${ (calendarDatesList[10].month + 1) % 12 }">→</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].year + 1}&month=${ calendarDatesList[10].month % 12 }">➡️</a>
         </div>
 
         <table class="calendarBody" border="gray">

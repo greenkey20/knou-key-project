@@ -392,7 +392,9 @@ public class Plan extends BaseTimeEntity {
         for (int i = 1; i < times; i++) {
             nextDate = nextDate.plusDays(plusDay);
 
-            if (nextDate.isAfter(this.deadlineDate)) break;
+            if (this.hasDeadline) {
+                if (nextDate.isAfter(this.deadlineDate)) break;
+            }
 
             if (checkIfLastActionDate(actionDates, nextDate)) break;
         }
