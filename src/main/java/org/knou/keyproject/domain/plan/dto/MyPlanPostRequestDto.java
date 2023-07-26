@@ -1,9 +1,6 @@
 package org.knou.keyproject.domain.plan.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 // 2023.7.24(월) 17h25
 @Getter
 @Setter
+//@AllArgsConstructor
 @NoArgsConstructor
 public class MyPlanPostRequestDto {
     private Long planId;

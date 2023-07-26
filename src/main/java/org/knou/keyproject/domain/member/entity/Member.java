@@ -28,8 +28,9 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Scrap> scrapList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String memberPlatform;
+    private MemberPlatform memberPlatform;
 
     @Column(nullable = false, unique = true, updatable = false)
     private String email;
@@ -59,6 +60,11 @@ public class Member extends BaseTimeEntity {
 
     private String profileImageUrl;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private LocalDateTime lastLoginAt;
+
+    // 2023.7.26(수) 23h20 회원 가입 구현 시 추가
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
