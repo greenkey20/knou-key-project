@@ -22,7 +22,8 @@ div {
     width: 360px;
     margin: auto;
     padding-top: 20px;
-    background-color: lightgreen;
+    background-color: forestgreen;
+    color: lightgreen;
 }
 
 .header .logo_bg {
@@ -32,6 +33,12 @@ div {
     height: 100%;
     background-color: forestgreen;
     float: left;
+}
+
+.logo_k {
+    font-weight: bold;
+    font-size: large;
+    color: lightgreen;
 }
 
 /*.header .logo_k {*/
