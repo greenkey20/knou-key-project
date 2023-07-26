@@ -24,45 +24,45 @@
         <form action="newMemberInsert.me" method="post" modelAttribute="member">
             <table>
                 <tr>
-                    <td>이메일(아이디)<div class="required">*</div></td>
+                    <td class="info">이메일(아이디)<span class="required">*</span></td>
                     <td>
                         <span>
-                            <input id="emailInput" type="email" name="email" placeholder="example@green.com">
+                            <input id="emailInput" type="email" name="email" placeholder="example@green.com" required>
                             <button type="button" onclick="idCheck();">중복 확인</button>
                         </span>
-                        <span id="email-check-msg"></span>
+                        <div id="email-check-msg"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td>닉네임<div class="required">*</div></td>
+                    <td class="info">닉네임<span class="required">*</span></td>
                     <td>
                         <span>
-                            <input type="text" name="nickname" placeholder="닉네임을 입력해 주세요">
+                            <input type="text" name="nickname" placeholder="닉네임을 입력해 주세요" required>
                             <button type="button" onclick="nicknameCheck();">중복 확인</button>
                         </span>
-                        <span id="nickname-check-msg"></span>
+                        <div id="nickname-check-msg"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td>비밀번호<div class="required">*</div>
+                    <td class="info">비밀번호<span class="required">*</span>
                     <td>
-                        <span><input id="password1" type="password" name="password" placeholder="영문자, 숫자, 특수문자(!@#$%^) 모두 포함하여 총 8~15자로 입력하세요"></span>
-                        <span class="error_next_box" id="error_password1"></span>
+                        <span><input id="password1" type="password" name="password" placeholder="영문자, 숫자, 특수문자(!@#$%^) 모두 포함하여 총 8~15자로 입력하세요" required></span>
+                        <div class="error_next_box" id="error_password1"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td>비밀번호 확인<div class="required">*</div></td>
+                    <td class="info">비밀번호 확인<span class="required">*</span></td>
                     <td>
                         <span><input id="password2" type="password" placeholder="위에 입력한 비밀번호를 다시 한 번 입력해 주세요"></span>
-                        <span class="error_next_box" id="error_password2"></span>
+                        <div class="error_next_box" id="error_password2"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td>나이</td>
+                    <td class="info">나이</td>
                     <td><input type="number" name="age" min="1" max="120"></td>
                 </tr>
                 <tr>
-                    <td>성별</td>
+                    <td class="info">성별</td>
                     <td>
                         <input type="radio" name="gender" value="MALE">남성
                         <input type="radio" name="gender" value="FEMALE">여성

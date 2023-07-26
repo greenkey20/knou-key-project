@@ -33,8 +33,10 @@
                 </tr>
             </table>
 
+            <br>
             <a href="enroll.me" class="link">회원 가입</a> | <a href="findIdPw.me" class="link">ID/PW 찾기</a>
 
+            <br>
             <br>
             <button type="submit" class="greenBtn" value="login">로그인</button>
         </form>
