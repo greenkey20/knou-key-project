@@ -117,16 +117,7 @@
                                 <c:otherwise> (일) </c:otherwise>
                             </c:choose>
                         </td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${ not status.last }">
-                                    ${ savedPlan.quantityPerDay } ${ savedPlan.unit }
-                                </c:when>
-                                <c:otherwise>
-                                    ${ savedPlan.totalQuantity - savedPlan.quantityPerDay * (status.count - 1) } ${savedPlan.unit}
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
+                        <td> ${ day.planActionQuantity } ${ savedPlan.unit } </td>
                     </tr>
                 </c:if>
                 </c:forEach>

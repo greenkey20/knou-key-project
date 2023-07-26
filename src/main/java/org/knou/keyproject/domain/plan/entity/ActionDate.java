@@ -63,6 +63,17 @@ public class ActionDate {
         this.dateType = dateType;
     }
 
+    // 2023.7.26(수) 15h55 추가 = actionDatesList 계산할 때 해당일 각각에 수행해야 하는 분량도 배정하기 위해
+    public ActionDate(String year, Integer month, String date, Integer day, DateType dateType, Integer planActionQuantity, Boolean isDone) {
+        this.year = year;
+        this.month = month;
+        this.date = date;
+        this.day = day;
+        this.dateType = dateType;
+        this.planActionQuantity = planActionQuantity;
+        this.isDone = false;
+    }
+
     public Map<String, Integer> todayInfo(ActionDate actionDate) {
         Map<String, Integer> todayDataMap = new HashMap<>();
 
