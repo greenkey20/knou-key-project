@@ -46,9 +46,9 @@
     </div>
 
     <div class="calendar" align="center">
-
+        <br>
         <h4> 활동일 목록 예시 </h4>
-        <table class="actionDatesListTable" border="black">
+        <table class="actionDatesListTable" border="black" align="center">
             <thead>
                 <tr>
                     <td>No</td>
@@ -80,6 +80,7 @@
                 </c:forEach>
             </tbody>
         </table>
+        <br>
     </div>
 
     <div class="actionDatesListList">
@@ -91,18 +92,18 @@
     <!--form 태그에
     1. onsubmit 속성 = 메서드 호출 리턴 값(true/false)에 따라 submit 수행 여부 제어 (-> 이건 여기에서 적용할 필요 없는 것 같아 생략 -> 18h5 나의 생각 = 아닌가? 필요해서 '새로 계산' 버튼 클릭 시 500error?)
     2. action 속성 대신, button에 formaction 속성 줌(값 = 요청 url) -> form 태그 안에서 여러 개 버튼별 원하는 요청을 각기 다르게 할 수 있음-->
-    <form action="myNewPlanInsert.pl" method="post" onsubmit="return checkLogin();" modelAttribute="plan">
+    <form method="post" action="myNewPlanInsert.pl" modelAttribute="plan">
         <c:if test="${ !savedPlan.hasStartDate }">
             <span>시작일 지정하고 </span>
             <input type="date" name="startDate" required>
             <br>
         </c:if>
 
-        <input type="hidden" name="memberId" value="${ loginUser.memberId }">
+        <input id="hidden-member-id" type="hidden" name="memberId" value="${ loginUser.memberId }">
         <input type="hidden" name="planId" value="${ savedPlan.planId }">
 
         <div align="center">
-            <button type="submit" class="greenBtn">나의 일정에 추가</button>
+            <button type="submit" onsubmit="return checkLogin();" class="greenBtn">나의 일정에 추가</button>
             <!--onclick="location.href='myNewPlanInsert.pl'"-->
             <button type="button" onclick="location.href='calculatorNew.pl'">새로 계산하기</button>
         </div>

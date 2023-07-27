@@ -48,7 +48,11 @@ public class PlanServiceImpl implements PlanService {
     public void saveMyNewPlan(MyPlanPostRequestDto requestDto) {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
 
-        Member findMember = memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND)); // todo 예외처리 방식 변경
+        Member findMember = null;
+        if (requestDto.getMemberId() != null) {
+            findMember = memberRepository.findById(requestDto.getMemberId()).orElse(null); // todo 예외처리 방식 변경
+        }
+
         findPlan.setMember(findMember);
 
         findPlan.setStatus(PlanStatus.ACTIVE);
@@ -79,7 +83,7 @@ public class PlanServiceImpl implements PlanService {
     // 2023.7.24(월) 17h20 자동 기본 구현만 해둠 -> 23h10 내용 구현
     @Override
     public List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findById(memberId).orElse(null);
         return planRepository.findByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
                 .stream()
                 .map(MyPlanListResponseDto::new)

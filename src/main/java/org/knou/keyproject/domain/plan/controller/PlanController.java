@@ -58,8 +58,8 @@ public class PlanController {
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
-        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
-        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
+//        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
+//        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
         List<ActionDate> calendarDatesList = Calendar.getCalendar(savedPlan.getActionDates());
@@ -92,11 +92,30 @@ public class PlanController {
      */
     @RequestMapping(value = "myNewPlanInsert.pl", method = RequestMethod.POST)
     public String postMyNewPlan(@ModelAttribute("plan") MyPlanPostRequestDto requestDto, HttpSession session) {
-        log.info(requestDto.toString()); // 2023.7.24(월) 17h55 테스트 시 MyPlanPostRequestDto{planId=2, plannerId=null, startDate=2023-07-25} 찍힘
+        log.info(requestDto.toString()); // 2023.7.27(목) 15h25 테스트 시  MyPlanPostRequestDto{planId=40, memberId=null, startDate=2023-07-28} 찍힘
 
         planService.saveMyNewPlan(requestDto);
 
-        session.setAttribute("alertMsg", "해당 활동 계획이 나의 일정에 성공적으로 저장되었습니다!");
+        if (requestDto.getMemberId() == null) {
+            session.setAttribute("requestDto", requestDto);
+            session.setAttribute("alertMsg", "저장하시려면 로그인이 필요합니다");
+            return "redirect:/loginPage.me";
+        } else {
+            session.setAttribute("alertMsg", "해당 활동 계획이 나의 일정에 성공적으로 저장되었습니다!");
+            return "redirect:myPlanList.pl";
+        }
+    }
+
+    // 2023.7.27(목) 17h10 추가
+    @RequestMapping(value = "myNewPlanInsertAfterLogin.pl", method = RequestMethod.GET)
+    public String postMyNewPlanAfterLogin(HttpSession session) {
+        MyPlanPostRequestDto requestDto = (MyPlanPostRequestDto) session.getAttribute("requestDto");
+        session.removeAttribute("requestDto");
+
+        requestDto.setMemberId(((Member) session.getAttribute("loginUser")).getMemberId());
+
+        planService.saveMyNewPlan(requestDto);
+
         return "redirect:myPlanList.pl";
     }
 
