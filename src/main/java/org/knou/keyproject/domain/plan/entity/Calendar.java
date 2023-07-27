@@ -60,7 +60,7 @@ public class Calendar {
             }
         }
 
-        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
+//        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
 
         //-------------------------------------
         // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임

@@ -446,7 +446,9 @@ public class Plan extends BaseTimeEntity {
                     day = 6;
                     daysList.add(day);
                     break;
-                default:
+                default: // 2023.7.27(목) 22h35 발견 <- 계산 결과 list에서 일요일이 없었음
+                    day = 7;
+                    daysList.add(day);
             }
         }
 

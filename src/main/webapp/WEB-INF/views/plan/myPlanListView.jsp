@@ -19,12 +19,26 @@
     <h2>나의 일정</h2>
     <br>
 
+    <!--2023.7.27(목) 21h10 추가-->
+    <!--검색 영역 시작-->
+    <div id="search-area" float="right">
+        <form action="myPlanList.pl" method="GET">
+            검색 <input type="text" id="form" name="keyword" onkeyup="enterKey();" placeholder="활동 제목으로 검색합니다">
+<%--            <span><button type="submit" class="grayBtn"><span>--%>
+        </form>
+    </div>
+    <!--검색 영역 끝-->
+
+    <br>
+    <br>
+    <!--테이블 영역 시작-->
+    <div>
     <c:forEach var="p" items="${ list }">
         <div class="object">
             <h3>${ p.object }</h3>
         </div>
 
-        <div class="object">
+        <div class="object" float="right">
             <input class="planId" type="hidden" name="planId" value="${ p.planId } ">
             <button class="detailRequest" type="button">상세 조회</button>
         </div>
@@ -53,18 +67,11 @@
                     </tr>
                     <tr>
                         <td class="title">기간</td>
-                        <td>
-                            ${ p.startDate } ~ ${ p.deadlineDate } 
-                                <span>
-                                    <c:if test="${ !p.hasDeadline }">(종료 기간을 지정하지 않았어요)</c:if>
-                                </span>
-                            <br>
-                            (총 ${ p.totalNumOfActions }회)
-                        </td>
+                        <td>${ p.startDate } ~ ${ p.deadlineDate }</td>
                     </tr>
                     <tr>
                         <td class="title">수행 빈도</td>
-                        <td>${ p.frequencyDetail }</td>
+                        <td>${ p.frequencyDetail } (총 ${ p.totalNumOfActions }회)</td>
                     </tr>
                     <tr>
                         <td class="title">매 회 수행 분량</td>
@@ -72,12 +79,51 @@
                     </tr>
                     <tr>
                         <td class="title">진행률</td>
-                        <td><!--통계 데이터 만든 다음에 작성--></td>
+                        <td><!--통계 데이터 만든 다음에 작성--> 진행 분량 / totalQuantity나 totalNumOfActions</td>
                     </tr>
                 </tbody>
             </table>
+            <br>
         </div>
     </c:forEach>
+    </div>
+    <!--테이블 영역 끝-->
+
+    <!--2023.7.27(목) 21h30 페이징 영역 시작-->
+    <div align="center">
+        <ul class="pagination justify-content-center">
+            <!--이전-->
+            <c:choose>
+                <c:when test=" ${ planList.first }"></c:when>
+                <c:otherwise>
+                    <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=0">처음</a></li>
+                    <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number - 1}">&lAarr;</a></li>
+                </c:otherwise>
+            </c:choose>
+
+            <!--페이지 그룹-->
+            <c:forEach begin="${ startBlockPage }" end="${ endBlockPage }" var="i">
+                <c:choose>
+                    <c:when test="${ planList.pageable.pageNumber + 1 == i}">
+                        <li class="page-item disabled"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ i - 1}">${ i }</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ i - 1}">${ i }</a></li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+            <!--다음-->
+            <c:choose>
+                <c:when test=" ${ planList.last }"></c:when>
+                <c:otherwise>
+                    <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number + 1}">&rAarr;</a></li>
+                    <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.totalPages - 1}">마지막</a></li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
+    </div>
+    <!--페이징 영역 끝-->
 
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
 
