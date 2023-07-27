@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
-import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
-import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
-import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
-import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
-import org.knou.keyproject.domain.plan.entity.Calculator;
+import org.knou.keyproject.domain.plan.dto.*;
+import org.knou.keyproject.domain.plan.mapper.PlanMapper;
+import org.knou.keyproject.global.utils.Calculator;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 2023.7.23(일) 22h
@@ -31,15 +30,17 @@ import java.util.stream.Collectors;
 public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
+    private final PlanMapper planMapper;
 
     @Override
     @Transactional
     public NewPlanResponseDto saveNewPlan(PlanPostRequestDto requestDto) {
 //        Plan planToSave = requestDto.toEntity();
-        Calculator calculator = new Calculator(requestDto);
-        Plan calculatedPlan = calculator.calculateNewPlan();
+        Calculator calculator = new Calculator();
+        Plan calculatedPlan = calculator.calculateNewPlan(requestDto);
+//        System.out.println("이거 안 찍히나?" + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.28(금) 3h15 이거 안 찍히나?ACTION 찍히는데
 
-        return new NewPlanResponseDto(planRepository.save(calculatedPlan));
+        return planMapper.toNewPlanResponseDto(planRepository.save(calculatedPlan));
     }
 
     // 2023.7.24(월) 17h40 -> 22h40 startDate 입력에 따른 계산 결과 반영
@@ -86,7 +87,15 @@ public class PlanServiceImpl implements PlanService {
         Member findMember = memberRepository.findById(memberId).orElse(null);
         return planRepository.findByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
                 .stream()
-                .map(MyPlanListResponseDto::new)
+                .map(plan -> planMapper.toMyPlanListResponseDto(plan))
                 .collect(Collectors.toList());
+    }
+
+    // 2023.7.28(금) 1h45 MapStruct 사용하여 수정
+    @Override
+    public MyPlanDetailResponseDto findPlanById(Long planId) {
+        Plan findPlan = planRepository.findById(planId).orElse(null);
+
+        return planMapper.toMyPlanDetailResponseDto(findPlan);
     }
 }

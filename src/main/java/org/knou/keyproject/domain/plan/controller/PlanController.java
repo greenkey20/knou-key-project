@@ -1,15 +1,18 @@
 package org.knou.keyproject.domain.plan.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
-import org.knou.keyproject.domain.plan.entity.ActionDate;
-import org.knou.keyproject.domain.plan.entity.Calendar;
-import org.knou.keyproject.domain.plan.entity.DateType;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.global.utils.Calendar;
+import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -63,8 +67,8 @@ public class PlanController {
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
-        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
-        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
+//        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
+//        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
         List<ActionDate> calendarDatesList = Calendar.getCalendar(savedPlan.getActionDates());
@@ -158,10 +162,18 @@ public class PlanController {
         return mv;
     }
 
+    // 2023.7.28(금) 0h
+    @RequestMapping("myPlanDetail.pl")
+    public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model model) {
+        MyPlanDetailResponseDto planResponseDto = planService.findPlanById(planId);
+        model.addAttribute("plan", planResponseDto);
+        return "plan/myPlanDetailView";
+    }
+
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
     @RequestMapping(value = "calendar.pl", method = RequestMethod.GET)
-    public ModelAndView getArrowCalendar(@RequestParam(name = "year", defaultValue = "2023") int year,
+    public ModelAndView getArrowCalendar(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
                                          @RequestParam(name = "month", defaultValue = "7") int month,
                                          ModelAndView mv) {
 //        log.info("calendar.pl 처리하는 controller에 들어오는 request params 값 = year " + year + ", month " + month);
