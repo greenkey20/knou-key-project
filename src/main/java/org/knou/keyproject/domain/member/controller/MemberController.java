@@ -4,19 +4,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
 import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.service.MemberService;
+import org.knou.keyproject.domain.plan.entity.Plan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 // 2023.7.24(월) 15h5
 @Slf4j
+//@Transactional/*(propagation = Propagation.REQUIRED, readOnly = true)*/
 @RequiredArgsConstructor
 @Validated
 @Controller
@@ -43,8 +50,11 @@ public class MemberController {
         log.info("로그인 처리할 컨트롤러 메서드에 들어옴");
 
         Member loginMember = memberService.loginMember(requestDto);
+        Hibernate.initialize(loginMember.getPlanList());
+
         if (loginMember != null) {
             session.setAttribute("loginUser", loginMember);
+            session.setAttribute("planList", loginMember.getPlanList());
             session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!");
 //            mv.setViewName("redirect:/");
         } else {
@@ -57,8 +67,8 @@ public class MemberController {
         if (prevPage != null && !prevPage.equals("")) {
             if (prevPage.contains("newPlanInsert")) {
                 mv.setViewName("redirect:myNewPlanInsertAfterLogin.pl");
-            } else if (!prevPage.contains("login")) {
-                mv.setViewName("redirect:" + prevPage);
+            /*} else if (!prevPage.contains("login")) {
+                mv.setViewName("redirect:" + prevPage);*/
             } else {
                 mv.setViewName("redirect:/");
             }
