@@ -27,6 +27,7 @@ public class MemberController {
     public String loginPage(HttpServletRequest request) {
         // 로그인 후 이전 페이지로 되돌아가기 위해 Referer 헤더 값을 session의 prevPage 속성 값으로 저장
         String referer = request.getHeader("Referer");
+        log.info("loginPage() 컨트롤러 메서드에서 referer = " + referer);
 
         if (referer != null && !referer.contains("/login")) {
             request.getSession().setAttribute("prevPage", referer);
@@ -45,19 +46,27 @@ public class MemberController {
         if (loginMember != null) {
             session.setAttribute("loginUser", loginMember);
             session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!");
-            mv.setViewName("redirect:/");
+//            mv.setViewName("redirect:/");
         } else {
             mv.addObject("errorMsg", "로그인 실패").setViewName("common/errorPage");
         }
 
         String prevPage = (String) session.getAttribute("prevPage");
-        log.info("loginMember 컨트롤러 메서드에서 prevPage = " + prevPage); // 0h40 현재 loginMember 컨트롤러 메서드에서 prevPage = http://localhost:8080/ 찍히는데, 왜 아래와 같이 분기 시 로그인 후 http://localhost:8080/null로 가는 걸까?
-//        if (prevPage != null) {
-//            session.removeAttribute("prevPage");
-//            mv.setViewName("redirect:" + session.getAttribute("prevPage"));
-//        } else {
-//            mv.setViewName("redirect:/");
-//        }
+        log.info("loginMember() 컨트롤러 메서드에서 prevPage = " + prevPage); // 0h40 현재 loginMember 컨트롤러 메서드에서 prevPage = http://localhost:8080/ 찍히는데, 왜 아래와 같이 분기 시 로그인 후 http://localhost:8080/null로 가는 걸까?
+        // 2023.7.27(목) 16h5 테스트 시에는 http://localhost:8080/newPlanInsert.pl 찍힘
+        if (prevPage != null && !prevPage.equals("")) {
+            if (prevPage.contains("newPlanInsert")) {
+                mv.setViewName("redirect:myNewPlanInsertAfterLogin.pl");
+            } else if (!prevPage.contains("login")) {
+                mv.setViewName("redirect:" + prevPage);
+            } else {
+                mv.setViewName("redirect:/");
+            }
+
+            session.removeAttribute("prevPage");
+        } else {
+            mv.setViewName("redirect:/");
+        }
 
         return mv;
     }
@@ -99,5 +108,18 @@ public class MemberController {
     @RequestMapping("nicknameCheck.me")
     public String ajaxCheckDuplicateNickname(String checkNickname) {
         return memberService.checkDuplicateNickname(checkNickname) ? "N" : "Y";
+    }
+
+    // 2023.7.27(목) 12h10
+    @RequestMapping("logout.me")
+    public String logoutMember(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
+    @RequestMapping("myPage.me")
+    public String myPage(HttpServletRequest request) {
+//        request.getSession().getAttribute("loginUser")
+        return "member/myPage";
     }
 }
