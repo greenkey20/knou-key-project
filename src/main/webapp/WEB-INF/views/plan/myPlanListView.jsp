@@ -40,7 +40,7 @@
 
         <div class="object" float="right">
             <input class="planId" type="hidden" name="planId" value="${ p.planId } ">
-            <button class="detailRequest" type="button">상세 조회</button>
+            <button class="detailRequest" type="button" onclick="location.href='myPlanDetail.pl?planId=${ p.planId }'">상세 조회</button>
         </div>
 
         <div class="listView">

@@ -1,9 +1,6 @@
 package org.knou.keyproject.domain.plan.service;
 
-import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
-import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
-import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
-import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.dto.*;
 
 import java.util.List;
 
@@ -15,4 +12,6 @@ public interface PlanService {
 
     // 2023.7.24(월) 17h20 선언만 해둠
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
+
+    MyPlanDetailResponseDto findPlanById(Long planId);
 }
