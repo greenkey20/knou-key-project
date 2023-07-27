@@ -20,9 +20,12 @@ public class MyPlanListResponseDto {
     private Boolean hasDeadline;
     private LocalDate deadlineDate;
     private Integer totalNumOfActions;
+    private Integer totalQuantity;
     private String frequencyDetail;
     private Integer quantityPerDay;
     private String unit;
+
+    // 통계 자료
 
     public MyPlanListResponseDto(Plan entity) {
         this.planId = entity.getPlanId();
@@ -34,6 +37,7 @@ public class MyPlanListResponseDto {
         this.hasDeadline = entity.getHasDeadline();
         this.deadlineDate = entity.getDeadlineDate();
         this.totalNumOfActions = entity.getTotalNumOfActions();
+        this.totalQuantity = entity.getTotalQuantity();
         this.frequencyDetail = entity.getFrequencyDetail();
         this.quantityPerDay = entity.getQuantityPerDay();
         this.unit = entity.getUnit();
