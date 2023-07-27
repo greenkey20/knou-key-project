@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;

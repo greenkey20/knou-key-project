@@ -8,8 +8,9 @@ import java.time.LocalDate;
 // 2023.7.24(월) 17h25
 @Getter
 @Setter
-//@AllArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MyPlanPostRequestDto {
     private Long planId;
     private Long memberId;
@@ -17,12 +18,12 @@ public class MyPlanPostRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
-    @Builder
-    public MyPlanPostRequestDto(Long planId, Long memberId, LocalDate startDate) {
-        this.planId = planId;
-        this.memberId = memberId;
-        this.startDate = startDate;
-    }
+//    @Builder
+//    public MyPlanPostRequestDto(Long planId, Long memberId, LocalDate startDate) {
+//        this.planId = planId;
+//        this.memberId = memberId;
+//        this.startDate = startDate;
+//    }
 
     @Override
     public String toString() {

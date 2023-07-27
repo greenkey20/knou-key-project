@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
-import org.knou.keyproject.domain.plan.entity.ActionDate;
-import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class MemberResponseDto {
         private Long memberId;
         private String nickname;
         private List<MyPlanListResponseDto> planDtoList;
-        private List<ActionDate> actionDatesList;
+        private List<ActionDateResponseDto> actionDatesList;
     }
 
 

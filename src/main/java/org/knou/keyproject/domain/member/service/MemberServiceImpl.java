@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
 import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
 import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.exception.BusinessLogicException;
@@ -22,7 +23,8 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
-//    private final PasswordEncoder passwordEncoder;
+    //    private final PasswordEncoder passwordEncoder;
+    private final MemberMapper memberMapper;
 
     @Override
     public boolean checkDuplicateEmail(String checkEmail) {
@@ -46,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Long createMember(MemberPostRequestDto requestDto) {
-        Member member = requestDto.toEntity();
+        Member member = memberMapper.toEntity(requestDto);
 
         Member savedMember;
         if (verifyExistingMember(member.getEmail()) == null) { // 중복 회원이 없으면, 정상 가입 가능!
