@@ -42,6 +42,10 @@ dependencies {
 
     // 2023.7.23(일) 22h35 추가 GSON
     implementation 'com.google.code.gson:gson'
+
+    // 2023.7.28(금) 1h25 MapStruct = https://mapstruct.org/documentation/installation/
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
 tasks.named('test') {
