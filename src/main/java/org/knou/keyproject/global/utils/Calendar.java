@@ -1,6 +1,12 @@
-package org.knou.keyproject.domain.plan.entity;
+package org.knou.keyproject.global.utils;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.actiondate.entity.DateType;
+import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,7 +16,9 @@ import java.util.Map;
 
 // 2023.7.25(화) 23h20 별도 클래스로 분리 -> static 메서드로 만든 것의 의미를 정확하게 이해해야 한다..
 @Slf4j
+//@RequiredArgsConstructor
 public class Calendar {
+    public static ActionDateMapper actionDateMapper;
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
 //    @RequestMapping(value = "calendar.pl", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
@@ -60,16 +68,16 @@ public class Calendar {
             }
         }
 
-//        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
+        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
 
         //-------------------------------------
         // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임
         for (int i = 0; i < calendarDatesList.size(); i++) {
             ActionDate thisDate = calendarDatesList.get(i);
-            String thisFormat = thisDate.getDataFormat();
+            String thisFormat = thisDate.getDateFormat();
 
             for (int j = 0; j < actionDates.size(); j++) {
-                String actionDateFormat = actionDates.get(j).getDataFormat();
+                String actionDateFormat = actionDates.get(j).getDateFormat();
 
                 if (thisFormat.equals(actionDateFormat)) {
                     thisDate.setSchedule("action");

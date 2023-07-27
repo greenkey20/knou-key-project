@@ -1,7 +1,11 @@
-package org.knou.keyproject.domain.plan.entity;
+package org.knou.keyproject.global.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.entity.DeadlineType;
+import org.knou.keyproject.domain.plan.entity.FrequencyType;
+import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.entity.PlanStatus;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -49,7 +53,7 @@ public class Calculator {
      *
      * @return
      */
-    public Plan calculateNewPlan() {
+    public Plan calculateNewPlan(PlanPostRequestDto requestDto) {
         // 현재로써는 측정 가능한 일만 이 계산기를 호출함
         Plan planToCalculate = requestDto.toEntity();
 
