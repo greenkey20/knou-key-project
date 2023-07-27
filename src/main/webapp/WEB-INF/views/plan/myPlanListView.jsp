@@ -56,7 +56,7 @@
                         <td>
                             ${ p.startDate } ~ ${ p.deadlineDate } 
                                 <span>
-                                    <c:if test="${ !p.hasDeadLine }">(종료 기간을 지정하지 않았어요)</c:if>
+                                    <c:if test="${ !p.hasDeadline }">(종료 기간을 지정하지 않았어요)</c:if>
                                 </span>
                             <br>
                             (총 ${ p.totalNumOfActions }회)
@@ -68,7 +68,7 @@
                     </tr>
                     <tr>
                         <td class="title">매 회 수행 분량</td>
-                        <td>${ p.quantityPerDay } ${ p.unit }</td>
+                        <td>${ p.quantityPerDay } ${ p.unit } </td>
                     </tr>
                     <tr>
                         <td class="title">진행률</td>

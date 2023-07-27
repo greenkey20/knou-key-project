@@ -51,7 +51,7 @@ public class Calculator {
      */
     public Plan calculateNewPlan() {
         // 현재로써는 측정 가능한 일만 이 계산기를 호출함
-        Plan planToCalculate = planToCalculate = requestDto.toEntity();
+        Plan planToCalculate = requestDto.toEntity();
 
 //        if (requestDto != null) {
 //            planToCalculate = requestDto.toEntity();
