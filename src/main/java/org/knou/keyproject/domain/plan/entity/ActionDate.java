@@ -2,6 +2,7 @@ package org.knou.keyproject.domain.plan.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ActionDate {
+public class ActionDate extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long actionDateId;
