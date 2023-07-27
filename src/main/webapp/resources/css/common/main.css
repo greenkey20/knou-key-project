@@ -10,5 +10,12 @@ div {
     margin: auto;
     height: auto;
     padding-top: 30px;
+    padding-bottom: 30px;
     padding-left: 20px;
+    padding-right: 20px;
+}
+
+#my-plans-summary {
+    border: 1px yellow;
+    background-color: lightgreen;
 }
