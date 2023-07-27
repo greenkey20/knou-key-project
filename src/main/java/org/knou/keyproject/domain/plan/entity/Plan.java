@@ -393,6 +393,7 @@ public class Plan extends BaseTimeEntity {
         for (int i = 1; i < times; i++) {
             nextDate = nextDate.plusDays(plusDay);
 
+            // 2023.7.26(수) 18h50 이 예외 처리 안 해서 isAfter() 호출 시 null pointer exception 발생
             if (this.hasDeadline) {
                 if (nextDate.isAfter(this.deadlineDate)) break;
             }
