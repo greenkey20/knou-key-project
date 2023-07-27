@@ -5,3 +5,9 @@ $(function () { // 문서가 로드되면
         location.href = 'myPlanDetail.pl?planId=' + $planId;
     })
 })
+
+function enterKey() {
+    if (window.event.keyCode == 13) {
+        $("#form").submit();
+    }
+}

@@ -1,18 +1,22 @@
 package org.knou.keyproject.domain.plan.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.member.entity.Member;
-import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.ActionDate;
 import org.knou.keyproject.domain.plan.entity.Calendar;
 import org.knou.keyproject.domain.plan.entity.DateType;
+import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +35,9 @@ import java.util.Map;
 @Controller
 //@RequestMapping("/plans")
 public class PlanController {
+    private final PlanRepository planRepository;
     private final PlanService planService;
-    private final int SIZE = 10;
+    private final int SIZE = 5;
     private final int THIS_YEAR = LocalDate.now().getYear();
     private final int THIS_MONTH = LocalDate.now().getMonthValue();
 
@@ -58,8 +63,8 @@ public class PlanController {
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
-//        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
-//        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
+        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
+        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
         List<ActionDate> calendarDatesList = Calendar.getCalendar(savedPlan.getActionDates());
@@ -120,11 +125,36 @@ public class PlanController {
     }
 
     @GetMapping("myPlanList.pl")
-    public ModelAndView getMyPlanList(@RequestParam(value = "cpage", defaultValue = "1") int currentPage, HttpServletRequest request, ModelAndView mv) {
-        Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();
-        List<MyPlanListResponseDto> list = planService.findPlansByMember(memberId, currentPage, SIZE);
+    public ModelAndView getMyPlanList(@PageableDefault(size = 2, sort = "planId", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @RequestParam(required = false, defaultValue = "") String keyword,
+                                      HttpSession session,
+                                      ModelAndView mv) {
+        Long memberId = ((Member) session.getAttribute("loginUser")).getMemberId();
+        Page<Plan> planList = planRepository.findByMemberMemberId(memberId, pageable);
 
-        mv.addObject("list", list).setViewName("plan/myPlanListView");
+        if (keyword != null) {
+            planList = planRepository.findByObjectContaining(keyword, pageable);
+        }
+
+        int pageNumber = planList.getPageable().getPageNumber(); // 현재 페이지
+        int totalPages = planList.getTotalPages(); // 총 페이지 수  = 변수 size의 값
+        int pageBlock = 3; // 블럭의 수
+        int startBlockPage = (pageNumber / pageBlock) * pageBlock + 1; // 22h5 레퍼런스 설명으로는 이 식 이해 잘 안 됨
+        int endBlockPage = startBlockPage + pageBlock - 1;
+        endBlockPage = totalPages < endBlockPage ? totalPages : endBlockPage;
+
+        List<Plan> list = planList.getContent();
+
+        mv.addObject("startBlockPage", startBlockPage)
+                .addObject("endBlockPage", endBlockPage)
+                .addObject("planList", planList)
+                .addObject("list", list)
+                .setViewName("plan/myPlanListView");
+
+//        Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();
+//        List<MyPlanListResponseDto> list = planService.findPlansByMember(memberId, currentPage, SIZE);
+
+//        mv.addObject("list", list).setViewName("plan/myPlanListView");
         return mv;
     }
 
