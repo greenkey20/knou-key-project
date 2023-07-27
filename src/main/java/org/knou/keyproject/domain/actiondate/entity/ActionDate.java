@@ -1,7 +1,8 @@
-package org.knou.keyproject.domain.plan.entity;
+package org.knou.keyproject.domain.actiondate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class ActionDate extends BaseTimeEntity {
     private String schedule; // 달력 생성 시 action
 
     // 2023.7.26(수) 2h 이런저런 생각하다가 추가해봄 -> 3h15 수정
-    private String dataFormat = String.format("%s-%02d-%s", year, month, date);
+    private String dateFormat = String.format("%s-%02d-%s", year, month, date);
     //    public void setDataFormat(String year, String month, String date) {
 //        if (Integer.parseInt(month) < 10) {
 //            month = "0" + month;
@@ -47,7 +48,12 @@ public class ActionDate extends BaseTimeEntity {
     // 2023.7.26(수) 14h25 추가
     private String actionDetail; // 메모
 
-    private Integer planActionQuantity; // 계획 수행 분량
+    private Integer planActionQuantity/* = this.plan.getQuantityPerDay()*/; // 계획 수행 분량
+
+    public void setPlanActionQuantity(Integer planActionQuantity) {
+        this.planActionQuantity = planActionQuantity;
+    }
+
     private Boolean isDone; // 수행 여부 <- JSP 체크박스
     Integer realActionQuantity; // 실제 수행 분량
 
@@ -135,22 +141,22 @@ public class ActionDate extends BaseTimeEntity {
         return prevNextCalendarMap;
     }
 
-    @Override
-    public String toString() {
-        return "ActionDate{" +
-                "actionDateId=" + actionDateId +
-                ", year='" + year + '\'' +
-                ", month=" + month +
-                ", date='" + date + '\'' +
-                ", day=" + day +
-                ", dateType=" + dateType +
-                ", schedule='" + schedule + '\'' +
-                ", dataFormat='" + dataFormat + '\'' +
-                ", actionDetail='" + actionDetail + '\'' +
-                ", planActionQuantity=" + planActionQuantity +
-                ", isDone=" + isDone +
-                ", realActionQuantity=" + realActionQuantity +
-                ", plan=" + plan +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "ActionDate{" +
+//                "actionDateId=" + actionDateId +
+//                ", year='" + year + '\'' +
+//                ", month=" + month +
+//                ", date='" + date + '\'' +
+//                ", day=" + day +
+//                ", dateType=" + dateType +
+//                ", schedule='" + schedule + '\'' +
+//                ", dataFormat='" + dataFormat + '\'' +
+//                ", actionDetail='" + actionDetail + '\'' +
+//                ", planActionQuantity=" + planActionQuantity +
+//                ", isDone=" + isDone +
+//                ", realActionQuantity=" + realActionQuantity +
+//                ", plan=" + plan +
+//                '}';
+//    }
 }

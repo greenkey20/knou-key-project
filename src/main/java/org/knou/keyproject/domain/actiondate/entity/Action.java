@@ -1,4 +1,4 @@
-//package org.knou.keyproject.domain.action.entity;
+package org.knou.keyproject.domain.actiondate.entity;//package org.knou.keyproject.domain.action.entity;
 //
 //import jakarta.persistence.*;
 //import lombok.*;

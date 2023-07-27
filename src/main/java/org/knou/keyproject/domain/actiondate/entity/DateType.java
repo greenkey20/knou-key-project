@@ -1,4 +1,4 @@
-package org.knou.keyproject.domain.plan.entity;
+package org.knou.keyproject.domain.actiondate.entity;
 
 import lombok.Getter;
 
