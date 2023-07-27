@@ -24,7 +24,7 @@
                 <c:forEach var="p" items="${ planList }">
                     <tr>
                         <td>✔️</td>
-                        <td>${ p.object}️ x회 (/ 총 ${ p.totalQuantity }회) | xx% 진행 중</td>
+                        <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
 
                     </tr>
                 </c:forEach>
