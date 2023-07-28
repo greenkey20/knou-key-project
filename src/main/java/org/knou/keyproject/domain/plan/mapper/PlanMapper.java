@@ -1,17 +1,10 @@
 package org.knou.keyproject.domain.plan.mapper;
 
-import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
-import org.knou.keyproject.domain.member.entity.Member;
-import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.plan.dto.*;
-import org.knou.keyproject.domain.plan.entity.DeadlineType;
-import org.knou.keyproject.domain.plan.entity.FrequencyType;
 import org.knou.keyproject.domain.plan.entity.Plan;
-import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +52,12 @@ public interface PlanMapper {
 
             ActionDateResponseDto.ActionDateResponseDtoBuilder actionDateResponseDto = ActionDateResponseDto.builder();
 
-            actionDateResponseDto.year( thisActionDate.getYear() );
-            if ( thisActionDate.getMonth() != null ) {
-                actionDateResponseDto.month( String.valueOf( thisActionDate.getMonth() ) );
+            actionDateResponseDto.numOfYear( thisActionDate.getNumOfYear() );
+            if ( thisActionDate.getNumOfMonth() != null ) {
+                actionDateResponseDto.month( String.valueOf( thisActionDate.getNumOfMonth() ) );
             }
-            actionDateResponseDto.date( thisActionDate.getDate() );
-            actionDateResponseDto.day( thisActionDate.getDay() );
+            actionDateResponseDto.numOfDate( thisActionDate.getNumOfDate() );
+            actionDateResponseDto.numOfDay( thisActionDate.getNumOfDay() );
             actionDateResponseDto.isDone( thisActionDate.getIsDone() );
             actionDateResponseDto.planActionQuantity( thisActionDate.getPlanActionQuantity() );
             actionDateResponseDto.realActionQuantity( thisActionDate.getRealActionQuantity() );

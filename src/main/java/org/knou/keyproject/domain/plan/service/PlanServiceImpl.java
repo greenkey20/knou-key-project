@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 // 2023.7.23(일) 22h
@@ -50,6 +49,7 @@ public class PlanServiceImpl implements PlanService {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
 
         Member findMember = null;
+        // 로그인 안 하고 저장을 희망하는 이용자가 있을 수 있어서, 아래 null 처리 필요
         if (requestDto.getMemberId() != null) {
             findMember = memberRepository.findById(requestDto.getMemberId()).orElse(null); // todo 예외처리 방식 변경
         }
@@ -67,9 +67,9 @@ public class PlanServiceImpl implements PlanService {
 
         // 2023.7.27(목) 2h35 회원 가입 - 로그인 - 계산 - 저장 - 목록 조회 테스트 하다 생각난 점 보완 = 처음 계산 시 deadline 지정 안 했어도, 위 과정에서 계산 결과에 따른 deadlineDate가 생기는 바, 이 날짜로 정보를 저장하자
         if (!findPlan.getHasDeadline()) {
-            int year = Integer.parseInt(findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getYear());
-            int month = findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getMonth();
-            int date = Integer.parseInt(findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getDate());
+            int year = Integer.parseInt(findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getNumOfYear());
+            int month = findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getNumOfMonth();
+            int date = Integer.parseInt(findPlan.getActionDatesList().get(findPlan.getActionDatesList().size() - 1).getNumOfDate());
 
             findPlan.setDeadlineDate(LocalDate.of(year, month, date));
         }
