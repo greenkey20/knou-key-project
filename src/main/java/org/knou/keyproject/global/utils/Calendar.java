@@ -1,12 +1,9 @@
 package org.knou.keyproject.global.utils;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,9 +47,9 @@ public class Calendar {
             }
 
             if (i == todayInfo.get("todayDate")) {
-                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.TODAY);
+                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.TODAY);
             } else {
-                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
+                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
             }
 
             calendarDatesList.add(individualDay);
@@ -68,7 +65,7 @@ public class Calendar {
             }
         }
 
-        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
+//        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
 
         //-------------------------------------
         // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임
@@ -95,6 +92,34 @@ public class Calendar {
 //        return result;
 
 //        return new Gson().toJson(actionDateList);
+
+        // 2023.7.28(금) 17h50 JSP 달력 출력(td에 대한 tags 지정 필요)을 위한 Java 코드
+        /*
+        ActionDate sampleDate = calendarDatesList.get(0);
+        String tags = "";
+        if (sampleDate.getNumOfDay() == 7) { // 일요일 = 개행 필요
+            if (sampleDate.getSchedule().equals("action")) {
+                if (sampleDate.getDateType().equals("TODAY")) {
+                    tags = "action, today";
+                } else {
+                    tags = "action";
+                }
+            } else {
+                tags = "holiday";
+            }
+        } else { // 평일
+            if (sampleDate.getSchedule().equals("action")) {
+                if (sampleDate.getDateType().equals("TODAY")) {
+                    tags = "action, today";
+                } else {
+                    tags = null;
+                }
+            } else {
+                tags = null;
+            }
+        }
+         */
+
         return calendarDatesList;
     }
 }
