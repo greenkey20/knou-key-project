@@ -30,9 +30,13 @@ div {
 /*    clear: both;*/
 /*}*/
 
-#new-plan-calculator-result {
+#my-plan-detail-stats {
     border: 1px yellow;
     background-color: lightgreen;
+}
+
+.actionDatesListTable {
+    text-align: center;
 }
 
 .holiday {

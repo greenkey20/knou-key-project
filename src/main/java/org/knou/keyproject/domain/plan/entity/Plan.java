@@ -86,6 +86,9 @@ public class Plan extends BaseTimeEntity {
     @ColumnDefault(value = "'ACTIVE'")
     private PlanStatus status; // A(Active) = 수행 중, C(Complete) = 완료, P(Pause) = 일시 정지, G(Give up) = 중도 포기, N(No) = 삭제
 
+    // 2023.7.28(금) 22h55 '일정 상세 조회' 화면 구현 시 추가해봄
+    private LocalDate lastStatusChangedAt;
+
     // 2023.7.24(월) 1h45 활동 계획 계산 결과 관련 추가
     private Integer totalDurationDays;
     private Integer totalNumOfActions;
@@ -404,16 +407,19 @@ public class Plan extends BaseTimeEntity {
         }
     }
 
+    // 2023.7.29(토) 0h45 ActionDate 객체들이 만들어져서 db에 저장될 때 planId가 null인 것 보고, 이 부분에 추가해봄
+    // -> 그런데 이렇게 FK를 수동으로 넣는 게 이상한 것 같은데.. 애초에 이렇게 ActionDate의 생성자를 사용하지 말았어야 하나..
     private ActionDate changeActionDateIntoActionDateData(LocalDate date, Integer quantityPerDay) {
         return new ActionDate(
+                this.planId,
                 String.valueOf(date.getYear()),
                 date.getMonthValue(),
                 String.valueOf(date.getDayOfMonth()),
                 date.getDayOfWeek().getValue(),
                 DateType.ACTION,
+                String.format("%s-%02d-%s", date.getYear(), date.getMonthValue(), date.getDayOfMonth()),
                 quantityPerDay,
-                false
-        );
+                false);
     }
 
     private List<Integer> getActionWeekdays(String daysStr) {

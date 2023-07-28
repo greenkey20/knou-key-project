@@ -57,6 +57,7 @@ public class ActionDate extends BaseTimeEntity {
 
     private Boolean isDone; // 수행 여부 <- JSP 체크박스
     Integer realActionQuantity; // 실제 수행 분량
+    Integer timeTakenForRealAction;
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,6 +79,19 @@ public class ActionDate extends BaseTimeEntity {
         this.numOfDate = numOfDate;
         this.numOfDay = numOfDay;
         this.dateType = dateType;
+        this.planActionQuantity = planActionQuantity;
+        this.isDone = false;
+    }
+
+    // 2023.7.29(토) 0h45 추가 = 그런데 이렇게 세팅하는 게 맞는 건가?
+    public ActionDate(Long planId, String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, String dateFormat, Integer planActionQuantity, Boolean isDone) {
+        this.plan.setPlanId(planId);
+        this.numOfYear = numOfYear;
+        this.numOfMonth = numOfMonth;
+        this.numOfDate = numOfDate;
+        this.numOfDay = numOfDay;
+        this.dateType = dateType;
+        this.dateFormat = dateFormat;
         this.planActionQuantity = planActionQuantity;
         this.isDone = false;
     }

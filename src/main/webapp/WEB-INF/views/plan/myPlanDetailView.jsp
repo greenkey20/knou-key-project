@@ -19,104 +19,76 @@
     <h2>일정 상세 보기</h2>
     <br>
     <div class="object">
-        <h3>${ p.object }</h3>
+        <h3>${ plan.object }</h3>
     </div>
     <br>
 
     <div id="my-plan-detail-stats">
-
-
-
-
-
-        ${ savedPlan.object } ${ savedPlan.totalQuantity}${ savedPlan.unit} 목표 달성을 위해서는
-
-        <!--startDate가 null인 경우 vs 날짜 있는 경우-->
-        <!--처리 상태(answer)가 "N"인 경우 '미처리' vs "Y"인 경우 '처리 완료' 배지 표시-->
+        ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안
+        매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
+        <br>
+        - 오늘까지 진행 분량 ${ plan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던 분량 ${ plan.accumulatedPlanActionQuantity }${ plan.unit }
         <c:choose>
-            <c:when test="${ !savedPlan.hasStartDate }">
-                오늘부터 시작한다면
+            <c:when test="${ plan.accumulatedRealActionQuantity > plan.accumulatedPlanActionQuantity }">
+                → 계획보다 ${ plan.accumulatedRealActionQuantity - plan.accumulatedPlanActionQuantity }${ plan.unit }만큼 앞서 있어요 👍<br>
+            </c:when>
+            <c:when test="${ plan.accumulatedRealActionQuantity < plan.accumulatedPlanActionQuantity }">
+                → 계획보다 ${ plan.accumulatedPlanActionQuantity - plan.accumulatedRealActionQuantity }${ plan.unit }만큼 뒤처져 있어요 🌱<br>
             </c:when>
             <c:otherwise>
-                ${ savedPlan.startDate }부터 시작하여
+                → 계획대로 잘 진행하고 있어요 💯<br>
             </c:otherwise>
         </c:choose>
 
-        <c:choose>
-            <c:when test="${ savedPlan.hasDeadline }">
-                ${ savedPlan.deadlineDate }까지 ${ savedPlan.totalDurationDays } 일 기간 중
-            </c:when>
-            <c:otherwise>
-
-            </c:otherwise>
-        </c:choose>
-        ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회/일
-        매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
+        - 목표 달성까지는 ${ plan.totalQuantity - plan.accumulatedRealActionQuantity }${ plan.unit } (${ plan.accumulatedRealActionQuantity / plan.totalQuantity * 100}%) 남았어요!<br>
+        <br>
+        - 오늘까지 ${ plan.accumulatedNumOfActions} 회 수행했고, ${ plan.totalNumOfActions - plan.accumulatedNumOfActions }회 남았습니다. 파이팅입니다 🍀<br>
+        - 매 회 ${ quantityPerDay }${ plan.unit } 수행하는 데 평균적으로 ${ plan.averageTimeTakenForRealAction }분이 소요되고 있어요
     </div>
 
     <div class="calendar" align="center">
         <br>
-        <h4> 활동일 목록 예시 </h4>
+        <h4> 일정 목록 </h4>
+        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다
+        * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~
         <table class="actionDatesListTable" border="black" align="center">
             <thead>
             <tr>
                 <td>No</td>
-                <td>활동 수행 예정일</td>
+                <td>날짜</td>
                 <td>수행 예정 분량</td>
+                <td>수행 여부</td>
+                <td>실제 수행 분량</td>
+<%--                <td>소요 시간</td>--%>
+                <td>상세 기록</td>
             </tr>
             </thead>
             <tbody>
             <c:forEach var="day" items="${ actionDatesList }" varStatus="status">
-                <c:if test="${ day.dateType.toString() eq 'ACTION' }">
-                    <tr>
-                        <td class="holiday"> ${ status.count } </td>
-                            <%--                        <td> <input type="checkbox" class="check"> </td>--%>
-                        <td>
-                                ${ day.year }. ${ day.month }. ${ day.date }
-                            <c:choose>
-                                <c:when test="${ day.day == 1 }"> (월) </c:when>
-                                <c:when test="${ day.day == 2 }"> (화) </c:when>
-                                <c:when test="${ day.day == 3 }"> (수) </c:when>
-                                <c:when test="${ day.day == 4 }"> (목) </c:when>
-                                <c:when test="${ day.day == 5 }"> (금) </c:when>
-                                <c:when test="${ day.day == 6 }"> (토) </c:when>
-                                <c:otherwise> (일) </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td> ${ day.planActionQuantity } ${ savedPlan.unit } </td>
-                    </tr>
-                </c:if>
+                <tr>
+                    <td class="holiday"> ${ status.count } </td>
+                    <td>
+                            ${ day.year }. ${ day.month }. ${ day.date }
+                        <c:choose>
+                            <c:when test="${ day.day == 1 }"> (월) </c:when>
+                            <c:when test="${ day.day == 2 }"> (화) </c:when>
+                            <c:when test="${ day.day == 3 }"> (수) </c:when>
+                            <c:when test="${ day.day == 4 }"> (목) </c:when>
+                            <c:when test="${ day.day == 5 }"> (금) </c:when>
+                            <c:when test="${ day.day == 6 }"> (토) </c:when>
+                            <c:otherwise> (일) </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td> ${ day.planActionQuantity } ${ savedPlan.unit } </td>
+                    <td class="check"><input type="checkbox" class="checkInput" name="isDone" value="${ plan.planId }"></td> <!--2023.7.29(토) 1h45 이 checkbox value가 무엇이 되어야 하는지 정확히 모르겠다 + 이렇게 html 태그 안에 jsp 쓸 수 있나?-->
+                    <td><input class="realQuantity" type="number" name="realActionQuantity"></td> <!--위 체크박스를 선택하면 기본적으로 여기에는 planActionQuantity과 같은 값이 입력됨 vs 이 값 바꾸고 싶으면 number input 요소에 값 조정/입력-->
+                    <td><button type="button">상세 기록</button></td> <!--소요 시간 및 메모 기록하려면, 아래 버튼 눌러서 '1일 활동 내역 기록' 화면으로 가야 함-->
+                </tr>
             </c:forEach>
             </tbody>
         </table>
         <br>
     </div>
-
-    <div class="actionDatesListList">
-
-    </div>
-
-    <!--2023.7.24(월) 15h-->
-    <!--하단 버튼-->
-    <!--form 태그에
-    1. onsubmit 속성 = 메서드 호출 리턴 값(true/false)에 따라 submit 수행 여부 제어 (-> 이건 여기에서 적용할 필요 없는 것 같아 생략 -> 18h5 나의 생각 = 아닌가? 필요해서 '새로 계산' 버튼 클릭 시 500error?)
-    2. action 속성 대신, button에 formaction 속성 줌(값 = 요청 url) -> form 태그 안에서 여러 개 버튼별 원하는 요청을 각기 다르게 할 수 있음-->
-    <form method="post" action="myNewPlanInsert.pl" modelAttribute="plan">
-        <c:if test="${ !savedPlan.hasStartDate }">
-            <span>시작일 지정하고 </span>
-            <input type="date" name="startDate" required>
-            <br>
-        </c:if>
-
-        <input id="hidden-member-id" type="hidden" name="memberId" value="${ loginUser.memberId }">
-        <input type="hidden" name="planId" value="${ savedPlan.planId }">
-
-        <div align="center">
-            <button type="submit" onsubmit="return checkLogin();" class="greenBtn">나의 일정에 추가</button>
-            <!--onclick="location.href='myNewPlanInsert.pl'"-->
-            <button type="button" onclick="location.href='calculatorNew.pl'">새로 계산하기</button>
-        </div>
-    </form>
 
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
 
