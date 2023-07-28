@@ -24,10 +24,11 @@ public class ActionDate extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long actionDateId;
 
-    private String year;
-    private Integer month;
-    private String date; // 날짜
-    private Integer day; // 요일 -> 요일도 enum(original 타입)으로 해 두면 더 관리가 수월할까?
+    // 2023.7.28(금) 17h20 h2 db로 세팅해서 테스트해보다가 Syntax error in SQL statement expected "identifier" 에러 발생해서 멤버변수명 변경
+    private String numOfYear;
+    private Integer numOfMonth;
+    private String numOfDate; // 날짜
+    private Integer numOfDay; // 요일 -> 요일도 enum(original 타입)으로 해 두면 더 관리가 수월할까?
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -36,7 +37,7 @@ public class ActionDate extends BaseTimeEntity {
     private String schedule; // 달력 생성 시 action
 
     // 2023.7.26(수) 2h 이런저런 생각하다가 추가해봄 -> 3h15 수정
-    private String dateFormat = String.format("%s-%02d-%s", year, month, date);
+    private String dateFormat = String.format("%s-%02d-%s", numOfYear, numOfMonth, numOfDate);
     //    public void setDataFormat(String year, String month, String date) {
 //        if (Integer.parseInt(month) < 10) {
 //            month = "0" + month;
@@ -62,20 +63,20 @@ public class ActionDate extends BaseTimeEntity {
     @JoinColumn(name = "PLAN_ID")
     Plan plan;
 
-    public ActionDate(String year, Integer month, String date, Integer day, DateType dateType) {
-        this.year = year;
-        this.month = month;
-        this.date = date;
-        this.day = day;
+    public ActionDate(String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType) {
+        this.numOfYear = numOfYear;
+        this.numOfMonth = numOfMonth;
+        this.numOfDate = numOfDate;
+        this.numOfDay = numOfDay;
         this.dateType = dateType;
     }
 
     // 2023.7.26(수) 15h55 추가 = actionDatesList 계산할 때 해당일 각각에 수행해야 하는 분량도 배정하기 위해
-    public ActionDate(String year, Integer month, String date, Integer day, DateType dateType, Integer planActionQuantity, Boolean isDone) {
-        this.year = year;
-        this.month = month;
-        this.date = date;
-        this.day = day;
+    public ActionDate(String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, Integer planActionQuantity, Boolean isDone) {
+        this.numOfYear = numOfYear;
+        this.numOfMonth = numOfMonth;
+        this.numOfDate = numOfDate;
+        this.numOfDay = numOfDay;
         this.dateType = dateType;
         this.planActionQuantity = planActionQuantity;
         this.isDone = false;
@@ -84,7 +85,7 @@ public class ActionDate extends BaseTimeEntity {
     public Map<String, Integer> todayInfo(ActionDate actionDate) {
         Map<String, Integer> todayDataMap = new HashMap<>();
 
-        LocalDate searchDate = LocalDate.of(Integer.parseInt(actionDate.getYear()), actionDate.getMonth(), 1);
+        LocalDate searchDate = LocalDate.of(Integer.parseInt(actionDate.getNumOfYear()), actionDate.getNumOfMonth(), 1);
 
         int startDate = searchDate.with(firstDayOfMonth()).getDayOfMonth();
         int endDate = searchDate.with(lastDayOfMonth()).getDayOfMonth();
@@ -94,8 +95,8 @@ public class ActionDate extends BaseTimeEntity {
         int todayYear = today.getYear();
         int todayMonth = today.getMonthValue();
 
-        int searchYear = Integer.parseInt(actionDate.getYear());
-        int searchMonth = actionDate.getMonth();
+        int searchYear = Integer.parseInt(actionDate.getNumOfYear());
+        int searchMonth = actionDate.getNumOfMonth();
 
         int todayDate = 0;
         if (todayYear == searchYear && todayMonth == searchMonth) {
