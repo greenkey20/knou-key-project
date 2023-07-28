@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
@@ -120,6 +119,7 @@ public class PlanController {
     public String postMyNewPlanAfterLogin(HttpSession session) {
         MyPlanPostRequestDto requestDto = (MyPlanPostRequestDto) session.getAttribute("requestDto");
         session.removeAttribute("requestDto");
+        session.removeAttribute("status");
 
         requestDto.setMemberId(((Member) session.getAttribute("loginUser")).getMemberId());
 
@@ -134,6 +134,7 @@ public class PlanController {
                                       HttpSession session,
                                       ModelAndView mv) {
         Long memberId = ((Member) session.getAttribute("loginUser")).getMemberId();
+        log.info("plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planRepository.findByMemberMemberId(memberId, pageable);
 
         if (keyword != null) {
@@ -204,9 +205,9 @@ public class PlanController {
             }
 
             if (i == todayInfo.get("todayDate")) {
-                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.TODAY);
+                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.TODAY);
             } else {
-                individualDay = new ActionDate(String.valueOf(searchDate.getYear()), searchDate.getMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
+                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
             }
 
             calendarDatesList.add(individualDay);

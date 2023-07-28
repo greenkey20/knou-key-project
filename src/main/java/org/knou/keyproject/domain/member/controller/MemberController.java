@@ -40,6 +40,11 @@ public class MemberController {
             request.getSession().setAttribute("prevPage", referer);
         }
 
+        // 2023.7.28(금) 16h30 비회원이 계산 도중(거의 마지막 단계)에 결과 저장을 위해 회원 가입 + 로그인하는 경우 다시 그 결과로 돌려보내고 싶어서 추가
+        if (referer.contains("newPlanInsert")) {
+            request.getSession().setAttribute("status", "in calculation");
+        }
+
         return "member/login";
     }
 
@@ -50,7 +55,7 @@ public class MemberController {
         log.info("로그인 처리할 컨트롤러 메서드에 들어옴");
 
         Member loginMember = memberService.loginMember(requestDto);
-        Hibernate.initialize(loginMember.getPlanList());
+        Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
 
         if (loginMember != null) {
             session.setAttribute("loginUser", loginMember);
@@ -64,16 +69,28 @@ public class MemberController {
         String prevPage = (String) session.getAttribute("prevPage");
         log.info("loginMember() 컨트롤러 메서드에서 prevPage = " + prevPage); // 0h40 현재 loginMember 컨트롤러 메서드에서 prevPage = http://localhost:8080/ 찍히는데, 왜 아래와 같이 분기 시 로그인 후 http://localhost:8080/null로 가는 걸까?
         // 2023.7.27(목) 16h5 테스트 시에는 http://localhost:8080/newPlanInsert.pl 찍힘
-        if (prevPage != null && !prevPage.equals("")) {
-            if (prevPage.contains("newPlanInsert")) {
+//        if (prevPage != null && !prevPage.equals("")) {
+//            if (prevPage.contains("newPlanInsert")) {
+//                mv.setViewName("redirect:myNewPlanInsertAfterLogin.pl");
+//            /*} else if (!prevPage.contains("login")) {
+//                mv.setViewName("redirect:" + prevPage);*/
+//            } else {
+//                mv.setViewName("redirect:/");
+//            }
+//
+//            session.removeAttribute("prevPage");
+//        } else {
+//            mv.setViewName("redirect:/");
+//        }
+
+        // 2023.7.28(금) 16h35 로직 수정해봄
+        String statusBeforeLogin = (String) session.getAttribute("status");
+        if (statusBeforeLogin != null) {
+            if (statusBeforeLogin.equals("in calculation")) {
                 mv.setViewName("redirect:myNewPlanInsertAfterLogin.pl");
-            /*} else if (!prevPage.contains("login")) {
-                mv.setViewName("redirect:" + prevPage);*/
             } else {
                 mv.setViewName("redirect:/");
             }
-
-            session.removeAttribute("prevPage");
         } else {
             mv.setViewName("redirect:/");
         }
