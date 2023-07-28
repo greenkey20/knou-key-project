@@ -44,8 +44,74 @@
         ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회/일
         매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
     </div>
+    <br>
 
     <div class="calendar" align="center">
+        <!--2023.7.25(화) 11h45-->
+        <!--JSP/Java로 달력 만들기-->
+        <div class="navigation">
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].numOfYear - 1 }&month=${ calendarDatesList[10].numOfMonth % 12 }">⬅️</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].numOfYear }&month=${ (calendarDatesList[10].numOfMonth - 1) % 12 }">←</a>
+            <span class="thisYM"> ${ calendarDatesList[10].numOfYear }. ${ calendarDatesList[10].numOfMonth } </span>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].numOfYear }&month=${ (calendarDatesList[10].numOfMonth + 1) % 12 }">→</a>
+            <a class="naviYM" href="calendar.pl?year=${ calendarDatesList[10].numOfYear + 1}&month=${ calendarDatesList[10].numOfMonth % 12 }">➡️</a>
+        </div>
+
+        <table class="calendarBody" border="gray">
+            <thead>
+            <tr bgcolor="#9acd32">
+                <td class="day holiday">일</td>
+                <td class="day">월</td>
+                <td class="day">화</td>
+                <td class="day">수</td>
+                <td class="day">목</td>
+                <td class="day">금</td>
+                <td class="day">토</td>
+            </tr>
+            </thead>
+            <tbody>
+            <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳 vs 2023.7.25(화) 21h55 ajax로 안 하기로 함(할 필요 없음)-->
+            <c:forEach var="date" items="${ calendarDatesList }">
+                <c:choose>
+                    <c:when test="${ date.numOfDay % 7 eq 0 }">
+                        <c:choose>
+                            <c:when test="${ date.schedule eq 'action'}">
+                                <c:choose>
+                                    <c:when test="${ date.dateType.toString() eq 'TODAY'}">
+                                        </tr><tr><td class="action today" align="left"> ${ date.numOfDate } </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        </tr><tr><td class="action" align="left"> ${ date.numOfDate } </td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                </tr><tr><td class="holiday" align="left"> ${ date.numOfDate } </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                        <c:choose>
+                            <c:when test="${ date.schedule eq 'action'}">
+                                <c:choose>
+                                    <c:when test="${ date.dateType.toString() eq 'TODAY' }">
+                                        <td class="action today" align="left"> ${ date.numOfDate } </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td class="action" align="left"> ${ date.numOfDate } </td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                <td align="left"> ${ date.numOfDate } </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            </tbody>
+        </table>
+
         <br>
         <h4> 활동일 목록 예시 </h4>
         <table class="actionDatesListTable" border="black" align="center">
@@ -60,17 +126,17 @@
                 <c:forEach var="day" items="${ actionDatesList }" varStatus="status">
                 <c:if test="${ day.dateType.toString() eq 'ACTION' }">
                     <tr>
-                    <td class="holiday"> ${ status.count } </td>
+                    <td class="action"> ${ status.count } </td>
 <%--                        <td> <input type="checkbox" class="check"> </td>--%>
                         <td>
-                                ${ day.year }. ${ day.month }. ${ day.date }
+                                ${ day.numOfYear }. ${ day.numOfMonth }. ${ day.numOfDate }
                             <c:choose>
-                                <c:when test="${ day.day == 1 }"> (월) </c:when>
-                                <c:when test="${ day.day == 2 }"> (화) </c:when>
-                                <c:when test="${ day.day == 3 }"> (수) </c:when>
-                                <c:when test="${ day.day == 4 }"> (목) </c:when>
-                                <c:when test="${ day.day == 5 }"> (금) </c:when>
-                                <c:when test="${ day.day == 6 }"> (토) </c:when>
+                                <c:when test="${ day.numOfDay == 1 }"> (월) </c:when>
+                                <c:when test="${ day.numOfDay == 2 }"> (화) </c:when>
+                                <c:when test="${ day.numOfDay == 3 }"> (수) </c:when>
+                                <c:when test="${ day.numOfDay == 4 }"> (목) </c:when>
+                                <c:when test="${ day.numOfDay == 5 }"> (금) </c:when>
+                                <c:when test="${ day.numOfDay == 6 }"> (토) </c:when>
                                 <c:otherwise> (일) </c:otherwise>
                             </c:choose>
                         </td>
