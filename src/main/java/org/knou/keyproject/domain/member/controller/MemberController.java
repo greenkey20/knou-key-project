@@ -55,15 +55,16 @@ public class MemberController {
         log.info("로그인 처리할 컨트롤러 메서드에 들어옴");
 
         Member loginMember = memberService.loginMember(requestDto);
-        Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
 
         if (loginMember != null) {
+            Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
             session.setAttribute("loginUser", loginMember);
             session.setAttribute("planList", loginMember.getPlanList());
-            session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!");
+            session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!"); // 2023.7.28(금) 23h50 현재 이 alert창 안 뜸
 //            mv.setViewName("redirect:/");
         } else {
             mv.addObject("errorMsg", "로그인 실패").setViewName("common/errorPage");
+            return mv;
         }
 
         String prevPage = (String) session.getAttribute("prevPage");

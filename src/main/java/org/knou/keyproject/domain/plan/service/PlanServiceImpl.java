@@ -63,7 +63,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         Calculator calculator = new Calculator();
-        findPlan = calculator.calculateRealNewPlan(findPlan);
+        findPlan = calculator.calculateRealNewPlan(findPlan); // 2023.7.29(토) 1h25 나의 생각 = 여기서 actionDate들 다시 set됨 = 이게 insert가 됨 -> 나의 질문 = 이걸 update되게 하려면 어떻게 해야 하지? 현재 repository 거치지 않아서 그런가?
 
         // 2023.7.27(목) 2h35 회원 가입 - 로그인 - 계산 - 저장 - 목록 조회 테스트 하다 생각난 점 보완 = 처음 계산 시 deadline 지정 안 했어도, 위 과정에서 계산 결과에 따른 deadlineDate가 생기는 바, 이 날짜로 정보를 저장하자
         if (!findPlan.getHasDeadline()) {
@@ -74,7 +74,10 @@ public class PlanServiceImpl implements PlanService {
             findPlan.setDeadlineDate(LocalDate.of(year, month, date));
         }
 
-        planRepository.save(findPlan);
+        // 2023.7.29(토) 0h15 jpa update를 어떻게 하는 건지 갑자기 정확히 알지/이해 못하는 것 같아서 googling -> https://study-easy-coding.tistory.com/143
+        // setter로 값 변경하면 변경 감지해서 수정 쿼리 날려 db에 반영 = dirty checking
+//        planRepository.save(findPlan);
+        // 2023.7.29(토) 0h35 나의 궁금증 = 위 save() 호출 안 하는데, 왜 아직도 새로 저장되지..?
     }
 
     public Plan findVerifiedPlan(Long planId) {
