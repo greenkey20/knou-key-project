@@ -17,19 +17,21 @@
         <h3> ${ loginUser.nickname } 님, 어서 오세요!</h3>
         <br>
 
-        <h4>현재 수행 중인 활동</h4>
+        <c:if test="${ not empty planList }">
+            <h4>현재 수행 중인 활동</h4>
 
-        <div id="my-plans-summary">
-            <table>
-                <c:forEach var="p" items="${ planList }">
-                    <tr>
-                        <td>✔️</td>
-                        <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
+            <div id="my-plans-summary">
+                <table>
+                    <c:forEach var="p" items="${ planList }">
+                        <tr>
+                            <td>✔️</td>
+                            <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
 
-                    </tr>
-                </c:forEach>
-            </table>
-        </div>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </div>
+        </c:if>
     </c:if>
 
     <br>

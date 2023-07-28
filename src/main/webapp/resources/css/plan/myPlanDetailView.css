@@ -9,7 +9,7 @@ div {
 .outer {
     width: 360px;
     margin: auto;
-    height: auto;
+    /*height: 1200px;*/
     border: 1px blue;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -37,18 +37,6 @@ div {
 
 .holiday {
     color: seagreen;
-}
-
-.action {
-    color: greenyellow;
-}
-
-.today {
-    background-color: lightgray;
-}
-
-.actionDatesListTable {
-    text-align: center;
 }
 
 .greenBtn {
