@@ -11,7 +11,6 @@ import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.global.utils.Calendar;
-import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
@@ -26,10 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static org.knou.keyproject.global.utils.Calendar.getCalendarDatesList;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -123,7 +121,7 @@ public class PlanController {
 
         requestDto.setMemberId(((Member) session.getAttribute("loginUser")).getMemberId());
 
-        planService.saveMyNewPlan(requestDto);
+        planService.saveMyNewPlanAfterLogin(requestDto);
 
         return "redirect:myPlanList.pl";
     }
@@ -135,7 +133,7 @@ public class PlanController {
                                       ModelAndView mv) {
         Long memberId = ((Member) session.getAttribute("loginUser")).getMemberId();
         log.info("plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
-        Page<Plan> planList = planRepository.findByMemberMemberId(memberId, pageable);
+        Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable);
 
         if (keyword != null) {
             planList = planRepository.findByObjectContaining(keyword, pageable);
@@ -179,54 +177,17 @@ public class PlanController {
                                          ModelAndView mv) {
 //        log.info("calendar.pl 처리하는 controller에 들어오는 request params 값 = year " + year + ", month " + month);
         if (month == 0) month = 12;
-
         LocalDate today = LocalDate.now();
-
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
-        Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
+        // searchDate로부터 todayInfo를 만들어냄
+        List<ActionDate> calendarDatesList = getCalendarDatesList(searchDate);
+//        Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
-        List<ActionDate> calendarDatesList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
-        ActionDate individualDay;
-
-        // 월요일부터 해당 월 시작일 요일 전까지 빈칸으로 채움 -> 나는 추후에 지난 달 날짜로 채우고 싶다! // todo
-        for (int i = 0; i < todayInfo.get("startDay"); i++) {
-            individualDay = new ActionDate(null, null, null, i, null);
-            calendarDatesList.add(individualDay);
-        }
-
-        int dayInt = todayInfo.get("startDay"); // 해당 월 1일의 요일
-
-        for (int i = todayInfo.get("startDate"); i <= todayInfo.get("endDate"); i++) {
-            if (dayInt % 7 != 0) {
-                dayInt = dayInt % 7;
-            } else {
-                dayInt = 7;
-            }
-
-            if (i == todayInfo.get("todayDate")) {
-                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.TODAY);
-            } else {
-                individualDay = new ActionDate(String.valueOf(searchDate.getNumOfYear()), searchDate.getNumOfMonth(), String.valueOf(i), dayInt, DateType.NORMALDAY);
-            }
-
-            calendarDatesList.add(individualDay);
-            dayInt++;
-        }
-
-        // 월 마지막 날 요일부터 일요일까지 빈칸으로 채움 -> 나는 추후에 다음 달 날짜로 채우고 싶다! // todo
-        int delim = calendarDatesList.size() % 7;
-        if (delim != 0) {
-            for (int i = 0; i < 7 - delim; i++) {
-                individualDay = new ActionDate(null, null, null, null, null);
-                calendarDatesList.add(individualDay);
-            }
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("calendarDatesList", calendarDatesList);
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("calendarDatesList", calendarDatesList);
 //        log.info("calendar.pl 처리하는 controller에서 만들어진 calendarDatesList = " + calendarDatesList);
-        result.put("todayInfo", todayInfo);
+//        result.put("todayInfo", todayInfo);
 
 //        return new Gson().toJson(actionDateList);
         mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/newPlanResultView");

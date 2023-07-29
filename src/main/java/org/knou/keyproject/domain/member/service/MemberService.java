@@ -12,4 +12,6 @@ public interface MemberService {
     Long createMember(MemberPostRequestDto requestDto);
 
     Member loginMember(MemberLoginRequestDto requestDto);
+
+    Member findVerifiedMember(Long memberId);
 }

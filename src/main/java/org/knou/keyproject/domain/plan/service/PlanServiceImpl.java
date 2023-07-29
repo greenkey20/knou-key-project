@@ -2,16 +2,17 @@ package org.knou.keyproject.domain.plan.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
+import org.knou.keyproject.domain.actiondate.service.ActionDateService;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
+import org.knou.keyproject.domain.member.service.MemberService;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
-import org.knou.keyproject.global.utils.Calculator;
+import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
-import org.knou.keyproject.global.exception.BusinessLogicException;
-import org.knou.keyproject.global.exception.ExceptionCode;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,14 +31,21 @@ public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
     private final PlanMapper planMapper;
+    private final ActionDateRepository actionDateRepository;
+    private final MemberService memberService;
+    private final ActionDateService actionDateService;
 
     @Override
     @Transactional
     public NewPlanResponseDto saveNewPlan(PlanPostRequestDto requestDto) {
-//        Plan planToSave = requestDto.toEntity();
-        Calculator calculator = new Calculator();
-        Plan calculatedPlan = calculator.calculateNewPlan(requestDto);
+        Plan planToCalculate = requestDto.toEntity();
+        Plan calculatedPlan = new Calculator().calculateNewPlan(planToCalculate);
+        log.info("계산 결과 시작일 = " + calculatedPlan.getStartDate()); // 2023.7.29(토) 4h25 '계산 결과 시작일 = 2023-07-29' 찍힘
+        log.info("계산 결과 활동일 중 첫번째 것 = " + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.29(토) 4h25 actionDatesList()가 비었다고 한다..
 //        System.out.println("이거 안 찍히나?" + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.28(금) 3h15 이거 안 찍히나?ACTION 찍히는데
+
+        // 2023.7.29(토) 4h20
+        actionDateRepository.saveAll(calculatedPlan.getActionDatesList());
 
         return planMapper.toNewPlanResponseDto(planRepository.save(calculatedPlan));
     }
@@ -47,23 +55,46 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void saveMyNewPlan(MyPlanPostRequestDto requestDto) {
         Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
+//        List<ActionDate> actionDatesBeforeNewCal = actionDateRepository.findByPlanPlanId(findPlan.getPlanId());
 
         Member findMember = null;
         // 로그인 안 하고 저장을 희망하는 이용자가 있을 수 있어서, 아래 null 처리 필요
         if (requestDto.getMemberId() != null) {
-            findMember = memberRepository.findById(requestDto.getMemberId()).orElse(null); // todo 예외처리 방식 변경
+            findMember = memberService.findVerifiedMember(requestDto.getMemberId());
         }
 
         findPlan.setMember(findMember);
 
         findPlan.setStatus(PlanStatus.ACTIVE);
 
+        // 애초에 startDate 지정하지 않았던 계획의 경우에만 금번 requestDto에 startDate가 들어있음
         if (!findPlan.getHasStartDate()) {
+            if (findPlan.getStartDate() != requestDto.getStartDate()) {
+                // 2023.7.29(토) 21h30 '오늘'을 임의의 시작일로 계산했던 actionDatesList 삭제
+//                actionDateRepository.deleteAll(findPlan.getActionDatesList()); // 2023.7.29(토) 22h 이렇게는 delete 쿼리가 안 나갔음
+                actionDateService.deleteActionDatesByPlanId(findPlan.getPlanId());
+                findPlan.setActionDatesList(null);
+            }
+
             findPlan.setStartDate(requestDto.getStartDate());
         }
 
-        Calculator calculator = new Calculator();
-        findPlan = calculator.calculateRealNewPlan(findPlan); // 2023.7.29(토) 1h25 나의 생각 = 여기서 actionDate들 다시 set됨 = 이게 insert가 됨 -> 나의 질문 = 이걸 update되게 하려면 어떻게 해야 하지? 현재 repository 거치지 않아서 그런가?
+        log.info("planService에서 calculator 호출 전 findPlan.deadline date" + findPlan.getDeadlineDate());
+        findPlan = new Calculator().calculateRealNewPlan(findPlan); // 2023.7.29(토) 1h25 나의 생각 = 여기서 actionDate들 다시 set됨 = 이게 insert가 됨 -> 나의 질문 = 이걸 update되게 하려면 어떻게 해야 하지? 현재 repository 거치지 않아서 그런가?
+        log.info("planService에서 calculator 호출 후 findPlan.deadline date = " + findPlan.getDeadlineDate());
+//        List<ActionDate> actionDatesAfterNewCal = findPlan.getActionDatesList();
+//        actionDateRepository.saveAll(actionDatesAfterNewCal);
+//        for (int i = 0; i < actionDatesBeforeNewCal.size(); i++) {
+//            Long actionDateBeforeNewCalId = actionDatesBeforeNewCal.get(i).getActionDateId();
+//
+//            for (int j = 0; j < actionDatesAfterNewCal.size(); j++) {
+//                Long actionDateAfterNewCalId = actionDatesAfterNewCal.get(j).getActionDateId();
+//
+//                if (actionDateBeforeNewCalId == actionDateAfterNewCalId) {
+//                    actionDatesBeforeNewCal.get(i).setNumOfYear();
+//                }
+//            }
+//        }
 
         // 2023.7.27(목) 2h35 회원 가입 - 로그인 - 계산 - 저장 - 목록 조회 테스트 하다 생각난 점 보완 = 처음 계산 시 deadline 지정 안 했어도, 위 과정에서 계산 결과에 따른 deadlineDate가 생기는 바, 이 날짜로 정보를 저장하자
         if (!findPlan.getHasDeadline()) {
@@ -80,15 +111,23 @@ public class PlanServiceImpl implements PlanService {
         // 2023.7.29(토) 0h35 나의 궁금증 = 위 save() 호출 안 하는데, 왜 아직도 새로 저장되지..?
     }
 
+    // 2023.7.29(토) 22h20 추가 = 계산 결과 저장을 위해 로그인 하고 왔을 때 actionDates가 추가로 저장(추가로 insert문들이 나가고 있었음)되지 않도록 하기 위해 = 이 경우에는 해당 memberId도 member만 변경해주면 됨
+    @Override
+    @Transactional
+    public void saveMyNewPlanAfterLogin(MyPlanPostRequestDto requestDto) {
+        Plan findPlan = findVerifiedPlan(requestDto.getPlanId());
+        findPlan.setMember(memberService.findVerifiedMember(requestDto.getMemberId()));
+    }
+
     public Plan findVerifiedPlan(Long planId) {
-        return planRepository.findById(planId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.PLAN_NOT_FOUND));
+        return planRepository.findById(planId).orElse(null);
     }
 
     // 2023.7.24(월) 17h20 자동 기본 구현만 해둠 -> 23h10 내용 구현
     @Override
     public List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size) {
         Member findMember = memberRepository.findById(memberId).orElse(null);
-        return planRepository.findByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
+        return planRepository.findAllByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
                 .stream()
                 .map(plan -> planMapper.toMyPlanListResponseDto(plan))
                 .collect(Collectors.toList());
