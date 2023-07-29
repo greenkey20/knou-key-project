@@ -18,6 +18,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class ActionDate extends BaseTimeEntity {
     @Id
@@ -51,9 +52,9 @@ public class ActionDate extends BaseTimeEntity {
 
     private Integer planActionQuantity/* = this.plan.getQuantityPerDay()*/; // 계획 수행 분량
 
-    public void setPlanActionQuantity(Integer planActionQuantity) {
-        this.planActionQuantity = planActionQuantity;
-    }
+//    public void setPlanActionQuantity(Integer planActionQuantity) {
+//        this.planActionQuantity = planActionQuantity;
+//    }
 
     private Boolean isDone; // 수행 여부 <- JSP 체크박스
     Integer realActionQuantity; // 실제 수행 분량
@@ -64,6 +65,7 @@ public class ActionDate extends BaseTimeEntity {
     @JoinColumn(name = "PLAN_ID")
     Plan plan;
 
+    // 생성자 -> 2023.7.29(토) 3h45 필요 없는 것들은 주석 처리
     public ActionDate(String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType) {
         this.numOfYear = numOfYear;
         this.numOfMonth = numOfMonth;
@@ -73,28 +75,28 @@ public class ActionDate extends BaseTimeEntity {
     }
 
     // 2023.7.26(수) 15h55 추가 = actionDatesList 계산할 때 해당일 각각에 수행해야 하는 분량도 배정하기 위해
-    public ActionDate(String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, Integer planActionQuantity, Boolean isDone) {
-        this.numOfYear = numOfYear;
-        this.numOfMonth = numOfMonth;
-        this.numOfDate = numOfDate;
-        this.numOfDay = numOfDay;
-        this.dateType = dateType;
-        this.planActionQuantity = planActionQuantity;
-        this.isDone = false;
-    }
+//    public ActionDate(String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, Integer planActionQuantity, Boolean isDone) {
+//        this.numOfYear = numOfYear;
+//        this.numOfMonth = numOfMonth;
+//        this.numOfDate = numOfDate;
+//        this.numOfDay = numOfDay;
+//        this.dateType = dateType;
+//        this.planActionQuantity = planActionQuantity;
+//        this.isDone = false;
+//    }
 
     // 2023.7.29(토) 0h45 추가 = 그런데 이렇게 세팅하는 게 맞는 건가?
-    public ActionDate(Long planId, String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, String dateFormat, Integer planActionQuantity, Boolean isDone) {
-        this.plan.setPlanId(planId);
-        this.numOfYear = numOfYear;
-        this.numOfMonth = numOfMonth;
-        this.numOfDate = numOfDate;
-        this.numOfDay = numOfDay;
-        this.dateType = dateType;
-        this.dateFormat = dateFormat;
-        this.planActionQuantity = planActionQuantity;
-        this.isDone = false;
-    }
+//    public ActionDate(Long planId, String numOfYear, Integer numOfMonth, String numOfDate, Integer numOfDay, DateType dateType, String dateFormat, Integer planActionQuantity, Boolean isDone) {
+//        this.plan.setPlanId(planId);
+//        this.numOfYear = numOfYear;
+//        this.numOfMonth = numOfMonth;
+//        this.numOfDate = numOfDate;
+//        this.numOfDay = numOfDay;
+//        this.dateType = dateType;
+//        this.dateFormat = dateFormat;
+//        this.planActionQuantity = planActionQuantity;
+//        this.isDone = false;
+//    }
 
     public Map<String, Integer> todayInfo(ActionDate actionDate) {
         Map<String, Integer> todayDataMap = new HashMap<>();
