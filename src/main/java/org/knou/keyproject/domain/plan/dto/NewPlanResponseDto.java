@@ -25,7 +25,11 @@ public class NewPlanResponseDto {
 
     private Boolean hasStartDate;
     private LocalDate startDate;
+    private Integer startYear;
+    private Integer startMonth;
     private LocalDate deadlineDate;
+    private Integer deadlineYear;
+    private Integer deadlineMonth;
 
     private Boolean hasDeadline;
     private Integer totalDurationDays;
@@ -33,7 +37,7 @@ public class NewPlanResponseDto {
     private String frequencyDetail;
     private Integer totalNumOfActions;
     private Integer quantityPerDay;
-    private List<ActionDate> actionDates;
+    private List<ActionDate> actionDates; // todo 이것도 dto로 교체하는 것 생각해보기
 
 //    public NewPlanResponseDto(Plan entity) {
 //        this.planId = entity.getPlanId();

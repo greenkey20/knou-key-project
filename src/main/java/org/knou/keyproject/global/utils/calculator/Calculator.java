@@ -272,7 +272,13 @@ public class Calculator {
         if (planToCalculate.getHasDeadline()) {
             totalNumOfActions = (int) (totalDurationDays * frequencyFactor);
         } else {
-            totalNumOfActions = (int) (Math.ceil(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted())) + 1;
+            double delim = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
+
+            if (delim != 0) {
+                totalNumOfActions = (int) (Math.ceil(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted())) + 1;
+            } else {
+                totalNumOfActions = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
+            }
         }
 
         planToCalculate.setTotalNumOfActions(totalNumOfActions);

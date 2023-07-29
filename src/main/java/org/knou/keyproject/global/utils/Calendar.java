@@ -1,13 +1,12 @@
 package org.knou.keyproject.global.utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
+import org.knou.keyproject.domain.plan.entity.Plan;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,43 +27,75 @@ public class Calendar {
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
 //    @RequestMapping(value = "calendar.pl", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public static List<ActionDate> getCalendar(List<ActionDate> actionDates) {
+    public static List<List<ActionDate>> getCalendars(Plan savedPlan) {
+        // 2023.7.30(일) 0h30 JSP 계산 결과 보여줄 때, 시작달~마지막달 달력 모두 보여주기
+        List<ActionDate> actionDates = savedPlan.getActionDatesList();
+
+        LocalDate startDate = savedPlan.getStartDate();
+        int startYear = startDate.getYear();
+        int startMonth = startDate.getMonthValue();
+//        ActionDate startDateInAd = new ActionDate(String.valueOf(startYear), startMonth, String.valueOf(startDate.getDayOfMonth()), startDate.getDayOfWeek().getValue(), DateType.ACTION);
+//        String startMonthAndYear = extractYearAndMonthInStrFromLocalDate(startDate);
+
+        ActionDate lastActionDate = actionDates.get(actionDates.size() - 1);
+        LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
+        int deadlineYear = deadlineDate.getYear();
+        int deadlineMonth = deadlineDate.getMonthValue();
+//        ActionDate deadlineDateInAd = new ActionDate(String.valueOf(deadlineYear), deadlineMonth, String.valueOf(deadlineDate.getDayOfMonth()), deadlineDate.getDayOfWeek().getValue(), DateType.ACTION);
+//        String deadlineMonthAndYear = extractYearAndMonthInStrFromLocalDate(deadlineDate);
+
+//        Map<String, List<ActionDate>> calendars = new HashMap<>();
+        List<List<ActionDate>> calendars = new ArrayList<>();
+
+        for (LocalDate date = startDate; date.isBefore(deadlineDate.plusMonths(1)); date = date.plusMonths(1)) {
+            String dateMonthAndYear = extractYearAndMonthInStrFromLocalDate(date);
+
+            ActionDate dateInAd = new ActionDate(String.valueOf(date.getYear()), date.getMonthValue(), String.valueOf(date.getDayOfMonth()), date.getDayOfWeek().getValue(), null);
+            List<ActionDate> calendarDatesList = getCalendarDatesList(dateInAd);
+
+            // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임
+            // 2023.7.30(일) 0h20 나의 생각 = 여기 2중 for문이라 성능 안 좋은데, 어떻게 개선할 수 있을까? -> 2023.7.30(일) 3중 for문이 됨.. todo
+            for (ActionDate thisDate : calendarDatesList) {
+                String thisFormat = thisDate.getDateFormat();
+//            log.info("thisFormat = " + thisFormat);
+
+                for (ActionDate ad : actionDates) {
+                    String actionDateFormat = ad.getDateFormat();
+//                log.info("actionDateFormat = " + actionDateFormat);
+
+                    if (thisFormat.equals(actionDateFormat)) {
+                        thisDate.setSchedule("action");
+//                    log.info("달력 날짜의 schedule로써 action 찍힙니다");
+                    } else {
+//                    log.info("달력 날짜의 schedule로써 action 안 찍힙니다 = format 비교가 안 되거나, 둘 다 null이거나..");
+                    }
+                }
+            }
+
+//            calendars.put(dateMonthAndYear, calendarDatesList);
+            calendars.add(calendarDatesList);
+        }
+
+        // search date = '오늘' 기준 달력 찍기 위해 만든 변수 -> 이제 필요 없음
+        /*
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         int month = today.getMonthValue();
 
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), DateType.TODAY);
         List<ActionDate> calendarDatesList = getCalendarDatesList(searchDate);
+         */
 
 //        log.info("Calendar 클래스에서 actionDateList = " + calendarDatesList);
 
         //-------------------------------------
-        // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임
-        // 2023.7.30(일) 0h20 나의 생각 = 여기 2중 for문이라 성능 안 좋은데, 어떻게 개선할 수 있을까? todo
-        for (ActionDate thisDate : calendarDatesList) {
-            String thisFormat = thisDate.getDateFormat();
-            log.info("thisFormat = " + thisFormat);
-
-            for (ActionDate ad : actionDates) {
-                String actionDateFormat = ad.getDateFormat();
-                log.info("actionDateFormat = " + actionDateFormat);
-
-                if (thisFormat.equals(actionDateFormat)) {
-                    thisDate.setSchedule("action");
-//                    log.info("달력 날짜의 schedule로써 action 찍힙니다");
-                } else {
-//                    log.info("달력 날짜의 schedule로써 action 안 찍힙니다 = format 비교가 안 되거나, 둘 다 null이거나..");
-                }
-            }
-        }
-
 //        Map<String, Object> result = new HashMap<>();
 //        result.put("calendarDatesList", calendarDatesList);
 //        result.put("todayInfo", todayInfo);
 //
-//        log.info("individual day 첫번째 요소 = " + actionDateList.get(0).toString()); // todo
-//        log.info("individual day 11번째 요소 = " + actionDateList.get(11).toString()); // todo
-//        log.info("todayInfo에 저장된 startKey 키에 해당하는 value = " + todayInfo.get("startDay")); // todo
+//        log.info("individual day 첫번째 요소 = " + actionDateList.get(0).toString());
+//        log.info("individual day 11번째 요소 = " + actionDateList.get(11).toString());
+//        log.info("todayInfo에 저장된 startKey 키에 해당하는 value = " + todayInfo.get("startDay"));
 //        return result;
 
 //        return new Gson().toJson(actionDateList);
@@ -96,7 +127,14 @@ public class Calendar {
         }
          */
 
-        return calendarDatesList;
+        return calendars;
+    }
+
+    public static String extractYearAndMonthInStrFromLocalDate(LocalDate date) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        return year + ". " + month;
     }
 
     public static List<ActionDate> getCalendarDatesList(ActionDate searchDate) {

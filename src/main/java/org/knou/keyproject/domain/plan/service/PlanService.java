@@ -1,11 +1,12 @@
 package org.knou.keyproject.domain.plan.service;
 
 import org.knou.keyproject.domain.plan.dto.*;
+import org.knou.keyproject.domain.plan.entity.Plan;
 
 import java.util.List;
 
 public interface PlanService {
-    NewPlanResponseDto saveNewPlan(PlanPostRequestDto requestDto);
+    Plan saveNewPlan(PlanPostRequestDto requestDto);
 
     // 2023.7.24(월) 17h40
     void saveMyNewPlan(MyPlanPostRequestDto requestDto);

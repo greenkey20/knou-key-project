@@ -6,6 +6,7 @@ import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.mapstruct.Mapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,21 @@ public interface PlanMapper {
         newPlanResponseDto.unit(entity.getUnit());
         newPlanResponseDto.hasStartDate(entity.getHasStartDate());
         newPlanResponseDto.startDate(entity.getStartDate());
-        newPlanResponseDto.deadlineDate(entity.getDeadlineDate());
+        newPlanResponseDto.startYear(entity.getStartDate().getYear());
+        newPlanResponseDto.startMonth(entity.getStartDate().getMonthValue());
+
+        if (entity.getHasDeadline()) {
+            newPlanResponseDto.deadlineDate(entity.getDeadlineDate());
+            newPlanResponseDto.deadlineYear(entity.getDeadlineDate().getYear());
+            newPlanResponseDto.deadlineMonth(entity.getDeadlineDate().getMonthValue());
+        } else {
+            ActionDate lastActionDate = entity.getActionDatesList().get(entity.getActionDatesList().size() - 1);
+            LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
+            newPlanResponseDto.deadlineDate(deadlineDate);
+            newPlanResponseDto.deadlineYear(deadlineDate.getYear());
+            newPlanResponseDto.deadlineMonth(deadlineDate.getMonthValue());
+        }
+
         newPlanResponseDto.hasDeadline(entity.getHasDeadline());
         newPlanResponseDto.totalDurationDays(entity.getTotalDurationDays());
         newPlanResponseDto.frequencyDetail(entity.getFrequencyDetail());
@@ -54,7 +69,7 @@ public interface PlanMapper {
 
             actionDateResponseDto.numOfYear( thisActionDate.getNumOfYear() );
             if ( thisActionDate.getNumOfMonth() != null ) {
-                actionDateResponseDto.month( String.valueOf( thisActionDate.getNumOfMonth() ) );
+                actionDateResponseDto.numOfMonth( String.valueOf( thisActionDate.getNumOfMonth() ) );
             }
             actionDateResponseDto.numOfDate( thisActionDate.getNumOfDate() );
             actionDateResponseDto.numOfDay( thisActionDate.getNumOfDay() );

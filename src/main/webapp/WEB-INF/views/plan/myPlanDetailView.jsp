@@ -24,6 +24,7 @@
     <br>
 
     <div id="my-plan-detail-stats">
+        <br>
         ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안
         매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
         <br>
@@ -44,12 +45,14 @@
         <br>
         - 오늘까지 ${ plan.accumulatedNumOfActions} 회 수행했고, ${ plan.totalNumOfActions - plan.accumulatedNumOfActions }회 남았습니다. 파이팅입니다 🍀<br>
         - 매 회 ${ quantityPerDay }${ plan.unit } 수행하는 데 평균적으로 ${ plan.averageTimeTakenForRealAction }분이 소요되고 있어요
+        <br>
+        <br>
     </div>
 
     <div class="calendar" align="center">
         <br>
         <h4> 일정 목록 </h4>
-        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다
+        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다<br>
         * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~
         <table class="actionDatesListTable" border="black" align="center">
             <thead>
