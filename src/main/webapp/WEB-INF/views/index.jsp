@@ -23,11 +23,13 @@
             <div id="my-plans-summary">
                 <table>
                     <c:forEach var="p" items="${ planList }">
-                        <tr>
-                            <td>✔️</td>
-                            <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
+                        <c:if test="${ p.planStatus.toString() eq 'ACTIVE' }">
+                            <tr>
+                                <td>✔️</td>
+                                <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
 
-                        </tr>
+                            </tr>
+                        </c:if>
                     </c:forEach>
                 </table>
             </div>
