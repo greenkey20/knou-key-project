@@ -20,6 +20,7 @@
     <br>
 
     <div id="new-plan-calculator-result">
+        <br>
         ${ savedPlan.object } ${ savedPlan.totalQuantity}${ savedPlan.unit} 목표 달성을 위해서는
 
         <!--startDate가 null인 경우 vs 날짜 있는 경우-->
@@ -35,14 +36,15 @@
 
         <c:choose>
             <c:when test="${ savedPlan.hasDeadline }">
-                ${ savedPlan.deadlineDate }까지 ${ savedPlan.totalDurationDays } 일 기간 중
+                ${ savedPlan.deadlineDate }까지 ${ savedPlan.totalDurationDays }일 기간 중
             </c:when>
             <c:otherwise>
 
             </c:otherwise>
         </c:choose>
-        ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회/일
-        매번 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
+        ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회
+        매 회 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
+        <br>
     </div>
     <br>
 
