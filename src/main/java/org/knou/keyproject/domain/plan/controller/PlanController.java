@@ -4,12 +4,13 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
-import org.knou.keyproject.domain.plan.dto.NewPlanResponseDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.global.utils.Calendar;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.knou.keyproject.global.utils.Calendar.getCalendarDatesList;
 
@@ -38,6 +40,8 @@ import static org.knou.keyproject.global.utils.Calendar.getCalendarDatesList;
 public class PlanController {
     private final PlanRepository planRepository;
     private final PlanService planService;
+    private final PlanMapper planMapper;
+    private final ActionDateMapper actionDateMapper;
     private final int SIZE = 5;
     private final int THIS_YEAR = LocalDate.now().getYear();
     private final int THIS_MONTH = LocalDate.now().getMonthValue();
@@ -63,20 +67,20 @@ public class PlanController {
         log.info(requestDto.toString()); // 2023.7.23(일) 23h10 현재 view로부터 값 안 넘어오고 있음 PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=0, object='null', totalQuantity=null, unit='null', startDate=null, frequencyTypeNum=0, frequencyDetail='null', hasDeadline=0, deadlineTypeNum=0, deadlineDate=null, deadlinePeriod='null', quantityPerDayPredicted=null}
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
-        NewPlanResponseDto savedPlan = planService.saveNewPlan(requestDto);
+        Plan savedPlan = planService.saveNewPlan(requestDto);
 //        log.info("controller postNewPlan에서 getActionDays = " + savedPlan.getActionDates().toString());
 //        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
-        List<ActionDate> calendarDatesList = Calendar.getCalendar(savedPlan.getActionDates());
+        List<List<ActionDate>> calendars = Calendar.getCalendars(savedPlan);
 
         // 2023.7.26(수) 3h35
-        List<ActionDate> actionDatesList = savedPlan.getActionDates();
+        List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
 
         mv
-                .addObject("savedPlan", savedPlan)
-                .addObject("calendarDatesList", calendarDatesList)
-                .addObject("actionDatesList", actionDatesList)
+                .addObject("savedPlan", planMapper.toNewPlanResponseDto(planRepository.save(savedPlan)))
+                .addObject("calendars", calendars) // plan 시작일~종료일까지의 달력(들)을 제목(xxxx. x 형식)과 함께 담은 Map
+                .addObject("actionDatesList", actionDateMapper.entitiesToDtos(actionDatesList))
                 .setViewName("plan/newPlanResultView"); // 2023.7.25(화) 21h40 생각 = 여기에서 달력 출력할 정보도 같이 넘겨준다..
         return mv;
 
@@ -133,7 +137,7 @@ public class PlanController {
                                       ModelAndView mv) {
         Long memberId = ((Member) session.getAttribute("loginUser")).getMemberId();
         log.info("plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
-        Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable);
+        Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable); // todo dto 반환 고민해보기
 
         if (keyword != null) {
             planList = planRepository.findByObjectContaining(keyword, pageable);

@@ -26,8 +26,7 @@
                         <c:if test="${ p.planStatus.toString() eq 'ACTIVE' }">
                             <tr>
                                 <td>✔️</td>
-                                <td>${ p.object}️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td>
-
+                                <td>${ p.object }️ x회 (/ 총 ${ p.totalDurationDays }회) | xx% 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
                             </tr>
                         </c:if>
                     </c:forEach>

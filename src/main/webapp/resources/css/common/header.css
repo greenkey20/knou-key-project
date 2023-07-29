@@ -41,6 +41,18 @@ div {
     color: lightgreen;
 }
 
+.logo_k a {
+    text-decoration: none;
+    color: lightgreen;
+    font-size: 22px;
+}
+
+.logo_k a:hover {
+    color: greenyellow;
+    font-size: 22px;
+    font-weight: bolder;
+}
+
 /*.header .logo_k {*/
 /*    font-size: 40px;*/
 /*    padding-top: 25px;*/

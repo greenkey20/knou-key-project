@@ -37,7 +37,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public NewPlanResponseDto saveNewPlan(PlanPostRequestDto requestDto) {
+    public Plan saveNewPlan(PlanPostRequestDto requestDto) {
         Plan planToCalculate = requestDto.toEntity();
         Plan calculatedPlan = new Calculator().calculateNewPlan(planToCalculate);
         log.info("계산 결과 시작일 = " + calculatedPlan.getStartDate()); // 2023.7.29(토) 4h25 '계산 결과 시작일 = 2023-07-29' 찍힘
@@ -47,7 +47,7 @@ public class PlanServiceImpl implements PlanService {
         // 2023.7.29(토) 4h20
         actionDateRepository.saveAll(calculatedPlan.getActionDatesList());
 
-        return planMapper.toNewPlanResponseDto(planRepository.save(calculatedPlan));
+        return planRepository.save(calculatedPlan);
     }
 
     // 2023.7.24(월) 17h40 -> 22h40 startDate 입력에 따른 계산 결과 반영
