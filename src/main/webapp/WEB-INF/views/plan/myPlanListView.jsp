@@ -23,6 +23,9 @@
     <c:choose>
         <c:when test="${ empty list }">
             일정이 없습니다
+            <br>
+            <br>
+            <div align="center"><button type="button" onclick="">목록으로 돌아가기</button></div>
         </c:when>
         <c:otherwise>
             <!--2023.7.27(목) 21h10 추가-->

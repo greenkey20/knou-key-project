@@ -88,7 +88,7 @@
             <div class="question">어떤 빈도로 수행할 예정인가요?</div>
             <div id="frequency-type">
                 <input type="radio" name="frequencyTypeNum" value="1" onclick="selectFrequencyType()"> 특정 요일 선택
-                <input type="radio" name="frequencyTypeNum" value="2" onclick="selectFrequencyType()"> x일마다 1회
+                <input type="radio" name="frequencyTypeNum" value="2" onclick="selectFrequencyType()"> x일마다 x회
                 <input type="radio" name="frequencyTypeNum" value="3" onclick="selectFrequencyType()"> 주/월 x회
             </div>
             <br>
@@ -129,7 +129,7 @@
 
             <div id="deadline-type-period" style="display: none">
                 <div class="question">달성 목표 기간이 얼마나 되나요?</div>
-                <input type="text" name="deadlinePeriod" placeholder="x일/주/개월">
+                시작일로부터 <input type="text" name="deadlinePeriod" placeholder="x일/주/개월">
                 <br>
                 <br>
             </div>
