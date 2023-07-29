@@ -10,7 +10,11 @@ public interface PlanService {
     // 2023.7.24(월) 17h40
     void saveMyNewPlan(MyPlanPostRequestDto requestDto);
 
+    // 2023.7.29(토) 22h20 추가
+    void saveMyNewPlanAfterLogin(MyPlanPostRequestDto requestDto);
+
     // 2023.7.24(월) 17h20 선언만 해둠
+
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
 
     MyPlanDetailResponseDto findPlanById(Long planId);

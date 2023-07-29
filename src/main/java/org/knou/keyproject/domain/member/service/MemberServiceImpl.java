@@ -83,6 +83,12 @@ public class MemberServiceImpl implements MemberService {
 //        if (encryptedPW == db에 저장된 PW) {
     }
 
+    // 2023.7.29(토) 22h30 추가
+    @Override
+    public Member findVerifiedMember(Long memberId) {
+        return memberRepository.findById(memberId).orElse(null);
+    }
+
     /**
      * 중복 회원이 있을 때 예외 처리하는 메서드
      *
