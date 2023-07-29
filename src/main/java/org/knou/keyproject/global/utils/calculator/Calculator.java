@@ -1,6 +1,12 @@
-package org.knou.keyproject.global.utils;
+package org.knou.keyproject.global.utils.calculator;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.DeadlineType;
 import org.knou.keyproject.domain.plan.entity.FrequencyType;
@@ -9,12 +15,18 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.*;
+
+import static org.knou.keyproject.global.utils.calculator.CalculatorUtils.*;
 
 // 2023.7.24(월) 19h50
 @Slf4j
+//@NoArgsConstructor // constructor ... is already defined in class ... 빌드 오류 때문에 주석 처리하고, 기본 생성자 수기로 만듦
+@Getter
+//@AllArgsConstructor
+@Builder
 public class Calculator {
-    private PlanPostRequestDto requestDto;
+//    private PlanPostRequestDto requestDto;
 //    private Plan plan;
 
     // 계산 대상들을 멤버변수로 갖고 있음, 이 값은 requestDto로부터 그냥 넘어온 값 쓰면 안 되거나 거기에 없음
@@ -30,32 +42,24 @@ public class Calculator {
     public Calculator() {
     }
 
-    public Calculator(PlanPostRequestDto requestDto) {
-        this.requestDto = requestDto;
-//        this.plan = null;
-    }
+//    public Calculator(PlanPostRequestDto requestDto) {
+//        this.requestDto = requestDto;
+////        this.plan = null;
+//    }
 
 //    public Calculator(Plan plan) {
 //        this.plan = plan;
 ////        this.requestDto = null;
 //    }
 
-    // 2023.7.25(목) '나의 일정'에 저장하며 시작일이 새로 지정된 경우 호출되는 메서드
-    public Plan calculateRealNewPlan(Plan planToCalculate) {
-        setDeadlineDate(planToCalculate);
-        planToCalculate.setActionDatesList();
-        return planToCalculate;
-    }
-
-
     /**
      * 사용자로부터 입력받은 정보를 가지고, 활동 계획 수립에 필요한 정보로 변환 및 계산하는 메서드
      *
      * @return
      */
-    public Plan calculateNewPlan(PlanPostRequestDto requestDto) {
+    public Plan calculateNewPlan(Plan planToCalculate) {
         // 현재로써는 측정 가능한 일만 이 계산기를 호출함
-        Plan planToCalculate = requestDto.toEntity();
+//        Plan planToCalculate = requestDto.toEntity();
 
 //        if (requestDto != null) {
 //            planToCalculate = requestDto.toEntity();
@@ -88,7 +92,8 @@ public class Calculator {
         setQuantityPerDay(planToCalculate);
 //        planToCalculate.setQuantityPerDay(quantityPerDay);
 
-        planToCalculate.setActionDatesList();
+        setActionDatesList(planToCalculate);
+//        planToCalculate.setActionDatesList(); // 2023.7.29(토) 3h30 교체 완료
 
         return planToCalculate;
         // 2023.7.24(월) 21h35 아래와 같은 return문을 썼는데, 아무래도 이건 아닌 것 같아..
@@ -112,6 +117,17 @@ public class Calculator {
                 .quantityPerDay(quantityPerDay) // 계산 결과
                 .build();
          */
+    }
+
+    // 2023.7.25(목) '나의 일정'에 저장하며 시작일이 새로 지정된 경우 호출되는 메서드
+    public Plan calculateRealNewPlan(Plan planToCalculate) {
+        log.info("calculator에서 계산 전 deadline date" + planToCalculate.getDeadlineDate());
+        setDeadlineDate(planToCalculate);
+        log.info("calculator에서 계산 후 deadline date" + planToCalculate.getDeadlineDate());
+        setActionDatesList(planToCalculate);
+
+//        planToCalculate.setActionDatesList(); // 2023.7.29(토) 3h30 교체 완료
+        return planToCalculate;
     }
 
     public void setStartDate(Plan planToCalculate) {
@@ -202,7 +218,10 @@ public class Calculator {
             case EVERY:
                 String[] words = frequencyDetail.split(" "); // 예시) 2일마다 1회, 5일마다 2회 등
                 log.info("frequencyFactor 계산하는 과정에서 words = " + Arrays.toString(words));
-                frequencyFactor = (double) Character.getNumericValue(words[1].charAt(0)) / Character.getNumericValue(words[0].charAt(0));
+                int interval = Integer.parseInt(extractNumsFromStr(words[0]));
+                int times = Integer.parseInt(extractNumsFromStr(words[1]));
+
+                frequencyFactor = (double) times / interval;
                 break;
             case TIMES:
                 words = frequencyDetail.split(" "); // 예시) 주 2회, 월 10회 등
@@ -273,4 +292,131 @@ public class Calculator {
     }
 
     // 2023.7.26(수) 18h15 활동일 리스트 구하는 메서드들 Plan 엔티티 클래스로부터 여기로 분리?!
+    // 2023.7.29(토) 2h20 위 비스무리한 작업을 지금 하게 되는 것 같다..?
+    public void setActionDatesList(Plan planToCalculate) {
+        List<ActionDate> actionDatesList = planToCalculate.getActionDatesList();
+
+//        List<ActionDate> actionDays = new ArrayList<>();
+
+        if (planToCalculate.getHasDeadline()) { // 기한이 있는 계획의 경우
+            switch (planToCalculate.getFrequencyType()) {
+                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
+                    actionDatesList = getActionDatesWithDeadlineAndFrequencyTypeDATE(planToCalculate, actionDatesList);
+                    break;
+                case EVERY: // EVERY-TIMES 계산 원리는 비슷
+                    actionDatesList = getActionDatesWithDeadlineAndFrequencyTypeEVERY(planToCalculate, actionDatesList);
+                    break;
+                case TIMES:
+                    actionDatesList = getActionDatesWithDeadlineAndFrequencyTypeTIMES(planToCalculate, actionDatesList);
+                    break;
+            }
+        } else { // 기한이 없는 계획인 경우
+            switch (planToCalculate.getFrequencyType()) {
+                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
+                    actionDatesList = getActionDatesWithNoDeadlineAndFrequencyTypeDATE(planToCalculate, actionDatesList);
+                    break;
+                case EVERY: // EVERY-TIMES 계산 원리는 비슷
+                    actionDatesList = getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(planToCalculate, actionDatesList);
+                    break;
+                case TIMES:
+                    actionDatesList = getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(planToCalculate, actionDatesList);
+                    break;
+            }
+        }
+
+//        this.actionDatesList = actionDays;
+        planToCalculate.setActionDatesList(actionDatesList);
+    }
+
+    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeDATE(Plan planToCalculate, List<ActionDate> actionDates) {
+        // 활동하는 요일들의 정수 값을 리스트로 받음
+        String daysStr = extractActionDaysFromStr(planToCalculate.getFrequencyDetail());
+        List<Integer> daysList = getActionWeekdays(daysStr);
+//        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
+
+        for (LocalDate date = planToCalculate.getStartDate(); date.isBefore(planToCalculate.getDeadlineDate()); date = date.plusDays(1)) {
+            // 순회 중인 날이 해당 요일이면 활동일 리스트에 담음
+            int dayOfDate = date.getDayOfWeek().getValue();
+//            log.info("순회 중인 date의 요일 번호 = " + dayOfDate);
+
+            if (daysList.contains(dayOfDate)) {
+                if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+            }
+        }
+
+//        log.info("순회 마치고 actionDays 리스트 = " + getActionDatesList());
+        return actionDates;
+    }
+
+    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeDATE(Plan planToCalculate, List<ActionDate> actionDates) {
+        // 활동하는 요일들의 정수 값을 리스트로 받음
+        String daysStr = extractActionDaysFromStr(planToCalculate.getFrequencyDetail());
+        List<Integer> daysList = getActionWeekdays(daysStr);
+//        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
+
+        LocalDate date = planToCalculate.getStartDate();
+
+        int accumulatedUnit = 0;
+        while (accumulatedUnit <= planToCalculate.getTotalQuantity()) {
+            int dayOfDate = date.getDayOfWeek().getValue();
+
+            if (daysList.contains(dayOfDate)) {
+                if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+            }
+
+            accumulatedUnit = actionDates.size() * planToCalculate.getQuantityPerDay();
+            date = date.plusDays(1);
+        }
+
+        verifyLastElementPositive(actionDates);
+
+//        log.info("순회 마치고 actionDays 리스트 = " + getActionDatesList());
+        return actionDates;
+    }
+
+    /**
+     * 매 x일마다 활동하는 경우의 활동일 리스트 만드는 메서드
+     * e.g. 2일마다 1회, 5일마다 2회, 10일마다 3회 등 + 30일마다 11회 등 2자리 숫자가 interval 및 times로 올 수도 있음
+     *
+     * @return
+     */
+    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeEVERY(Plan planToCalculate, List<ActionDate> actionDates) {
+        Map<String, Integer> results = extractIntervalAndTimesFromStr(planToCalculate.getFrequencyDetail());
+
+        return getActionDatesWithDeadlineAndIntervalAndTimes(planToCalculate, actionDates, results.get("interval"), results.get("times"));
+    }
+
+    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(Plan planToCalculate, List<ActionDate> actionDates) {
+        Map<String, Integer> results = extractIntervalAndTimesFromStr(planToCalculate.getFrequencyDetail());
+
+        return getActionDatesWithNoDeadlineAndIntervalAndTimes(planToCalculate, actionDates, results.get("interval"), results.get("times"));
+    }
+
+    /**
+     * 주/월 x회마다 활동하는 경우의 활동일 리스트 만드는 메서드
+     * e.g. 주 3회, 월 10회 등
+     *
+     * @return
+     */
+    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeTIMES(Plan planToCalculate, List<ActionDate> actionDates) {
+        // timeUnit 관련 데이터 가공
+        int interval = getIntervalFromTimeUnit(planToCalculate.getFrequencyDetail().charAt(0));
+
+        // 활동 횟수 관련 데이터 가공
+        String obj = planToCalculate.getFrequencyDetail().split(" ")[1];
+        int times = Integer.parseInt(extractNumsFromStr(obj));
+
+        return getActionDatesWithDeadlineAndIntervalAndTimes(planToCalculate, actionDates, interval, times);
+    }
+
+    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(Plan planToCalculate, List<ActionDate> actionDates) {
+        // timeUnit 관련 데이터 가공
+        int interval = getIntervalFromTimeUnit(planToCalculate.getFrequencyDetail().charAt(0));
+
+        // 활동 횟수 관련 데이터 가공
+        String obj = planToCalculate.getFrequencyDetail().split(" ")[1];
+        int times = Integer.parseInt(extractNumsFromStr(obj));
+
+        return getActionDatesWithNoDeadlineAndIntervalAndTimes(planToCalculate, actionDates, interval, times);
+    }
 }

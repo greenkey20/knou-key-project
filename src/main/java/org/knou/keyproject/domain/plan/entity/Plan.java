@@ -180,286 +180,41 @@ public class Plan extends BaseTimeEntity {
 //        this.actionDays = actionDays;
 //    }
 
-    public void setActionDatesList() {
-        List<ActionDate> actionDays = new ArrayList<>();
-
-        if (this.hasDeadline) {
-            switch (this.frequencyType) {
-                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
-                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeDATE(actionDays);
-                    break;
-                case EVERY: // EVERY-TIMES 계산 원리는 비슷
-                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeEVERY(actionDays);
-                    break;
-                case TIMES:
-                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeTIMES(actionDays);
-                    break;
-            }
-        } else {
-            switch (this.frequencyType) {
-                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
-                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeDATE(actionDays);
-                    break;
-                case EVERY: // EVERY-TIMES 계산 원리는 비슷
-                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(actionDays);
-                    break;
-                case TIMES:
-                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(actionDays);
-                    break;
-            }
-        }
-
-        this.actionDatesList = actionDays;
+    // 2023.7.29(토) 4h30 추가
+    public void setActionDatesList(List<ActionDate> actionDatesList) {
+        this.actionDatesList = actionDatesList;
     }
 
-    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeDATE(List<ActionDate> actionDates) {
-        // 활동하는 요일들의 정수 값을 리스트로 받음
-        String daysStr = this.frequencyDetail.substring(0, this.frequencyDetail.length() - 4);
-        List<Integer> daysList = getActionWeekdays(daysStr);
-//        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
-
-        for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(1)) {
-            // 순회 중인 날이 해당 요일이면 활동일 리스트에 담음
-            int dayOfDate = date.getDayOfWeek().getValue();
-//            log.info("순회 중인 date의 요일 번호 = " + dayOfDate);
-
-            if (daysList.contains(dayOfDate)) {
-                if (checkIfLastActionDate(actionDates, date)) break;
-            }
-        }
-
-//        log.info("순회 마치고 actionDays 리스트 = " + getActionDatesList());
-        return actionDates;
-    }
-
-    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeDATE(List<ActionDate> actionDates) {
-        // 활동하는 요일들의 정수 값을 리스트로 받음
-        String daysStr = this.frequencyDetail.substring(0, this.frequencyDetail.length() - 4);
-        List<Integer> daysList = getActionWeekdays(daysStr);
-//        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
-
-        LocalDate date = this.startDate;
-
-        int accumulatedUnit = 0;
-        while (accumulatedUnit <= this.totalQuantity) {
-            int dayOfDate = date.getDayOfWeek().getValue();
-
-            if (daysList.contains(dayOfDate)) {
-                if (checkIfLastActionDate(actionDates, date)) break;
-            }
-
-            accumulatedUnit = actionDates.size() * this.quantityPerDay;
-            date = date.plusDays(1);
-        }
-
-//        log.info("순회 마치고 actionDays 리스트 = " + getActionDatesList());
-        return actionDates;
-    }
-
-    /**
-     * 매 x일마다 활동하는 경우의 활동일 리스트 만드는 메서드
-     * e.g. 2일마다 1회, 5일마다 2회, 10일마다 3회 등
-     *
-     * @return
-     */
-    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeEVERY(List<ActionDate> actionDates) {
-        int interval = Character.getNumericValue(frequencyDetail.split(" ")[0].charAt(0));
-        int times = Character.getNumericValue(frequencyDetail.split(" ")[1].charAt(0));
-
-        return getActionDatesWithDeadlineAndIntervalAndTimes(actionDates, interval, times);
-    }
-
-    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(List<ActionDate> actionDates) {
-        int interval = Character.getNumericValue(frequencyDetail.split(" ")[0].charAt(0));
-        int times = Character.getNumericValue(frequencyDetail.split(" ")[1].charAt(0));
-
-        return getActionDatesWithNoDeadlineAndIntervalAndTimes(actionDates, interval, times);
-    }
-
-    /**
-     * 주/월 x회마다 활동하는 경우의 활동일 리스트 만드는 메서드
-     * e.g. 주 3회, 월 10회 등
-     *
-     * @return
-     */
-    private List<ActionDate> getActionDatesWithDeadlineAndFrequencyTypeTIMES(List<ActionDate> actionDates) {
-        // timeUnit 관련 데이터 가공
-        char timeUnit = this.frequencyDetail.charAt(0);
-
-        int interval = 0;
-
-        switch (timeUnit) {
-            case '주':
-                interval = 7;
-                break;
-            case '월':
-                interval = 30;
-                break;
-        }
-
-        // 활동 횟수 관련 데이터 가공
-        String obj = this.frequencyDetail.split(" ")[1];
-        StringBuilder nums = new StringBuilder();
-
-        for (int i = 0; i < obj.length(); i++) {
-            char ch = obj.charAt(i);
-
-            if (Character.isDigit(ch)) {
-                nums.append(ch);
-            }
-        }
-
-        int times = Integer.parseInt(nums.toString());
-
-        return getActionDatesWithDeadlineAndIntervalAndTimes(actionDates, interval, times);
-    }
-
-    private List<ActionDate> getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(List<ActionDate> actionDates) {
-        char timeUnit = this.frequencyDetail.charAt(0);
-
-        int interval = 0;
-
-        switch (timeUnit) {
-            case '주':
-                interval = 7;
-                break;
-            case '월':
-                interval = 30;
-                break;
-        }
-
-        // 활동 횟수 관련 데이터 가공
-        String obj = this.frequencyDetail.split(" ")[1];
-        StringBuilder nums = new StringBuilder();
-
-        for (int i = 0; i < obj.length(); i++) {
-            char ch = obj.charAt(i);
-
-            if (Character.isDigit(ch)) {
-                nums.append(ch);
-            }
-        }
-
-        int times = Integer.parseInt(nums.toString());
-
-        return getActionDatesWithNoDeadlineAndIntervalAndTimes(actionDates, interval, times);
-    }
-
-    private boolean checkIfLastActionDate(List<ActionDate> actionDates, LocalDate date) {
-        int leftUnit = this.totalQuantity - actionDates.size() * this.quantityPerDay;
-        if (leftUnit < this.quantityPerDay) {
-            actionDates.add(changeActionDateIntoActionDateData(date, leftUnit));
-            return true;
-        } else {
-            actionDates.add(changeActionDateIntoActionDateData(date, this.quantityPerDay));
-        }
-        return false;
-    }
-
-    // 2023.7.26(수) 17h refactoring = extract as a function
-    // 빈도 조건에 맞는 활동일 찾기
-    private List<ActionDate> getActionDatesWithDeadlineAndIntervalAndTimes(List<ActionDate> actionDates, int interval, int times) {
-        for (LocalDate date = this.startDate; date.isBefore(this.deadlineDate); date = date.plusDays(interval)) {
-            if (checkIfLastActionDate(actionDates, date)) break;
-
-            getActionDatesWithinInterval(actionDates, interval, times, date);
-        }
-
-        if (actionDates.get(actionDates.size() - 1).getPlanActionQuantity() < 0) {
-            actionDates.remove(actionDates.size() - 1);
-        }
-
-        return actionDates;
-    }
-
-    private List<ActionDate> getActionDatesWithNoDeadlineAndIntervalAndTimes(List<ActionDate> actionDates, int interval, int times) {
-        LocalDate date = this.startDate;
-
-        int accumulatedUnit = 0;
-        while (accumulatedUnit <= this.totalQuantity) {
-            if (checkIfLastActionDate(actionDates, date)) break;
-
-            getActionDatesWithinInterval(actionDates, interval, times, date);
-
-            accumulatedUnit = actionDates.size() * this.quantityPerDay;
-            date = date.plusDays(interval);
-        }
-
-//        if (actionDates.get(actionDates.size() - 1).getPlanActionQuantity() < 0) {
-//            actionDates.remove(actionDates.size() - 1);
+    // 2023.7.29(토) 2h25 아래 작업을 Calculator로 옮김
+//    public void setActionDatesList() {
+//        List<ActionDate> actionDays = new ArrayList<>();
+//
+//        if (this.hasDeadline) {
+//            switch (this.frequencyType) {
+//                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
+//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeDATE(actionDays);
+//                    break;
+//                case EVERY: // EVERY-TIMES 계산 원리는 비슷
+//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeEVERY(actionDays);
+//                    break;
+//                case TIMES:
+//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeTIMES(actionDays);
+//                    break;
+//            }
+//        } else {
+//            switch (this.frequencyType) {
+//                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
+//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeDATE(actionDays);
+//                    break;
+//                case EVERY: // EVERY-TIMES 계산 원리는 비슷
+//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(actionDays);
+//                    break;
+//                case TIMES:
+//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(actionDays);
+//                    break;
+//            }
 //        }
-
-        return actionDates;
-    }
-
-    private void getActionDatesWithinInterval(List<ActionDate> actionDates, int interval, int times, LocalDate date) {
-        LocalDate nextDate = date;
-        int plusDay = interval / times;
-        for (int i = 1; i < times; i++) {
-            nextDate = nextDate.plusDays(plusDay);
-
-            // 2023.7.26(수) 18h50 이 예외 처리 안 해서 isAfter() 호출 시 null pointer exception 발생
-            if (this.hasDeadline) {
-                if (nextDate.isAfter(this.deadlineDate)) break;
-            }
-
-            if (checkIfLastActionDate(actionDates, nextDate)) break;
-        }
-    }
-
-    // 2023.7.29(토) 0h45 ActionDate 객체들이 만들어져서 db에 저장될 때 planId가 null인 것 보고, 이 부분에 추가해봄
-    // -> 그런데 이렇게 FK를 수동으로 넣는 게 이상한 것 같은데.. 애초에 이렇게 ActionDate의 생성자를 사용하지 말았어야 하나..
-    private ActionDate changeActionDateIntoActionDateData(LocalDate date, Integer quantityPerDay) {
-        return new ActionDate(
-                this.planId,
-                String.valueOf(date.getYear()),
-                date.getMonthValue(),
-                String.valueOf(date.getDayOfMonth()),
-                date.getDayOfWeek().getValue(),
-                DateType.ACTION,
-                String.format("%s-%02d-%s", date.getYear(), date.getMonthValue(), date.getDayOfMonth()),
-                quantityPerDay,
-                false);
-    }
-
-    private List<Integer> getActionWeekdays(String daysStr) {
-        List<Integer> daysList = new ArrayList<>();
-        int day = -1;
-
-        for (int i = 0; i < daysStr.length(); i++) {
-            char ch = daysStr.charAt(i);
-
-            switch (ch) {
-                case '월':
-                    day = 1;
-                    daysList.add(day);
-                    break;
-                case '화':
-                    day = 2;
-                    daysList.add(day);
-                    break;
-                case '수':
-                    day = 3;
-                    daysList.add(day);
-                    break;
-                case '목':
-                    day = 4;
-                    daysList.add(day);
-                    break;
-                case '금':
-                    day = 5;
-                    daysList.add(day);
-                    break;
-                case '토':
-                    day = 6;
-                    daysList.add(day);
-                    break;
-                default: // 2023.7.27(목) 22h35 발견 <- 계산 결과 list에서 일요일이 없었음
-                    day = 7;
-                    daysList.add(day);
-            }
-        }
-
-        return daysList;
-    }
+//
+//        this.actionDatesList = actionDays;
+//    }
 }
