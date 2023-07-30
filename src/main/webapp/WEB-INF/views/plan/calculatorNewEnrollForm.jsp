@@ -23,7 +23,7 @@
     <%--    <p>* 표시는 필수 입력 사항입니다.</p>--%>
 
 <%--    <c:url var="new_plan_insert_url" value="newPlanInsert.pl" />--%>
-    <form id="calculatorNewEnrollForm" action="newPlanInsert.pl" method="post" modelAttribute="plan">
+    <form id="calculator-new-enroll-form" action="newPlanInsert.pl" method="post" modelAttribute="plan">
 
         <p class="question">무엇을 준비하고 계신가요?</p>
         <div id="is-measurable">
@@ -144,11 +144,11 @@
 
         <%-- loginUser 속성 값 있으면 아래와 같이 작성자 정보 입력 --%>
         <c:choose>
-            <c:when test="${ empty loginUser }">
-                <input type="hidden" name="plannerId" value="${ loginUser.userNo }">
+            <c:when test="${ not empty loginUser }">
+                <input type="hidden" name="memberId" value="${ loginUser.memberId }">
             </c:when>
             <c:otherwise>
-                <input type="hidden" name="plannerId" value="">
+                <input type="hidden" name="memberId" value="">
             </c:otherwise>
         </c:choose>
         <%-- 없으면 '저장하려면 로그인이 필요합니다' 모달 창 띄움 + 회원 가입이 필요한 경우 회원 가입 링크도 넣기(이건 계산 결과 페이지에서) --%>

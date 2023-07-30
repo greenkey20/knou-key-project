@@ -55,35 +55,34 @@
     <div class="calendar" align="center">
         <br>
         <h4> 일정 목록 </h4>
-        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다<br>
-        * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~
+<%--        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다<br>--%>
+<%--        * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~--%>
         <table class="actionDatesListTable" border="black" align="center">
             <colgroup>
                 <col style="width: 10%">
-                <col style="width: 35%">
-                <col style="width: 15%">
+                <col style="width: 25%">
                 <col style="width: 10%">
                 <col style="width: 15%">
+                <col style="width: 25%">
                 <col style="width: 15%">
-
-
             </colgroup>
 
             <thead>
             <tr>
                 <td width="35px">No</td>
                 <td width="140px">날짜</td>
-                <td width="50px">수행 예정 분량</td>
-                <td width="35px%">수행 여부</td>
-                <td width="50px">실제 수행 분량</td>
+                <td width="50px">수행 여부</td>
+                <td width="35px%">수행 분량</td>
+                <td width="50px">활동 만족도</td>
                 <%--                <td>소요 시간</td>--%>
-                <td width="50px">상세 기록</td>
+                <td width="50px">기록</td>
             </tr>
             </thead>
             <tbody>
             <c:forEach var="day" items="${ actionDatesList }" varStatus="status">
                 <tr>
                     <td class="holiday"> ${ status.count } </td>
+
                     <td>
                             ${ day.numOfYear }. ${ day.numOfMonth }. ${ day.numOfDate }
                         <c:choose>
@@ -96,40 +95,40 @@
                             <c:otherwise> (일) </c:otherwise>
                         </c:choose>
                     </td>
-                    <td><span id="plan-quantity">${ day.planActionQuantity }</span> ${ savedPlan.unit }</td>
 
                     <c:choose>
                         <c:when test="${ not day.isDone }">
-                            <td class="check"><input type="checkbox" class="check-input" name="isDone" value="done" onclick="createCheck()"></td>
-                            <!--2023.7.29(토) 1h45 이 checkbox value가 무엇이 되어야 하는지 정확히 모르겠다 + 이렇게 html 태그 안에 jsp 쓸 수 있나?-->
+                            <td class="check">-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><button type="button" onclick="location.href='actionDetailRecordPage.ad?planId=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button></td>
                         </c:when>
                         <c:otherwise>
-                            <td class="check"><input type="checkbox" class="check-input" name="isDone" value="done" onclick="createCheck()" checked></td>
+                            <td class="check">✅</td>
+                            <td>${ day.realActionQuantity }</td>
+                            
+                            <c:choose>
+                                <c:when test="${ not empty day.reviewScore }">
+                                    <c:choose>
+                                        <c:when test="${ day.reviewScore eq 5 }">
+                                            <td>⭐⭐⭐️</td>
+                                        </c:when>
+                                        <c:when test="${ day.reviewScore gt 2 }"> <!--3 또는 4점을 의미-->
+                                            <td>⭐⭐</td>
+                                        </c:when>
+                                        <c:otherwise> <!--1 또는 2점을 의미-->
+                                            <td>⭐️</td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <td>-</td>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <td><button type="button" onclick="location.href='actionDetailView.ad?planID=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button></td> <!--소요 시간 및 메모 기록하려면, 아래 버튼 눌러서 '1일 활동 내역 기록' 화면으로 가야 함-->
                         </c:otherwise>
                     </c:choose>
-
-                    <c:choose>
-                        <c:when test="${ not day.isDone }">
-                            <td>
-                                <input class="realQuantity" type="number" name="realActionQuantity" min="1">
-                                <input id="hidden-action-date-id" type="hidden" name="actionDateId" value="${ day.actionDateId }">
-                            </td>
-                            <!--위 체크박스를 선택하면 기본적으로 여기에는 planActionQuantity과 같은 값이 입력됨 vs 이 값 바꾸고 싶으면 number input 요소에 값 조정/입력-->
-                        </c:when>
-                        <c:otherwise>
-                            <td>
-                                <input class="realQuantity" type="number" name="realActionQuantity" value="${ day.realActionQuantity }">
-                                <input id="hidden-action-date-id" type="hidden" name="actionDateId" value="${ day.actionDateId }">
-                            </td>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <td>
-                        <button type="button"
-                                onclick="location.href='actionDetailRecordPage.pl?actionDateId=${ day.actionDateId }'">
-                            상세 기록
-                        </button>
-                    </td> <!--소요 시간 및 메모 기록하려면, 아래 버튼 눌러서 '1일 활동 내역 기록' 화면으로 가야 함-->
                 </tr>
             </c:forEach>
             </tbody>
@@ -138,51 +137,6 @@
     </div>
 
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
-
-<script>
-    $(function () {
-        console.log("---- start ----");
-
-        $(".checkInput").change(function () {
-            if ($(".check-input").is(":checked")) {
-                console.log("체크박스 체크했음");
-                alert("체크박스 체크했음");
-                // $(".realQuantity").val($("#plan-quantity").val());
-            } else {
-                console.log("체크박스 체크 해제했음");
-                alert("체크박스 체크 해제했음");
-                // $(".realQuantity").val(1);
-            }
-        });
-
-        // $("input[name='checkInput']:checked").
-    });
-
-    function createCheck() {
-        let $actionDateId = $("#hidden-action-date-id").val();
-        let $realActionQuantity = $("input[name='realActionQuantity']").val();
-
-        console.log("$actionDateId = " + $actionDateId);
-        console.log("$realActionQuantity = " + $realActionQuantity)
-
-        $.ajax({
-                url: "checkIsDone.pl",
-                method: "POST",
-                data: {
-                    actionDateId: $actionDateId,
-                    realActionQuantity: $realActionQuantity
-                },
-                success: function (result) {
-                    console.log(result);
-
-                },
-                error: function () {
-                    console.log("실제 수행 분량 등록을 위한  AJAX 통신 실패");
-                }
-            }
-        )
-    }
-</script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"/>
 

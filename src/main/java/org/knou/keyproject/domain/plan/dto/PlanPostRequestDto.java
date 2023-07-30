@@ -9,6 +9,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.global.exception.BusinessLogicException;
 import org.knou.keyproject.global.exception.ExceptionCode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,14 +17,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 // 2023.7.23(일) 20h45
+//@NoArgsConstructor
+//@Builder
 @Getter
 @Setter
-//@RequiredArgsConstructor
-//@NoArgsConstructor
-@Builder
+@RequiredArgsConstructor
 public class PlanPostRequestDto {
-    private MemberRepository memberRepository;
-//
+
+    final MemberRepository memberRepository;
     private Long memberId;
     private Integer isMeasurableNum;
     private String object;
@@ -75,13 +76,13 @@ public class PlanPostRequestDto {
         // 2023.7.23(일) 22h55 코드스테이츠 컨텐츠 보다가 mapper 코드 보니 아래와 같이 setter 없이 값 세팅 가능..
         Plan.PlanBuilder plan = Plan.builder();
 
-        Member findMember = null;
-
-        if (memberId != null) {
-            findMember = memberRepository.findById(memberId).orElse(null);
-        }
-
-        plan.member(findMember);
+//        Member findMember = null;
+//
+//        if (memberId != null) {
+//            findMember = memberRepository.findById(memberId).orElse(null);
+//        }
+//
+//        plan.member(findMember);
 
         if (isMeasurableNum == 1) {
             plan.isMeasurable(true);

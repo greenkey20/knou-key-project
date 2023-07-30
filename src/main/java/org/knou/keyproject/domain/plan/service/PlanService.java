@@ -18,5 +18,5 @@ public interface PlanService {
 
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
 
-    MyPlanDetailResponseDto findPlanById(Long planId);
+    Plan findPlanById(Long planId);
 }

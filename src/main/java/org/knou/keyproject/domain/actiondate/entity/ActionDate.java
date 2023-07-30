@@ -48,7 +48,7 @@ public class ActionDate extends BaseTimeEntity {
 //    }
 
     // 2023.7.26(수) 14h25 추가
-    private String actionDetail; // 메모
+    private String memo; // 메모
 
     private Integer planActionQuantity/* = this.plan.getQuantityPerDay()*/; // 계획 수행 분량
 
@@ -57,8 +57,9 @@ public class ActionDate extends BaseTimeEntity {
 //    }
 
     private Boolean isDone; // 수행 여부 <- JSP 체크박스
-    Integer realActionQuantity; // 실제 수행 분량
-    Integer timeTakenForRealAction;
+    private Integer realActionQuantity; // 실제 수행 분량
+    private Integer timeTakenForRealAction;
+    private Integer reviewScore;
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
