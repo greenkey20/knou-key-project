@@ -30,7 +30,7 @@
             <table border="seagreen">
                 <tr>
                     <td class="info">오늘의 날짜<span class="required">*</span></td>
-                    <td><input type="date" name="dateFormat" value="${ actionDate.dateFormat }" required></td>
+                    <td><input type="date" name="realActionDate" value="${ actionDate.dateFormat }" required></td>
                 </tr>
                 <tr>
                     <td class="info">
@@ -41,7 +41,7 @@
                 </tr>
                 <tr>
                     <td class="info">오늘 활동 소요시간을 기록해 보아요</td>
-                    <td><input type="number" name="timeTakeForRealAction" min="1"> 분</td>
+                    <td><input type="number" name="timeTakenForRealAction" min="1"> 분</td>
                 </tr>
                 <tr>
                     <td class="info">오늘 활동은 몇 점으로 평가할 수 있을까요?</td>
@@ -73,11 +73,12 @@
             </c:choose>
 
             <input type="hidden" name="planId" value="${ plan.planId }">
+            <input type="hidden" name="actionDateId" value="${ actionDate.actionDateId }">
 
             <div align="center">
                 <button type="button" onclick="window.history.back()">뒤로 가기</button>
 <%--                <button type="button" onclick="window.location.reload()" class="grayBtn">초기화</button>--%>
-                <button type="submit" class="greenBtn">계산하기</button> <!--onclick="location.href='newPlanInsert.pl'"-->
+                <button type="submit" class="greenBtn">저장</button> <!--onclick="location.href='newPlanInsert.pl'"-->
             </div>
         </form>
     </div>

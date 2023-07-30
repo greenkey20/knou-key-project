@@ -1,5 +1,6 @@
 package org.knou.keyproject.domain.actiondate.mapper;
 
+import org.knou.keyproject.domain.actiondate.dto.ActionDatePostRequestDto;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.mapstruct.Mapper;
@@ -12,4 +13,7 @@ public interface ActionDateMapper {
     ActionDateResponseDto toActionDateResponseDto(ActionDate entity);
 
     List<ActionDateResponseDto> entitiesToDtos(List<ActionDate> entites);
+
+    // 2023.7.31(월) 2h10
+    ActionDate toEntity(ActionDatePostRequestDto requestDto);
 }

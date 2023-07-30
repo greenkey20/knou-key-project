@@ -60,6 +60,7 @@ public class ActionDate extends BaseTimeEntity {
     private Integer realActionQuantity; // 실제 수행 분량
     private Integer timeTakenForRealAction;
     private Integer reviewScore;
+    private LocalDate realActionDate; // 실제 수행일, 사용자가 기록한 날짜
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
