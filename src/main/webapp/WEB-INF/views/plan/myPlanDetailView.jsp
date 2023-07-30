@@ -169,7 +169,7 @@
                 <td>수행 여부</td>
                 <td>수행 분량</td>
                 <td>활동 만족도</td>
-                <td>상세 기록</td>
+                <td>기록</td>
             </tr>
             </thead>
             <tbody>

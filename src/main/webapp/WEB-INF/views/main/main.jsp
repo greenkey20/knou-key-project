@@ -20,6 +20,9 @@
         <c:if test="${ not empty planList }">
             <h4>현재 수행 중인 활동</h4>
 
+            <div align="right"><button class="greenBtn" onclick="location.href='myPlanList.pl'">나의 일정 보기</button></div>
+            <br>
+
             <div id="my-plans-summary">
                 <br>
                 <table>
