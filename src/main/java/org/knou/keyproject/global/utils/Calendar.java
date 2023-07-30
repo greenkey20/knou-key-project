@@ -32,15 +32,15 @@ public class Calendar {
         List<ActionDate> actionDates = savedPlan.getActionDatesList();
 
         LocalDate startDate = savedPlan.getStartDate();
-        int startYear = startDate.getYear();
-        int startMonth = startDate.getMonthValue();
+//        int startYear = startDate.getYear();
+//        int startMonth = startDate.getMonthValue();
 //        ActionDate startDateInAd = new ActionDate(String.valueOf(startYear), startMonth, String.valueOf(startDate.getDayOfMonth()), startDate.getDayOfWeek().getValue(), DateType.ACTION);
 //        String startMonthAndYear = extractYearAndMonthInStrFromLocalDate(startDate);
 
         ActionDate lastActionDate = actionDates.get(actionDates.size() - 1);
         LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
-        int deadlineYear = deadlineDate.getYear();
-        int deadlineMonth = deadlineDate.getMonthValue();
+//        int deadlineYear = deadlineDate.getYear();
+//        int deadlineMonth = deadlineDate.getMonthValue();
 //        ActionDate deadlineDateInAd = new ActionDate(String.valueOf(deadlineYear), deadlineMonth, String.valueOf(deadlineDate.getDayOfMonth()), deadlineDate.getDayOfWeek().getValue(), DateType.ACTION);
 //        String deadlineMonthAndYear = extractYearAndMonthInStrFromLocalDate(deadlineDate);
 
@@ -48,7 +48,7 @@ public class Calendar {
         List<List<ActionDate>> calendars = new ArrayList<>();
 
         for (LocalDate date = startDate; date.isBefore(deadlineDate.plusMonths(1)); date = date.plusMonths(1)) {
-            String dateMonthAndYear = extractYearAndMonthInStrFromLocalDate(date);
+//            String dateMonthAndYear = extractYearAndMonthInStrFromLocalDate(date);
 
             ActionDate dateInAd = new ActionDate(String.valueOf(date.getYear()), date.getMonthValue(), String.valueOf(date.getDayOfMonth()), date.getDayOfWeek().getValue(), null);
             List<ActionDate> calendarDatesList = getCalendarDatesList(dateInAd);

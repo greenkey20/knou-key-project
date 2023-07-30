@@ -20,8 +20,17 @@ public class MyPlanDetailResponseDto {
     private String object;
     private Integer totalQuantity;
     private String unit;
+
+    private Boolean hasStartDate;
     private LocalDate startDate;
+    private Integer startYear;
+    private Integer startMonth;
+
     private LocalDate deadlineDate;
+    private Integer deadlineYear;
+    private Integer deadlineMonth;
+    private Boolean hasDeadline;
+
     private String frequencyDetail;
     private Integer totalDurationDays;
     private Integer totalNumOfActions;

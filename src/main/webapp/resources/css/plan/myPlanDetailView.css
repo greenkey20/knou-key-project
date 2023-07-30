@@ -43,6 +43,18 @@ div {
     color: seagreen;
 }
 
+.action {
+    color: greenyellow;
+}
+
+.today {
+    background-color: lightgray;
+}
+
+.done {
+    background-color: green;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }
