@@ -12,6 +12,7 @@ import org.knou.keyproject.domain.actiondate.entity.DateType;
 @NoArgsConstructor
 @Builder
 public class ActionDateResponseDto {
+    private Long actionDateId;
     private Long planId;
     private String numOfYear;
     private String numOfMonth;

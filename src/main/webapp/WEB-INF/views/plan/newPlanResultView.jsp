@@ -42,7 +42,7 @@
 
             </c:otherwise>
         </c:choose>
-        ${ savedPlan.frequencyDetail }, 총 ${ savedPlan.totalNumOfActions }회
+        ${ savedPlan.frequencyDetail }, 대략 총 ${ savedPlan.totalNumOfActions }회
         매 회 ${ savedPlan.quantityPerDay }${ savedPlan.unit}만큼 수행해야 합니다.
         <br>
         <br>
