@@ -70,4 +70,9 @@ public class ActionDateServiceImpl implements ActionDateService {
 
         return savedActionDate;
     }
+
+    @Override
+    public void deleteActionDate(Long actionDateId) {
+
+    }
 }

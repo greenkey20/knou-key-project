@@ -46,7 +46,7 @@
     <br>
     <button onclick="location.href='calculatorNew.pl'">새로 계산하기</button>
     <br>
-    <div class="smallerLetters">(계산 결과를 '나의 일정'에 추가하기 위해서는 로그인이 필요합니다)</div>
+    <div class="smallerLetters">(계산 결과를 '나의 일정'에 추가하기 위해서는<br>로그인이 필요합니다)</div>
     <br>
     <br>
     <br>

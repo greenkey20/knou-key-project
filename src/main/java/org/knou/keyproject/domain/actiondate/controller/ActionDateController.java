@@ -48,7 +48,7 @@ public class ActionDateController {
     }
 
     // 2023.7.31(월) 1h
-    @RequestMapping(value = "newActionDateInsert.ad")
+    @RequestMapping(value = "newActionDateInsert.ad", method = RequestMethod.POST)
     public String postNewActionDate(@ModelAttribute("actionDate") ActionDatePostRequestDto requestDto) {
         log.info("컨트롤러 메서드 postNewActionDate로 받은 requestDto = " + requestDto); // 2023.7.31(월) 2h {planId=1, dateFormat='2023-08-12', realActionQuantity=30, timeTakeForRealAction=null, reviewScore=5, memo=''}
         ActionDate savedActionDate = actionDateService.saveNewActionDate(requestDto);
@@ -59,10 +59,36 @@ public class ActionDateController {
 
     // 2023.7.30(일) 23h25
     @GetMapping("actionDetailView.ad")
-    public String actionDetailView(@RequestParam(name = "actionDateId") @Positive Long actionDateId, Model model) {
+    public String actionDetailView(@RequestParam(name = "planId") @Positive Long planId,
+                                   @RequestParam(name = "actionDateId") @Positive Long actionDateId,
+                                   Model model) {
+        Plan findPlan = planService.findPlanById(planId);
+        model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
 
+        ActionDate findActionDate = actionDateService.findByActionDateId(actionDateId);
+        model.addAttribute("actionDate", actionDateMapper.toActionDateResponseDto(findActionDate));
 
         return "actiondate/actionDetailView";
     }
 
+    // 2023.7.31(월) 5h40
+    @GetMapping("actionDetailUpdatePage.ad")
+    public String actionDetailUpdateForm(@RequestParam(name = "planId") @Positive Long planId,
+                                         @RequestParam(name = "actionDateId") @Positive Long actionDateId,
+                                         Model model) {
+        Plan findPlan = planService.findPlanById(planId);
+        model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
+
+        ActionDate findActionDate = actionDateService.findByActionDateId(actionDateId);
+        model.addAttribute("actionDate", actionDateMapper.toActionDateResponseDto(findActionDate));
+
+        return "actiondate/actionDetailUpdateForm";
+    }
+
+    @RequestMapping(value = "actionDetailDelete.ad", method = RequestMethod.POST)
+    public String deleteActionDate(@RequestParam(name = "actionDateId") @Positive Long actionDateId,
+                                   @RequestParam(name = "planId") @Positive Long planId) {
+        actionDateService.deleteActionDate(actionDateId);
+        return "redirect:myPlanDetail.pl?planId=" + planId;
+    }
 }
