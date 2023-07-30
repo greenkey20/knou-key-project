@@ -64,15 +64,26 @@ public class ActionDateServiceImpl implements ActionDateService {
         actionDateToSave.setIsDone(true);
 
         ActionDate savedActionDate = actionDateRepository.save(actionDateToSave);
-        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate);
-        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getIsDone());
-        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getRealActionDate()); // null이네.. toEntity 하는 것만으로는 저장 안 되었음
+//        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate);
+//        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getIsDone());
+//        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getRealActionDate()); // null이네.. toEntity 하는 것만으로는 저장 안 되었음
 
         return savedActionDate;
     }
 
+    // 2023.7.31(월) 6h45
     @Override
+    @Transactional
     public void deleteActionDate(Long actionDateId) {
+        ActionDate actionDateToDelete = actionDateRepository.findById(actionDateId).orElse(null);
 
+        actionDateToDelete.setMemo(null);
+        actionDateToDelete.setRealActionQuantity(null);
+        actionDateToDelete.setTimeTakenForRealAction(null);
+        actionDateToDelete.setReviewScore(null);
+        actionDateToDelete.setRealActionDate(null);
+        actionDateToDelete.setIsDone(false);
+
+        ActionDate deletedActionDate = actionDateRepository.save(actionDateToDelete);
     }
 }
