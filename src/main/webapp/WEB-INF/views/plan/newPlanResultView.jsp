@@ -101,7 +101,14 @@
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    </tr><tr><td class="holiday" align="left"> ${ date.numOfDate } </td>
+                                    <c:choose>
+                                        <c:when test="${ date.dateType.toString() eq 'TODAY'}">
+                                            </tr><tr><td class="holiday today" align="left"> ${ date.numOfDate } </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            </tr><tr><td class="holiday" align="left"> ${ date.numOfDate } </td>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:otherwise>
                             </c:choose>
                         </c:when>
@@ -118,7 +125,14 @@
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    <td align="left"> ${ date.numOfDate } </td>
+                                    <c:choose>
+                                        <c:when test="${ date.dateType.toString() eq 'TODAY' }">
+                                            <td class="today" align="left"> ${ date.numOfDate } </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td align="left"> ${ date.numOfDate } </td>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:otherwise>
                             </c:choose>
                         </c:otherwise>
