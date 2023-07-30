@@ -65,7 +65,7 @@ public class Calendar {
 
                     if (thisFormat.equals(actionDateFormat)) {
                         thisDate.setSchedule("action");
-//                    log.info("달력 날짜의 schedule로써 action 찍힙니다");
+                    log.info("달력 날짜의 schedule로써 action 찍힙니다");
                     } else {
 //                    log.info("달력 날짜의 schedule로써 action 안 찍힙니다 = format 비교가 안 되거나, 둘 다 null이거나..");
                     }

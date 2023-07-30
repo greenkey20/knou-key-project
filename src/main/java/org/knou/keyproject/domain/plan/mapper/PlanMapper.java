@@ -154,7 +154,7 @@ public interface PlanMapper {
             actionDateResponseDto.planActionQuantity(thisActionDate.getPlanActionQuantity());
             actionDateResponseDto.isDone(thisActionDate.getIsDone());
             actionDateResponseDto.realActionQuantity(thisActionDate.getRealActionQuantity());
-            actionDateResponseDto.timeTakeForRealAction(thisActionDate.getTimeTakenForRealAction());
+            actionDateResponseDto.timeTakenForRealAction(thisActionDate.getTimeTakenForRealAction());
             actionDateResponseDto.reviewScore(thisActionDate.getReviewScore());
 
             actionDates.add(actionDateResponseDto.build());

@@ -88,7 +88,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!--ajax 통신 결과 result에서 만든 태그들 붙여넣는 곳 vs 2023.7.25(화) 21h55 ajax로 안 하기로 함(할 필요 없음)-->
                 <c:forEach var="date" items="${ calendarDatesList }">
                     <c:choose>
                         <c:when test="${ date.numOfDay % 7 eq 0 }">
@@ -156,22 +155,21 @@
         <table class="actionDatesListTable" border="black" align="center">
             <colgroup>
                 <col style="width: 10%">
-                <col style="width: 25%">
+                <col style="width: 30%">
                 <col style="width: 10%">
                 <col style="width: 15%">
-                <col style="width: 25%">
+                <col style="width: 20%">
                 <col style="width: 15%">
             </colgroup>
 
             <thead>
             <tr>
-                <td width="35px">No</td>
-                <td width="140px">날짜</td>
-                <td width="50px">수행 여부</td>
-                <td width="35px%">수행 분량</td>
-                <td width="50px">활동 만족도</td>
-                <%--                <td>소요 시간</td>--%>
-                <td width="50px">기록</td>
+                <td>No</td>
+                <td>날짜</td>
+                <td>수행 여부</td>
+                <td>수행 분량</td>
+                <td>활동 만족도</td>
+                <td>상세 기록</td>
             </tr>
             </thead>
             <tbody>
@@ -222,7 +220,7 @@
                                 </c:otherwise>
                             </c:choose>
 
-                            <td><button type="button" onclick="location.href='actionDetailView.ad?planID=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button></td> <!--소요 시간 및 메모 기록하려면, 아래 버튼 눌러서 '1일 활동 내역 기록' 화면으로 가야 함-->
+                            <td><button type="button" onclick="location.href='actionDetailView.ad?planId=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button></td> <!--소요 시간 및 메모 기록하려면, 아래 버튼 눌러서 '1일 활동 내역 기록' 화면으로 가야 함-->
                         </c:otherwise>
                     </c:choose>
                 </tr>

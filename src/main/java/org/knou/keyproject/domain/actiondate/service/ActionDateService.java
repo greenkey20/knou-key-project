@@ -10,4 +10,7 @@ public interface ActionDateService {
     ActionDate findByActionDateId(Long actionDateId);
 
     ActionDate saveNewActionDate(ActionDatePostRequestDto requestDto);
+
+    // 2023.7.31(월) 6h10
+    void deleteActionDate(Long actionDateId);
 }
