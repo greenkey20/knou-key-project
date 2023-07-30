@@ -39,6 +39,11 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public Plan saveNewPlan(PlanPostRequestDto requestDto) {
         Plan planToCalculate = requestDto.toEntity();
+
+        if (requestDto.getMemberId() != null) {
+            planToCalculate.setMember(memberRepository.findById(requestDto.getMemberId()).orElse(null));
+        }
+
         Plan calculatedPlan = new Calculator().calculateNewPlan(planToCalculate);
         log.info("계산 결과 시작일 = " + calculatedPlan.getStartDate()); // 2023.7.29(토) 4h25 '계산 결과 시작일 = 2023-07-29' 찍힘
         log.info("계산 결과 활동일 중 첫번째 것 = " + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.29(토) 4h25 actionDatesList()가 비었다고 한다..
@@ -135,9 +140,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 2023.7.28(금) 1h45 MapStruct 사용하여 수정
     @Override
-    public MyPlanDetailResponseDto findPlanById(Long planId) {
-        Plan findPlan = planRepository.findById(planId).orElse(null);
-
-        return planMapper.toMyPlanDetailResponseDto(findPlan);
+    public Plan findPlanById(Long planId) {
+        return planRepository.findById(planId).orElse(null);
     }
 }

@@ -59,13 +59,17 @@ public interface PlanMapper {
             ActionDate thisActionDate = entity.getActionDatesList().get(i);
 
             if (thisActionDate == null) {
-                System.out.println("----------PlanMapper 여기에서 이미 null이에요-----------");
+//                System.out.println("----------PlanMapper 여기에서 이미 null이에요-----------");
                 return null;
             }
 
-            System.out.println("----------PlanMapper 여기에서 null은 아니에요-----------");
+//            System.out.println("----------PlanMapper 여기에서 null은 아니에요-----------");
 
             ActionDateResponseDto.ActionDateResponseDtoBuilder actionDateResponseDto = ActionDateResponseDto.builder();
+
+            // 2023.7.31(월) 0h5 나의 생각 = 이렇게 수기로 다 작성하는 게 좋은/맞는 방법 같지 않은데.. MapStruct 이용할 방법이 있을텐데!
+            actionDateResponseDto.actionDateId(thisActionDate.getActionDateId());
+            actionDateResponseDto.planId(thisActionDate.getPlan().getPlanId());
 
             actionDateResponseDto.numOfYear( thisActionDate.getNumOfYear() );
             if ( thisActionDate.getNumOfMonth() != null ) {
@@ -73,10 +77,17 @@ public interface PlanMapper {
             }
             actionDateResponseDto.numOfDate( thisActionDate.getNumOfDate() );
             actionDateResponseDto.numOfDay( thisActionDate.getNumOfDay() );
-            actionDateResponseDto.isDone( thisActionDate.getIsDone() );
-            actionDateResponseDto.planActionQuantity( thisActionDate.getPlanActionQuantity() );
-            actionDateResponseDto.realActionQuantity( thisActionDate.getRealActionQuantity() );
             actionDateResponseDto.dateFormat( thisActionDate.getDateFormat() );
+
+            actionDateResponseDto.dateType(thisActionDate.getDateType());
+            actionDateResponseDto.schedule(thisActionDate.getSchedule());
+
+            actionDateResponseDto.memo(thisActionDate.getMemo());
+            actionDateResponseDto.planActionQuantity( thisActionDate.getPlanActionQuantity() );
+            actionDateResponseDto.isDone( thisActionDate.getIsDone() );
+            actionDateResponseDto.realActionQuantity( thisActionDate.getRealActionQuantity() );
+            actionDateResponseDto.timeTakeForRealAction(thisActionDate.getTimeTakenForRealAction());
+            actionDateResponseDto.reviewScore(thisActionDate.getReviewScore());
 
             actionDates.add(actionDateResponseDto.build());
         }
