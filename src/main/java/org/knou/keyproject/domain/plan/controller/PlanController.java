@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
@@ -165,11 +166,14 @@ public class PlanController {
         return mv;
     }
 
-    // 2023.7.28(금) 0h
+    // 2023.7.28(금) 0h + 2023.7.30(일) 4h30
     @RequestMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model model) {
         MyPlanDetailResponseDto planResponseDto = planService.findPlanById(planId);
+        List<ActionDateResponseDto> actionDatesList = planResponseDto.getActionDatesList();
+
         model.addAttribute("plan", planResponseDto);
+        model.addAttribute("actionDatesList", actionDatesList);
         return "plan/myPlanDetailView";
     }
 
@@ -196,5 +200,19 @@ public class PlanController {
 //        return new Gson().toJson(actionDateList);
         mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/newPlanResultView");
         return mv;
+    }
+
+    // 2023.7.30(일) 6h45
+    @ResponseBody
+    @RequestMapping(value = "checkIsDone.pl", method = RequestMethod.POST)
+    public String postRealActionQuantity(Long actionDateId, Integer realActionQuantity) {
+        log.info("postRealActionQuantity() 컨트롤러 메서드에서 매개변수로 받은 값 realActionQuantity = " + realActionQuantity + ", actionDateId = " + actionDateId);
+        return "실제 수행 분량 등록 AJAX 통신 성공";
+    }
+
+    @GetMapping("actionDetailRecordPage.pl")
+    public String actionDetailRecordForm(@RequestParam(name = "actionDateId") @Positive Long actionDateId, Model model) {
+        model.addAttribute("actionDateId", actionDateId);
+        return "plan/actionDetailRecordForm";
     }
 }
