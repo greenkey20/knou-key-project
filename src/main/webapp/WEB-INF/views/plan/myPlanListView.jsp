@@ -48,7 +48,7 @@
                         <h3>${ p.object }</h3>
                     </div>
 
-                    <div class="object" float="right">
+                    <div class="object" align="right">
                         <input class="planId" type="hidden" name="planId" value="${ p.planId } ">
                         <button class="detailRequest" type="button" onclick="location.href='myPlanDetail.pl?planId=${ p.planId }'">상세 조회</button>
                     </div>

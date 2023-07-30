@@ -111,7 +111,7 @@ public class PlanController {
             session.setAttribute("alertMsg", "저장하시려면 로그인이 필요합니다");
             return "redirect:/loginPage.me";
         } else {
-            session.setAttribute("alertMsg", "해당 활동 계획이 나의 일정에 성공적으로 저장되었습니다!");
+//            session.setAttribute("alertMsg", "해당 활동 계획이 나의 일정에 성공적으로 저장되었습니다!");
             return "redirect:myPlanList.pl";
         }
     }
@@ -136,16 +136,16 @@ public class PlanController {
                                       HttpSession session,
                                       ModelAndView mv) {
         Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
-        log.info("plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
+        log.info("planController getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable); // todo dto 반환 고민해보기
 
         if (keyword != null) {
-            planList = planRepository.findByObjectContaining(keyword, pageable);
+            planList = planRepository.findByMemberMemberIdAndObjectContaining(memberId, keyword, pageable);
         }
 
         int pageNumber = planList.getPageable().getPageNumber(); // 현재 페이지
         int totalPages = planList.getTotalPages(); // 총 페이지 수  = 변수 size의 값
-        int pageBlock = 3; // 블럭의 수
+        int pageBlock = 5; // 블럭의 수
         int startBlockPage = (pageNumber / pageBlock) * pageBlock + 1; // 22h5 레퍼런스 설명으로는 이 식 이해 잘 안 됨
         int endBlockPage = startBlockPage + pageBlock - 1;
         endBlockPage = totalPages < endBlockPage ? totalPages : endBlockPage;

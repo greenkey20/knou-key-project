@@ -38,7 +38,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Transactional
     public Plan saveNewPlan(PlanPostRequestDto requestDto) {
-        Plan planToCalculate = requestDto.toEntity();
+        Plan planToCalculate = planMapper.toEntity(requestDto);
 
         if (requestDto.getMemberId() != null) {
             planToCalculate.setMember(memberRepository.findById(requestDto.getMemberId()).orElse(null));

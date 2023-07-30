@@ -17,4 +17,6 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     // 2023.7.27(목) 22h
     Page<Plan> findByObjectContaining(String keyword, Pageable pageable);
+
+    Page<Plan> findByMemberMemberIdAndObjectContaining(Long memberId, String keyword, Pageable pageable);
 }

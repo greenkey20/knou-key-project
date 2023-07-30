@@ -49,10 +49,12 @@ public class ActionDateController {
 
     // 2023.7.31(월) 1h
     @RequestMapping(value = "newActionDateInsert.ad")
-    public String postNewActionDate(@ModelAttribute("actionDate") ActionDatePostRequestDto requestDto, Model model) {
-        log.info("컨트롤러 메서드 postNewActionDate로 받은 requestDto = " + requestDto);
+    public String postNewActionDate(@ModelAttribute("actionDate") ActionDatePostRequestDto requestDto) {
+        log.info("컨트롤러 메서드 postNewActionDate로 받은 requestDto = " + requestDto); // 2023.7.31(월) 2h {planId=1, dateFormat='2023-08-12', realActionQuantity=30, timeTakeForRealAction=null, reviewScore=5, memo=''}
+        ActionDate savedActionDate = actionDateService.saveNewActionDate(requestDto);
+        Long planId = savedActionDate.getPlan().getPlanId();
 
-        return "redirect:myPlanList.pl";
+        return "redirect:myPlanDetail.pl?planId=" + planId;
     }
 
     // 2023.7.30(일) 23h25

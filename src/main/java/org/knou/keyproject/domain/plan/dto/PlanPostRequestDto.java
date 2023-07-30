@@ -1,30 +1,24 @@
 package org.knou.keyproject.domain.plan.dto;
 
-import lombok.*;
-import org.knou.keyproject.domain.member.entity.Member;
-import org.knou.keyproject.domain.member.repository.MemberRepository;
+import lombok.Getter;
+import lombok.Setter;
 import org.knou.keyproject.domain.plan.entity.DeadlineType;
 import org.knou.keyproject.domain.plan.entity.FrequencyType;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
-import org.knou.keyproject.global.exception.BusinessLogicException;
-import org.knou.keyproject.global.exception.ExceptionCode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 // 2023.7.23(일) 20h45
 //@NoArgsConstructor
 //@Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class PlanPostRequestDto {
 
-    final MemberRepository memberRepository;
+//    final MemberRepository memberRepository;
     private Long memberId;
     private Integer isMeasurableNum;
     private String object;
@@ -71,6 +65,8 @@ public class PlanPostRequestDto {
 //    }
 
     // view로부터 입력받은 정보만 Plan 객체에 맞춰서 (변환하고) 채움
+    // 2023.7.31(월) 2h10 PlanMapper로 옮김
+    /*
     public Plan toEntity() {
 //        Plan plan0 = new Plan();
         // 2023.7.23(일) 22h55 코드스테이츠 컨텐츠 보다가 mapper 코드 보니 아래와 같이 setter 없이 값 세팅 가능..
@@ -136,6 +132,7 @@ public class PlanPostRequestDto {
 
         return plan.build();
     }
+     */
 
     @Override
     public String toString() {

@@ -3,7 +3,10 @@ package org.knou.keyproject.domain.plan.mapper;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.plan.dto.*;
+import org.knou.keyproject.domain.plan.entity.DeadlineType;
+import org.knou.keyproject.domain.plan.entity.FrequencyType;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDate;
@@ -14,7 +17,72 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PlanMapper {
 
-//    Plan toEntity(PlanPostRequestDto planPostRequestDto);
+    // view로부터 입력받은 정보만 Plan 객체에 맞춰서 (변환하고) 채움
+    default Plan toEntity(PlanPostRequestDto planPostRequestDto) {
+        //        Plan plan0 = new Plan();
+        // 2023.7.23(일) 22h55 코드스테이츠 컨텐츠 보다가 mapper 코드 보니 아래와 같이 setter 없이 값 세팅 가능..
+        Plan.PlanBuilder plan = Plan.builder();
+
+//        Member findMember = null;
+//
+//        if (memberId != null) {
+//            findMember = memberRepository.findById(memberId).orElse(null);
+//        }
+//
+//        plan.member(findMember);
+
+        if (planPostRequestDto.getIsMeasurableNum() == 1) {
+            plan.isMeasurable(true);
+        } else {
+            plan.isMeasurable(false);
+        }
+
+        plan.object(planPostRequestDto.getObject());
+        plan.totalQuantity(planPostRequestDto.getTotalQuantity());
+        plan.unit(planPostRequestDto.getUnit());
+
+        if (planPostRequestDto.getHasStartDate() == 1) {
+            plan.hasStartDate(true);
+        } else {
+            plan.hasStartDate(false);
+        }
+
+        plan.startDate(planPostRequestDto.getStartDate());
+
+        switch (planPostRequestDto.getFrequencyTypeNum()) {
+            case 1:
+                plan.frequencyType(FrequencyType.DATE);
+                break;
+            case 2:
+                plan.frequencyType(FrequencyType.EVERY);
+                break;
+            case 3:
+                plan.frequencyType(FrequencyType.TIMES);
+                break;
+        }
+
+        plan.frequencyDetail(planPostRequestDto.getFrequencyDetail());
+
+        if (planPostRequestDto.getHasDeadline() == 1) {
+            plan.hasDeadline(true);
+
+            if (planPostRequestDto.getDeadlineTypeNum() == 1) {
+                plan.deadlineType(DeadlineType.DATE);
+                plan.deadlineDate(planPostRequestDto.getDeadlineDate());
+            } else {
+                plan.deadlineType(DeadlineType.PERIOD);
+                plan.deadlinePeriod(planPostRequestDto.getDeadlinePeriod());
+
+            }
+        } else {
+            plan.hasDeadline(false);
+            plan.quantityPerDayPredicted(planPostRequestDto.getQuantityPerDayPredicted());
+        }
+
+        plan.status(PlanStatus.RESULT);
+
+        return plan.build();
+    }
 
     Plan toEntity(MyPlanPostRequestDto myPlanPostRequestDto);
 
@@ -71,21 +139,21 @@ public interface PlanMapper {
             actionDateResponseDto.actionDateId(thisActionDate.getActionDateId());
             actionDateResponseDto.planId(thisActionDate.getPlan().getPlanId());
 
-            actionDateResponseDto.numOfYear( thisActionDate.getNumOfYear() );
-            if ( thisActionDate.getNumOfMonth() != null ) {
-                actionDateResponseDto.numOfMonth( String.valueOf( thisActionDate.getNumOfMonth() ) );
+            actionDateResponseDto.numOfYear(thisActionDate.getNumOfYear());
+            if (thisActionDate.getNumOfMonth() != null) {
+                actionDateResponseDto.numOfMonth(String.valueOf(thisActionDate.getNumOfMonth()));
             }
-            actionDateResponseDto.numOfDate( thisActionDate.getNumOfDate() );
-            actionDateResponseDto.numOfDay( thisActionDate.getNumOfDay() );
-            actionDateResponseDto.dateFormat( thisActionDate.getDateFormat() );
+            actionDateResponseDto.numOfDate(thisActionDate.getNumOfDate());
+            actionDateResponseDto.numOfDay(thisActionDate.getNumOfDay());
+            actionDateResponseDto.dateFormat(thisActionDate.getDateFormat());
 
             actionDateResponseDto.dateType(thisActionDate.getDateType());
             actionDateResponseDto.schedule(thisActionDate.getSchedule());
 
             actionDateResponseDto.memo(thisActionDate.getMemo());
-            actionDateResponseDto.planActionQuantity( thisActionDate.getPlanActionQuantity() );
-            actionDateResponseDto.isDone( thisActionDate.getIsDone() );
-            actionDateResponseDto.realActionQuantity( thisActionDate.getRealActionQuantity() );
+            actionDateResponseDto.planActionQuantity(thisActionDate.getPlanActionQuantity());
+            actionDateResponseDto.isDone(thisActionDate.getIsDone());
+            actionDateResponseDto.realActionQuantity(thisActionDate.getRealActionQuantity());
             actionDateResponseDto.timeTakeForRealAction(thisActionDate.getTimeTakenForRealAction());
             actionDateResponseDto.reviewScore(thisActionDate.getReviewScore());
 

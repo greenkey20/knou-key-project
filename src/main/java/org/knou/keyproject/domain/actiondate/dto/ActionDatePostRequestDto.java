@@ -3,6 +3,8 @@ package org.knou.keyproject.domain.actiondate.dto;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+
 // 2023.7.31(월) 1h5
 @Getter
 @Setter
@@ -10,14 +12,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Builder
 public class ActionDatePostRequestDto {
+    private Long actionDateId;
     private Long planId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String dateFormat;
+    private LocalDate realActionDate;
 
     private Integer realActionQuantity;
 
-    private Integer timeTakeForRealAction; // null일 수 있음
+    private Integer timeTakenForRealAction; // null일 수 있음
     private Integer reviewScore; // null일 수 있음
     private String memo; // null일 수 있음
 
@@ -25,9 +28,9 @@ public class ActionDatePostRequestDto {
     public String toString() {
         return "ActionDatePostRequestDto{" +
                 "planId=" + planId +
-                ", dateFormat='" + dateFormat + '\'' +
+                ", realActionDate=" + realActionDate +
                 ", realActionQuantity=" + realActionQuantity +
-                ", timeTakeForRealAction=" + timeTakeForRealAction +
+                ", timeTakenForRealAction=" + timeTakenForRealAction +
                 ", reviewScore=" + reviewScore +
                 ", memo='" + memo + '\'' +
                 '}';
