@@ -27,7 +27,7 @@
                         <c:if test="${ p.status.toString() eq 'ACTIVE' }">
                             <tr>
                                 <td class="mainCheck">✔️</td>
-                            <td><span class="boldFont">${ p.object }️ x</span>/총 ${ p.totalDurationDays }회 | xx% 분량 ( <span class="boldFont">x</span>/총 ${ p.totalQuantity }${ p.unit } 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
+                                <td><span class="boldFont">${ p.object }️ x</span>/총 ${ p.totalDurationDays }회 | xx% 분량 ( <span class="boldFont">x</span>/총 ${ p.totalQuantity }${ p.unit } 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
                             </tr>
                         </c:if>
                     </c:forEach>

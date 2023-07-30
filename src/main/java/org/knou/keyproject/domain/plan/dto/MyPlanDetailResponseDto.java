@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
-import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.entity.PlanStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +27,7 @@ public class MyPlanDetailResponseDto {
     private Integer totalNumOfActions;
     private Integer quantityPerDay;
     private List<ActionDateResponseDto> actionDatesList;
+    private PlanStatus status;
 
     // 통계 자료
     // 2023.7.28(금) 20h35

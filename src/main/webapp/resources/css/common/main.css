@@ -19,3 +19,11 @@ div {
     border: 1px yellow;
     background-color: lightgreen;
 }
+
+.mainCheck {
+    vertical-align: top;
+}
+
+.boldFont {
+    font-weight: bold;
+}
