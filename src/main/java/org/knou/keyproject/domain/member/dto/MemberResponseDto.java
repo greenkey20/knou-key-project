@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
+import org.knou.keyproject.domain.member.entity.MemberStatus;
 import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class MemberResponseDto {
     public static class AfterLoginMemberDto{
         private Long memberId;
         private String nickname;
-        private List<MyPlanListResponseDto> planDtoList;
-        private List<ActionDateResponseDto> actionDatesList;
+        private String profileImageUrl;
+        private MemberStatus status;
     }
 }

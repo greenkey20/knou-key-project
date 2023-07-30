@@ -90,4 +90,7 @@ public interface PlanMapper {
     MyPlanListResponseDto toMyPlanListResponseDto(Plan entity);
 
     MyPlanDetailResponseDto toMyPlanDetailResponseDto(Plan entity);
+
+    // 2023.7.30(일) 21h5
+    List<MyPlanDetailResponseDto> toMyPlanDetailResponseDtos(List<Plan> entities);
 }

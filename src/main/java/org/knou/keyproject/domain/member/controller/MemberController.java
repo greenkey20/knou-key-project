@@ -8,18 +8,13 @@ import org.hibernate.Hibernate;
 import org.knou.keyproject.domain.member.dto.MemberLoginRequestDto;
 import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
 import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.service.MemberService;
-import org.knou.keyproject.domain.plan.entity.Plan;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 // 2023.7.24(월) 15h5
 @Slf4j
@@ -29,6 +24,8 @@ import java.util.List;
 @Controller
 public class MemberController {
     private final MemberService memberService;
+    private final MemberMapper memberMapper;
+    private final PlanMapper planMapper;
 
     @RequestMapping(value = "loginPage.me", method = RequestMethod.GET)
     public String loginPage(HttpServletRequest request) {
@@ -58,8 +55,8 @@ public class MemberController {
 
         if (loginMember != null) {
             Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
-            session.setAttribute("loginUser", loginMember);
-            session.setAttribute("planList", loginMember.getPlanList());
+            session.setAttribute("loginUser", memberMapper.toAfterLoginMemberDto(loginMember));
+            session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(loginMember.getPlanList()));
             session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!"); // 2023.7.28(금) 23h50 현재 이 alert창 안 뜸
 //            mv.setViewName("redirect:/");
         } else {

@@ -5,17 +5,17 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
-import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
 import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
-import org.knou.keyproject.domain.actiondate.entity.ActionDate;
-import org.knou.keyproject.domain.plan.mapper.PlanMapper;
-import org.knou.keyproject.global.utils.Calendar;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
+import org.knou.keyproject.global.utils.Calendar;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static org.knou.keyproject.global.utils.Calendar.getCalendarDatesList;
 
@@ -124,7 +123,7 @@ public class PlanController {
         session.removeAttribute("requestDto");
         session.removeAttribute("status");
 
-        requestDto.setMemberId(((Member) session.getAttribute("loginUser")).getMemberId());
+        requestDto.setMemberId(((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId());
 
         planService.saveMyNewPlanAfterLogin(requestDto);
 
@@ -136,7 +135,7 @@ public class PlanController {
                                       @RequestParam(required = false, defaultValue = "") String keyword,
                                       HttpSession session,
                                       ModelAndView mv) {
-        Long memberId = ((Member) session.getAttribute("loginUser")).getMemberId();
+        Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
         log.info("plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable); // todo dto 반환 고민해보기
 
