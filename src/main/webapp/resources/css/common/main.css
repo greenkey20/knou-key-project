@@ -27,3 +27,7 @@ div {
 .boldFont {
     font-weight: bold;
 }
+
+.smallerLetters {
+    font-size: small;
+}

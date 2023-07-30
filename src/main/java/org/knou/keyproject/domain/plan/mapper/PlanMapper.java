@@ -168,7 +168,88 @@ public interface PlanMapper {
 
     MyPlanListResponseDto toMyPlanListResponseDto(Plan entity);
 
-    MyPlanDetailResponseDto toMyPlanDetailResponseDto(Plan entity);
+    ///////// 구현 클래스에서 가져옴 ㅠㅠ /////////
+    // 2023.7.31(월) 4h15 일단 수기로 작성 ㅠㅠ
+    default MyPlanDetailResponseDto toMyPlanDetailResponseDto(Plan entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        MyPlanDetailResponseDto.MyPlanDetailResponseDtoBuilder myPlanDetailResponseDto = MyPlanDetailResponseDto.builder();
+
+        myPlanDetailResponseDto.planId(entity.getPlanId());
+        myPlanDetailResponseDto.object(entity.getObject());
+        myPlanDetailResponseDto.totalQuantity(entity.getTotalQuantity());
+        myPlanDetailResponseDto.unit(entity.getUnit());
+
+        myPlanDetailResponseDto.hasStartDate(entity.getHasStartDate());
+        myPlanDetailResponseDto.startDate(entity.getStartDate());
+        myPlanDetailResponseDto.startYear(entity.getStartDate().getYear());
+        myPlanDetailResponseDto.startMonth(entity.getStartDate().getMonthValue());
+
+        if (entity.getHasDeadline()) {
+            myPlanDetailResponseDto.deadlineDate(entity.getDeadlineDate());
+            myPlanDetailResponseDto.deadlineYear(entity.getDeadlineDate().getYear());
+            myPlanDetailResponseDto.deadlineMonth(entity.getDeadlineDate().getMonthValue());
+        } else {
+            ActionDate lastActionDate = entity.getActionDatesList().get(entity.getActionDatesList().size() - 1);
+            LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
+            myPlanDetailResponseDto.deadlineDate(deadlineDate);
+            myPlanDetailResponseDto.deadlineYear(deadlineDate.getYear());
+            myPlanDetailResponseDto.deadlineMonth(deadlineDate.getMonthValue());
+        }
+
+        myPlanDetailResponseDto.hasDeadline(entity.getHasDeadline());
+
+        myPlanDetailResponseDto.frequencyDetail(entity.getFrequencyDetail());
+        myPlanDetailResponseDto.totalDurationDays(entity.getTotalDurationDays());
+        myPlanDetailResponseDto.totalNumOfActions(entity.getTotalNumOfActions());
+        myPlanDetailResponseDto.quantityPerDay(entity.getQuantityPerDay());
+        myPlanDetailResponseDto.actionDatesList(actionDateListToActionDateResponseDtoList(entity.getActionDatesList()));
+        myPlanDetailResponseDto.status(entity.getStatus());
+
+        return myPlanDetailResponseDto.build();
+    }
+
+    default ActionDateResponseDto actionDateToActionDateResponseDto(ActionDate actionDate) {
+        if (actionDate == null) {
+            return null;
+        }
+
+        ActionDateResponseDto.ActionDateResponseDtoBuilder actionDateResponseDto = ActionDateResponseDto.builder();
+
+        actionDateResponseDto.actionDateId(actionDate.getActionDateId());
+        actionDateResponseDto.numOfYear(actionDate.getNumOfYear());
+        if (actionDate.getNumOfMonth() != null) {
+            actionDateResponseDto.numOfMonth(String.valueOf(actionDate.getNumOfMonth()));
+        }
+        actionDateResponseDto.numOfDate(actionDate.getNumOfDate());
+        actionDateResponseDto.numOfDay(actionDate.getNumOfDay());
+        actionDateResponseDto.dateFormat(actionDate.getDateFormat());
+        actionDateResponseDto.dateType(actionDate.getDateType());
+        actionDateResponseDto.schedule(actionDate.getSchedule());
+        actionDateResponseDto.memo(actionDate.getMemo());
+        actionDateResponseDto.planActionQuantity(actionDate.getPlanActionQuantity());
+        actionDateResponseDto.isDone(actionDate.getIsDone());
+        actionDateResponseDto.realActionQuantity(actionDate.getRealActionQuantity());
+        actionDateResponseDto.reviewScore(actionDate.getReviewScore());
+
+        return actionDateResponseDto.build();
+    }
+
+    default List<ActionDateResponseDto> actionDateListToActionDateResponseDtoList(List<ActionDate> list) {
+        if (list == null) {
+            return null;
+        }
+
+        List<ActionDateResponseDto> list1 = new ArrayList<ActionDateResponseDto>(list.size());
+        for (ActionDate actionDate : list) {
+            list1.add(actionDateToActionDateResponseDto(actionDate));
+        }
+
+        return list1;
+    }
+    ///////// 구현 클래스에서 가져옴 ㅠㅠ /////////
 
     // 2023.7.30(일) 21h5
     List<MyPlanDetailResponseDto> toMyPlanDetailResponseDtos(List<Plan> entities);

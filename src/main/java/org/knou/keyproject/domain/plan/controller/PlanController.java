@@ -165,14 +165,19 @@ public class PlanController {
         return mv;
     }
 
-    // 2023.7.28(금) 0h + 2023.7.30(일) 4h30
+    // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
     @RequestMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model model) {
-        MyPlanDetailResponseDto findPlan= planMapper.toMyPlanDetailResponseDto(planService.findPlanById(planId));
-        List<ActionDateResponseDto> actionDatesList = findPlan.getActionDatesList();
+        Plan findPlan = planService.findPlanById(planId);
+        MyPlanDetailResponseDto findPlanDto = planMapper.toMyPlanDetailResponseDto(findPlan);
+        List<ActionDateResponseDto> actionDatesList = findPlanDto.getActionDatesList();
 
-        model.addAttribute("plan", findPlan);
+        // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
+        List<List<ActionDate>> calendars = Calendar.getCalendars(findPlan); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
+
+        model.addAttribute("plan", findPlanDto);
         model.addAttribute("actionDatesList", actionDatesList);
+        model.addAttribute("calendars", calendars);
         return "plan/myPlanDetailView";
     }
 

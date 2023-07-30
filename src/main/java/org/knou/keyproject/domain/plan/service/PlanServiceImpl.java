@@ -2,6 +2,7 @@ package org.knou.keyproject.domain.plan.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
 import org.knou.keyproject.domain.member.entity.Member;
@@ -141,6 +142,14 @@ public class PlanServiceImpl implements PlanService {
     // 2023.7.28(금) 1h45 MapStruct 사용하여 수정
     @Override
     public Plan findPlanById(Long planId) {
-        return planRepository.findById(planId).orElse(null);
+        Plan findPlan = planRepository.findById(planId).orElse(null);
+
+        // 2023.7.31(월) 4h 일정 상세보기 페이지에서 달력 출력하기 위해 추가(fetch lazy라서 이게 필요하다? JPA 잘 모르고 하려니까 힘들다 ㅠㅠ)
+        List<ActionDate> findActionDates = actionDateRepository.findByPlanPlanId(planId);
+        if (findActionDates != null) {
+            findPlan.setActionDatesList(findActionDates);
+        }
+
+        return findPlan;
     }
 }
