@@ -19,4 +19,6 @@ public interface PlanService {
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
 
     Plan findPlanById(Long planId);
+
+    List<BookInfoDto> searchBookTitle(String bookSearchKeyword);
 }

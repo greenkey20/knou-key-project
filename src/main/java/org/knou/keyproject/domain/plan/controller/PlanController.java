@@ -1,5 +1,6 @@
 package org.knou.keyproject.domain.plan.controller;
 
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +9,7 @@ import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
-import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
-import org.knou.keyproject.domain.plan.dto.MyPlanPostRequestDto;
-import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
+import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
@@ -166,7 +165,7 @@ public class PlanController {
     }
 
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
-    @RequestMapping("myPlanDetail.pl")
+    @GetMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model model) {
         Plan findPlan = planService.findPlanById(planId);
         MyPlanDetailResponseDto findPlanDto = planMapper.toMyPlanDetailResponseDto(findPlan);
@@ -204,5 +203,15 @@ public class PlanController {
 //        return new Gson().toJson(actionDateList);
         mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/newPlanResultView");
         return mv;
+    }
+
+    // 2023.7.31(월) 18h45
+    @ResponseBody
+    @RequestMapping("bookTitleSearch.pl")
+    public String ajaxSearchBookTitle(String bookSearchKeyword, Model model) {
+        log.info("컨트롤러 메서드 searchBookTitle()에 들어오는 검색 키워드 = " + bookSearchKeyword);
+        List<BookInfoDto> responseDtos = planService.searchBookTitle(bookSearchKeyword);
+//        model.addAttribute("bookSearchResults", responseDtos);
+        return new Gson().toJson(responseDtos);
     }
 }

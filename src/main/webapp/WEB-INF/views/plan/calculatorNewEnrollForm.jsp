@@ -48,20 +48,119 @@
             <span class="question">수행 목표 대상은 무엇인가요?</span>
             <span class="smallerLetters">(예시: 책/교과서/수험서/악보/원고 등 pages, 과목/단어/문제 등 개수, 자격증, 체중 등)</span>
             <br>
-            <input type="text" name="object" required>
+            <input id="object-input" type="text" name="object" required>
             <br>
 
             <br>
             <div id="search-book-on-aladin" style="font-style: italic">
                 * 목표 대상이 도서인 경우, 검색해서 목표 분량을 기재할 수 있어요!
                 <br>
-                <input type="text" name="bookSearchKeyword" placeholder="도서명(전체 또는 일부)을 입력해 주세요">
-                <div id="auto-complete"></div>
+                <!--2023.7.31(월) 18h40-->
+<%--                <form class="searchBookForm" action="bookTitleSearch.pl" method="GET">--%>
+                    <div class="searchBookArea">
+                        <input type="text" id="book-search-input" name="bookSearchKeyword" placeholder="제목이나 저자명을 입력해 주세요">
+                        <button type="button" onclick="searchBookTitle();">검색</button>
+                    </div>
+                    <div id="auto-complete">
+                        <table class="table" id="books-table">
+                            <tbody id="book-list">
+
+                            </tbody>
+                        </table>
+                        <br>
+
+                        <button type="button" id="select-book-btn" onclick="confirmBook();">선택</button> <!--onclick="confirmBook();-->
+                    </div>
+<%--                </form>--%>
             </div>
             <br>
 
+<script>
+    function searchBookTitle() {
+        let $keyword = $("#book-search-input").val();
+        console.log("keyword 변수의 값 = " + $keyword);
+
+        $.ajax({
+            url: "bookTitleSearch.pl",
+            dataType: 'json',
+            data: {
+                bookSearchKeyword: $keyword
+            },
+            success: function (result) {
+                console.log(result);
+
+                // 2023.7.31(월) 22h5 도전!
+                let tbody = "";
+
+                if (!result.length) { // 검색 결과가 없는 경우
+                    tbody = "<tr><td colspan='2'>검색 결과가 없습니다</td></tr>";
+                } else {
+                    $.each(result, function (index, item) {
+                        tbody += "<tr>"
+                                + "<td rowspan='4'>"
+                                + "<img src='" + item.cover + "'>"
+                                + "<br>"
+                                + "<input type='radio' id='select-book' name='selectBook'>"
+                                + "</td>"
+                                + "<td class='question'>" + item.title + " (ISBN " + item.isbn13 + ")</td>"
+                                + "</tr>";
+                        tbody += "<tr>"
+                                + "<td>" + item.author + "</td>"
+                                + "</tr>";
+                        tbody += "<tr>"
+                                + "<td>" + item.publisher + ", " + item.pubDate + "</td>"
+                                + "</tr>";
+                        tbody += "<tr id='num-of-pages-row'>"
+                                + "<td><span id='num-of-pages-digits'>" + item.numOfPages + "</span><span>페이지</span></td>"
+                                + "</tr>";
+                    });
+
+                    // $.each(result, function (index, item) {
+                    //     $("#auto-complete").append("<" + item.title + "> ");
+                    //     $("#auto-complete").append(item.author + " | ");
+                    //     $("#auto-complete").append(item.publisher + ", ");
+                    //     $("#auto-complete").append(item.pubDate + " | ");
+                    //     $("#auto-complete").append(item.isbn13 + ", ");
+                    //     $("#auto-complete").append("총 " + item.numOfPages + "페이지");
+                    // });
+                }
+
+                $("#book-list").html(tbody);
+
+            },
+            error: function () {
+                console.log("키워드로 책 검색 AJAX 실패");
+            },
+        });
+    }
+
+    // $(function () {
+    //     $("#select-book-btn").click(function () {
+    //         let $title = $("input[type=radio]:checked").parent().siblings().eq(0).text();
+    //         let $numOfPages = $("input[type=radio]:checked").closest($("#num-of-pages-row")).children().eq(0).children().eq(0).text;
+    //         console.log("title = " + $title + ", numOfPages = " + $numOfPages)
+    //
+    //         $("input[name=object]").val($title);
+    //         $("input[name=totalQuantity]").val($numOfPages);
+    //
+    //         $("#books-table").hide();
+    //     });
+    // });
+
+    function confirmBook() {
+        let $title = $("input[type=radio]:checked").parent().siblings().eq(0).text();
+        let $numOfPages = $("input[type=radio]:checked").closest($("#num-of-pages-row")).children().eq(0).children().eq(0).text;
+        console.log("title = " + $title + ", numOfPages = " + $numOfPages)
+
+        $("#object-input input[name=object]").val($title);
+        $("#total-quantity-input input[name=totalQuantity]").val($numOfPages);
+
+        $("#books-table").hide();
+    }
+</script>
+
             <span class="question">목표 수량/분량을 기재해 주세요</span>
-            <input type="number" name="totalQuantity" min="1" required>
+            <input id="total-quantity-input" type="number" name="totalQuantity" min="1" required>
             <br>
             <br>
 

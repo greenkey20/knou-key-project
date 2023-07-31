@@ -9,17 +9,19 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.member.service.MemberService;
 import org.knou.keyproject.domain.plan.dto.*;
-import org.knou.keyproject.domain.plan.mapper.PlanMapper;
-import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
+import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
+import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,5 +153,57 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return findPlan;
+    }
+
+    // 2023.7.31(월) 19h20
+//    @Value("${aladin.requesturl}")
+//    public static String listRequestUrl;
+
+    @Override
+    public List<BookInfoDto> searchBookTitle(String bookSearchKeyword) {
+        // 알라딘 도서 검색 open API 호출 -> json data 결과 얻기 -> json data 결과 얻어 item에 해당하는 값들을 가져옴
+        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbgreenkey201608001&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101";
+
+        RestTemplate restTemplate = new RestTemplate();
+        BooksListSearchResponseDto responseDto = restTemplate.getForObject(listRequestUrl, BooksListSearchResponseDto.class, bookSearchKeyword);
+
+        List<BooksListSearchResponseDto.Item> items = responseDto.getItem();
+
+        List<BookInfoDto> bookInfoDtos = new ArrayList<>();
+
+        for (BooksListSearchResponseDto.Item item : items) {
+            String isbn = item.getIsbn13();
+            if (isbn.length() == 13) {
+                Integer numOfPages = getNumOfPages(isbn);
+
+                BookInfoDto bookInfoDto = BookInfoDto.builder()
+                        .title(item.getTitle())
+                        .author(item.getAuthor())
+                        .pubDate(item.getPubDate())
+                        .description(item.getDescription())
+                        .isbn13(item.getIsbn13())
+                        .cover(item.getCover())
+                        .publisher(item.getPublisher())
+                        .numOfPages(numOfPages)
+                        .build();
+
+                log.info("이번에 담기는 item = " + bookInfoDto);
+                bookInfoDtos.add(bookInfoDto);
+            }
+        }
+
+        return bookInfoDtos;
+    }
+
+    private Integer getNumOfPages(String isbn) {
+        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001&itemIdType=ISBN&ItemId=" + isbn + "&output=js&Version=20131101";
+        RestTemplate restTemplate = new RestTemplate();
+        BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
+
+        if (!responseDto.getItem().isEmpty()) {
+            return responseDto.getItem().get(0).getSubInfo().getItemPage();
+        } else {
+            return null;
+        }
     }
 }
