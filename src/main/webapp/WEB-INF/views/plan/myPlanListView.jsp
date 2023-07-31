@@ -31,10 +31,11 @@
             <!--2023.7.27(목) 21h10 추가-->
             <!--검색 영역 시작-->
             <div id="search-area" float="right">
-                <form action="myPlanList.pl" method="GET">
-                    검색 <input type="text" id="form" name="keyword" onkeyup="enterKey();" placeholder="활동 제목으로 검색합니다">
-                        <%--            <span><button type="submit" class="grayBtn"><span>--%>
-                </form>
+<%--                <form action="myPlanList.pl" method="GET">--%>
+<%--                    검색 <input type="text" id="form" name="keyword" onkeyup="enterKey();" placeholder="활동 제목으로 검색합니다">--%>
+                <input type="text" id="form" name="keyword" placeholder="활동 제목으로 검색합니다">
+                <span><button type="submit" class="grayBtn" onclick="location.href='myPlanList.pl'">검색</button><span>
+<%--                </form>--%>
             </div>
             <!--검색 영역 끝-->
 
