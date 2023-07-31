@@ -51,6 +51,12 @@ public class PlanController {
         return "plan/calculatorNewEnrollForm";
     }
 
+    // 2023.8.1(화) 1H5
+    @GetMapping("calculatorNewForBook.pl")
+    public String calculatorNewEnrollFormForBook() {
+        return "plan/calculatorNewEnrollFormForBook";
+    }
+
     // 2023.7.24(월) 1h 수정
 
     /**
