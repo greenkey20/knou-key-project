@@ -38,6 +38,10 @@ div {
     background-color: rgb(182, 238, 86);
 }
 
+.smallerLetters {
+    font-size: small;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }
