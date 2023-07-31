@@ -40,7 +40,7 @@ function searchBookTitle() {
                         + "<td>" + item.publisher + ", " + item.pubDate + "</td>"
                         + "</tr>";
                     tbody += "<tr id='num-of-pages-row'>"
-                        + "<td><div align='center'><input type='radio' id='select-book' name='selectBook'></div></td>"
+                        + "<td><div align='center'><input type='radio' id='selectBook' name='selectBook' value='hello" + index + "'></div></td>"
                         + "<td><span id='num-of-pages-digits'>" + item.numOfPages + "</span><span>페이지</span></td>"
                         + "</tr>";
                 });
@@ -58,10 +58,10 @@ function searchBookTitle() {
 }
 
 // $(function () {
-//     $("#select-book-btn").click(function () {
-//         console.log("책 선택 버튼 이벤트 발생해요~")
-//         let $title = $("#book-title").text();
-//         let $numOfPages = $("#num-of-pages-digits").text();
+//     $("#select-book").change(function () {
+//         console.log("책 선택 radio 버튼 이벤트 발생해요~")
+//         let $title = $(this).siblings("#book-title").text();
+//         let $numOfPages = $(this).siblings("#num-of-pages-digits").text();
 //         console.log("title = " + $title + ", numOfPages = " + $numOfPages)
 //
 //         $("#object-div").text($title);
@@ -76,8 +76,9 @@ function searchBookTitle() {
 
 function confirmBook() {
     console.log("confirmBook() 함수 호출되었어요")
-    let $title = $("#book-title").text();
+    let $title = $("input[name='selectBook']:checked").val(); // .parent().children().eq(0).text()
     let $numOfPages = $("#num-of-pages-digits").text();
+    console.log()
     console.log("title = " + $title + ", numOfPages = " + $numOfPages)
 
     $("#object-div").text($title);
