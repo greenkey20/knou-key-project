@@ -46,7 +46,7 @@
         <%-- 측정 가능한 일인 경우, 추가 질문들을 담은 div를 보이게 함 --%>
         <div id="measurable-questions" style="display: none">
             <span class="question">수행 목표 대상은 무엇인가요?</span>
-            (예시: 책/교과서/수험서/악보/원고 등 pages, 과목/단어/문제 등 개수, 자격증, 체중 등)
+            <span class="smallerLetters">(예시: 책/교과서/수험서/악보/원고 등 pages, 과목/단어/문제 등 개수, 자격증, 체중 등)</span>
             <br>
             <input type="text" name="object" required>
             <br>
@@ -103,8 +103,8 @@
 
             <div class="question">목표 달성 (희망)기한이 정해져 있나요?</div>
             <div id="has-deadline">
-                <input type="radio" name="hasDeadline" value="1" onclick="selectHasDeadline()"> 네 (시험, 면접, 보고서/과제 제출 등
-                날짜가 주어진 경우)
+                <input type="radio" name="hasDeadline" value="1" onclick="selectHasDeadline()"> 네 <span class="smallerLetters">(시험, 면접, 보고서/과제 제출 등
+                날짜가 주어진 경우)</span>
                 <input type="radio" name="hasDeadline" value="0" onclick="selectHasDeadline()"> 아니오, 아직 계획/생각 중이에요
             </div>
             <br>
