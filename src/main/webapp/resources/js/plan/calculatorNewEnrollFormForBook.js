@@ -30,8 +30,13 @@ function searchBookTitle() {
                     console.log("책 목록 표 만들 때 index = " + index)
 
                     tbody += "<tr>"
-                        + "<td rowspan='3'><img src='" + item.cover + "'></td>"
-                        + "<td><span id='book-title' class='question'>" + item.title + " </span><span class='smallerLetters'>(ISBN " + item.isbn13 + ")</span></td>"
+                        + "<td rowspan='4'><img src='" + item.cover + "'></td>"
+                        + "<td class='question'>"
+                        + "<input type='radio' id='selectBook' name='selectBook' value='" + item.title + "'> " + item.title
+                        + "<span class='smallerLetters'> | </span>"
+                        + "<span class='smallerLetters'>" + item.numOfPages + "</span>"
+                        + "<span class='smallerLetters'>페이지</span>"
+                        + "</td>"
                         + "</tr>";
                     tbody += "<tr>"
                         + "<td>" + item.author + "</td>"
@@ -39,9 +44,8 @@ function searchBookTitle() {
                     tbody += "<tr>"
                         + "<td>" + item.publisher + ", " + item.pubDate + "</td>"
                         + "</tr>";
-                    tbody += "<tr id='num-of-pages-row'>"
-                        + "<td><div align='center'><input type='radio' id='selectBook' name='selectBook' value='hello" + index + "'></div></td>"
-                        + "<td><span id='num-of-pages-digits'>" + item.numOfPages + "</span><span>페이지</span></td>"
+                    tbody += "<tr>"
+                        + "<td><span class='smallerLetters'>ISBN : " + item.isbn13 + "</span></td>"
                         + "</tr>";
                 });
             }
@@ -77,7 +81,8 @@ function searchBookTitle() {
 function confirmBook() {
     console.log("confirmBook() 함수 호출되었어요")
     let $title = $("input[name='selectBook']:checked").val(); // .parent().children().eq(0).text()
-    let $numOfPages = $("#num-of-pages-digits").text();
+    // let $numOfPages = $("#num-of-pages-digits").text();
+    let $numOfPages = $("input[name='selectBook']:checked").siblings().eq(1).text();
     console.log()
     console.log("title = " + $title + ", numOfPages = " + $numOfPages)
 
