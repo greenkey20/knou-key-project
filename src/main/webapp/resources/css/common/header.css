@@ -1,7 +1,10 @@
+@charset "UTF-8";
+
 body {
     margin: 0;
     padding: 0;
     background-color: #fff;
+    font-family: 'IBM Plex Sans KR', sans-serif;
 }
 
 /*font-family: 'IBM Plex Sans KR', sans-serif;*/
