@@ -56,6 +56,11 @@ div {
     color: white;
 }
 
+#search-book-on-aladin {
+    background-color: darkseagreen;
+    font-size: small;
+}
+
 #autoComplete {
     padding: 3px;
     position: absolute;
