@@ -46,6 +46,13 @@ dependencies {
     // 2023.7.28(금) 1h25 MapStruct = https://mapstruct.org/documentation/installation/
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    // 2023.8.1(화) 3H20 ChatGPT 관련 - api-key 유효기간은 24시간, 로그인한 계정으로 USD5 지급되며, api-key 발급 시마다 -USD0.05
+    implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+//    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+
 }
 
 tasks.named('test') {
