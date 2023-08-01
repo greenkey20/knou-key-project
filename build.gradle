@@ -51,7 +51,7 @@ dependencies {
     implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
 //    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+//    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
 
 }
 
