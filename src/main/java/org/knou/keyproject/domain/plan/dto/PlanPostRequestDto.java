@@ -9,6 +9,7 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 // 2023.7.23(일) 20h45
 //@NoArgsConstructor
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 //@RequiredArgsConstructor
 public class PlanPostRequestDto {
 
-//    final MemberRepository memberRepository;
+    //    final MemberRepository memberRepository;
     private Long memberId;
     private Integer isMeasurableNum;
     private String object;
@@ -32,12 +33,27 @@ public class PlanPostRequestDto {
     private Integer frequencyTypeNum;
     private String frequencyDetail;
 
+    // 2023.8.2(수) 1h20 UI 교체 시
+    // 수행 빈도가 요일 지정인 경우 = 월화수목금토일, 월수금, 월화수목금 등
+    private List<String> frequencyDetailDate;
+    // 수행 빈도가 매~일마다 ~회인 경우 = 2일마다 1회, 5일마다 2회 등
+    private Integer frequencyDetailEveryInterval;
+    private Integer frequencyDetailEveryTimes;
+    // 수행 빈도가 주/월 ~회인 경우 = 주 2회, 월 10회 등
+    private String frequencyDetailTimesInterval;
+    private Integer frequencyDetailTimesTimes;
+
     private Integer hasDeadline;
     private Integer deadlineTypeNum;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadlineDate;
     private String deadlinePeriod;
+
+    // 2023.8.2(수) 1h30 UI 교체 시 기간 (x일/주/개월 등)
+    private Integer deadlinePeriodNum;
+    private String deadlinePeriodUnit;
+
     private Integer quantityPerDayPredicted;
 
 //    public PlanPostRequestDto(MemberRepository memberRepository) {
@@ -137,7 +153,8 @@ public class PlanPostRequestDto {
     @Override
     public String toString() {
         return "PlanPostRequestDto{" +
-                "isMeasurableNum=" + isMeasurableNum +
+                "memberId=" + memberId +
+                ", isMeasurableNum=" + isMeasurableNum +
                 ", object='" + object + '\'' +
                 ", totalQuantity=" + totalQuantity +
                 ", unit='" + unit + '\'' +
@@ -145,10 +162,17 @@ public class PlanPostRequestDto {
                 ", startDate=" + startDate +
                 ", frequencyTypeNum=" + frequencyTypeNum +
                 ", frequencyDetail='" + frequencyDetail + '\'' +
+                ", frequencyDetailDate=" + frequencyDetailDate +
+                ", frequencyDetailEveryInterval=" + frequencyDetailEveryInterval +
+                ", frequencyDetailEveryTimes=" + frequencyDetailEveryTimes +
+                ", frequencyDetailTimesInterval='" + frequencyDetailTimesInterval + '\'' +
+                ", frequencyDetailTimesTimes=" + frequencyDetailTimesTimes +
                 ", hasDeadline=" + hasDeadline +
                 ", deadlineTypeNum=" + deadlineTypeNum +
                 ", deadlineDate=" + deadlineDate +
                 ", deadlinePeriod='" + deadlinePeriod + '\'' +
+                ", deadlinePeriodNum=" + deadlinePeriodNum +
+                ", deadlinePeriodUnit='" + deadlinePeriodUnit + '\'' +
                 ", quantityPerDayPredicted=" + quantityPerDayPredicted +
                 '}';
     }
