@@ -70,7 +70,11 @@ public class Plan extends BaseTimeEntity {
     private DeadlineType deadlineType; // D(Date) = 특정 날짜, P(Period) = 기간
 
     private LocalDate deadlineDate;
+
+    // 2023.8.2(수) 2H15 계산기 UI 바꿀 경우 추가될 멤버변수
     private String deadlinePeriod;
+    private Integer deadlinePeriodNum;
+    private String deadlinePeriodUnit;
 
     private Integer quantityPerDayPredicted;
 
@@ -159,6 +163,11 @@ public class Plan extends BaseTimeEntity {
 
     public void setFrequencyFactor(Double frequencyFactor) {
         this.frequencyFactor = frequencyFactor;
+    }
+
+    // 2023.8.2(수) 2h25 측정 어려운 일의 actionDates를 구하기 위해 추가
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     // 2023.7.25(화) 23h50

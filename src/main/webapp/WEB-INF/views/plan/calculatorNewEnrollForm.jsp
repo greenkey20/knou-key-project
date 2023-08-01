@@ -29,7 +29,7 @@
         <div id="is-measurable">
             <input type="radio" name="isMeasurableNum" value="1" onclick="selectIsMeasurable()"> 측정 가능한 일
             <input type="radio" name="isMeasurableNum" value="0" onclick="selectIsMeasurable()"> 측정이 어려운 일
-            <input type="radio" name="isMeasurableNum" value="2" onclick="selectIsMeasurable()"> 잘 모르겠어요
+<%--            <input type="radio" name="isMeasurableNum" value="2" onclick="selectIsMeasurable()"> 잘 모르겠어요--%>
         </div>
         <br>
 
@@ -40,13 +40,19 @@
             서비스 준비 중입니다.<br>
             혹시 대신, ChatGPT 검색 결과가 궁금하신가요?<br>
             <br>
-            '네, 보고 싶어요' vs '아니오, 괜찮아요' 버튼
+            <!--2023.8.1(화) 23h45 시작-->
+            <div align="center">
+                <button type="button" class="greenBtn" onclick="location.href='calculatorChatGpt.pl'">네, 궁금해요</button> <!--ChatGPT의 이야기 들어보러 가기-->
+                <button type="button">아니오, 괜찮아요</button>
+            </div>
         </div>
+        <br>
+        <br>
 
         <%-- 측정 가능한 일인 경우, 추가 질문들을 담은 div를 보이게 함 --%>
         <div id="measurable-questions" style="display: none">
             <span class="question">수행 목표 대상은 무엇인가요?</span>
-            <span class="smallerLetters">(예시: 책/교과서/수험서/악보/원고 등 pages, 과목/단어/문제 등 개수, 자격증, 체중 등)</span>
+            <span class="smallerLetters">(예시: 책/교과서/수험서/악보/원고 등 페이지, 과목/단어/문제 등 개수, 자격증 취득을 위한 자료 페이지, 체중 등)</span>
             <br>
             <input id="object-input" type="text" name="object" required>
             <br>
@@ -56,7 +62,7 @@
                 * 목표 대상이 도서인 경우, 검색해서 목표 분량을 기재할 수 있어요!
                 <br>
                 <!--2023.8.1(화) 0h5 구현 접근 방법 변경-->
-                <div align="right"><button type="submit" class="grayBtn" onclick="location.href='calculatorNewForBook.pl'">도서 검색하러 가기</button></div>
+                <div align="right"><button type="button" class="grayBtn" onclick="location.href='calculatorNewForBook.pl'">도서 검색하러 가기</button></div>
             </div>
             <br>
 
@@ -140,6 +146,12 @@
                 <br>
                 <br>
             </div>
+
+            <div align="center">
+                <button type="button" onclick="location.href='/'">취소</button> <!--2023.7.24(월) 1810 나의 발견 = 계산 결과 화면으로부터 '새로 계산' 버튼 클릭해서 이 화면으로 넘어왔을 때, 이 버튼으로 '이전 화면'으로 가면(goBack() js 함수 호출) 이전 계산 결과 페이지로 감-->
+                <button type="button" onclick="window.location.reload()" class="grayBtn">초기화</button>
+                <button type="submit" class="greenBtn">계산하기</button> <!--onclick="location.href='newPlanInsert.pl'"-->
+            </div>
         </div> <!--측정 가능한 일인 경우, 추가 질문들을 담은 div 영역 끝-->
 
         <%-- loginUser 속성 값 있으면 아래와 같이 작성자 정보 입력 --%>
@@ -152,13 +164,6 @@
             </c:otherwise>
         </c:choose>
         <%-- 없으면 '저장하려면 로그인이 필요합니다' 모달 창 띄움 + 회원 가입이 필요한 경우 회원 가입 링크도 넣기(이건 계산 결과 페이지에서) --%>
-
-        <div align="center">
-            <button type="button" onclick="location.href='/'">취소</button> <!--2023.7.24(월) 1810 나의 발견 = 계산 결과 화면으로부터 '새로 계산' 버튼 클릭해서 이 화면으로 넘어왔을 때, 이 버튼으로 '이전 화면'으로 가면(goBack() js 함수 호출) 이전 계산 결과 페이지로 감-->
-            <%--            <button type="reset" class="grayBtn">초기화</button>--%>
-            <button type="button" onclick="window.location.reload()" class="grayBtn">초기화</button>
-            <button type="submit" class="greenBtn">계산하기</button> <!--onclick="location.href='newPlanInsert.pl'"-->
-        </div>
     </form>
 
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->

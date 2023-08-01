@@ -89,6 +89,10 @@ public class Calculator {
         setTotalNumOfActions(planToCalculate);
 //        planToCalculate.setTotalNumOfActions(totalNumOfActions);
 
+        if (!planToCalculate.getIsMeasurable()) {
+            setTotalQuantity(planToCalculate);
+        }
+
         setQuantityPerDay(planToCalculate);
 //        planToCalculate.setQuantityPerDay(quantityPerDay);
 
@@ -269,32 +273,66 @@ public class Calculator {
         Integer totalDurationDays = planToCalculate.getTotalDurationDays();
         Integer totalNumOfActions = 0;
 
-        if (planToCalculate.getHasDeadline()) {
-            totalNumOfActions = (int) (totalDurationDays * frequencyFactor);
-        } else {
-            double delim = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
-
-            if (delim != 0) {
-                totalNumOfActions = (int) (Math.ceil(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted())) + 1;
+        // 2023.8.2(수) 2h10 ChatGpt 계산기 구현하며 분기
+        if (planToCalculate.getIsMeasurable()) {
+            if (planToCalculate.getHasDeadline()) {
+                totalNumOfActions = (int) (totalDurationDays * frequencyFactor);
             } else {
-                totalNumOfActions = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
+                double delim = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
+
+                if (delim != 0) {
+                    totalNumOfActions = (int) (Math.ceil(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted())) + 1;
+                } else {
+                    totalNumOfActions = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
+                }
+            }
+        } else {
+            String deadlinePeriodUnit = planToCalculate.getDeadlinePeriodUnit();
+            Integer deadlinePeriodNum = planToCalculate.getDeadlinePeriodNum();
+
+            switch (deadlinePeriodUnit) {
+                case "일":
+                    totalNumOfActions = deadlinePeriodNum;
+                    break;
+                case "주":
+                    totalNumOfActions = deadlinePeriodNum * 7;
+                    break;
+                case "개월":
+                    totalNumOfActions = deadlinePeriodNum * 30;
+                    break;
             }
         }
 
         planToCalculate.setTotalNumOfActions(totalNumOfActions);
     }
 
+    private void setTotalQuantity(Plan planToCalculate) {
+        planToCalculate.setTotalQuantity(planToCalculate.getTotalNumOfActions());
+    }
+
+    // 2023.8.2(수) 2h25 수정해봄
     public void setQuantityPerDay(Plan planToCalculate) {
-        Integer totalNumOfActions = planToCalculate.getTotalNumOfActions();
-        Integer quantityPerDay = 0;
+        if (planToCalculate.getIsMeasurable()) {
+            Integer totalQuantity = planToCalculate.getTotalQuantity();
+            Integer totalNumOfActions = planToCalculate.getTotalNumOfActions();
+            Integer quantityPerDay = 0;
 
-        if (planToCalculate.getHasDeadline()) {
-            quantityPerDay = (int) (Math.ceil(planToCalculate.getTotalQuantity() / totalNumOfActions)) + 1;
+            if (planToCalculate.getHasDeadline()) {
+                int delim = totalQuantity % totalNumOfActions;
+
+                if (delim != 0) {
+                    quantityPerDay = (int) (Math.ceil(totalQuantity / totalNumOfActions)) + 1;
+                } else {
+                    quantityPerDay = totalQuantity / totalNumOfActions;
+                }
+            } else {
+                quantityPerDay = planToCalculate.getQuantityPerDayPredicted();
+            }
+
+            planToCalculate.setQuantityPerDay(quantityPerDay);
         } else {
-            quantityPerDay = planToCalculate.getQuantityPerDayPredicted();
+            planToCalculate.setQuantityPerDay(1);
         }
-
-        planToCalculate.setQuantityPerDay(quantityPerDay);
     }
 
     // 2023.7.26(수) 18h15 활동일 리스트 구하는 메서드들 Plan 엔티티 클래스로부터 여기로 분리?!

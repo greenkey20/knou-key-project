@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
+import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
+import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseDto;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -15,6 +17,8 @@ import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
 import org.knou.keyproject.global.utils.Calendar;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -57,6 +62,12 @@ public class PlanController {
         return "plan/calculatorNewEnrollFormForBook";
     }
 
+    // 2023.8.2(수) 0h
+    @GetMapping("calculatorChatGpt.pl")
+    public String calculatorNewEnrollFormWithChatGpt() {
+        return "plan/calculatorNewEnrollFormWithChatGpt";
+    }
+
     // 2023.7.24(월) 1h 수정
 
     /**
@@ -69,7 +80,7 @@ public class PlanController {
     @RequestMapping(value = "newPlanInsert.pl", method = RequestMethod.POST)
     public ModelAndView postNewPlan(@ModelAttribute("plan") PlanPostRequestDto requestDto, ModelAndView mv) {
 //        final RedirectView redirectView = new RedirectView("newPlanInsert.pl", true);
-        log.info(requestDto.toString()); // 2023.7.23(일) 23h10 현재 view로부터 값 안 넘어오고 있음 PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=0, object='null', totalQuantity=null, unit='null', startDate=null, frequencyTypeNum=0, frequencyDetail='null', hasDeadline=0, deadlineTypeNum=0, deadlineDate=null, deadlinePeriod='null', quantityPerDayPredicted=null}
+        log.info("컨트롤러 postNewPlan() 메서드에 들어오는 계산 대상 기본 정보 = " + requestDto.toString()); // 2023.7.23(일) 23h10 현재 view로부터 값 안 넘어오고 있음 PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=0, object='null', totalQuantity=null, unit='null', startDate=null, frequencyTypeNum=0, frequencyDetail='null', hasDeadline=0, deadlineTypeNum=0, deadlineDate=null, deadlinePeriod='null', quantityPerDayPredicted=null}
         // 2023.7.24(월) 0h 해결 = dto에 setter 필요하구나 -> PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=1, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=null}
         // PlanPostRequestDto{memberRepository=null, plannerId=null, isMeasurableNum=1, object='자바의 정석 완독', totalQuantity=987, unit='페이지', startDate=2023-07-24, frequencyTypeNum=3, frequencyDetail='주 3회', hasDeadline=0, deadlineTypeNum=2, deadlineDate=null, deadlinePeriod='40일', quantityPerDayPredicted=40}
         Plan savedPlan = planService.saveNewPlan(requestDto);
@@ -96,6 +107,26 @@ public class PlanController {
 //            return "common/errorPage";
 //        }
 //        return redirectView;
+    }
+
+    // 2023.8.2(수) 1h45
+    @RequestMapping(value = "newPlanByChatGptInsert.pl", method = RequestMethod.POST)
+    public ModelAndView postNewPlanByChatGpt(@ModelAttribute("plan") PlanPostRequestDto requestDto, ModelAndView mv) {
+        log.info("컨트롤러 postNewPlanByChatGpt() 메서드에 들어오는 계산 대상 기본 정보 = " + requestDto.toString());
+
+        String chatGptResponse = planService.getChatGptResponse(requestDto);
+        log.info("컨트롤러 postNewPlanByChatGpt() 메서드에서 받은 답변 = " + chatGptResponse);
+
+        Plan savedPlan = planService.saveNewPlan(requestDto);
+        List<List<ActionDate>> calendars = Calendar.getCalendars(savedPlan);
+//        List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
+
+        mv.addObject("chatGptResponse", chatGptResponse)
+                .addObject("savedPlan", savedPlan)
+                .addObject("calendars", calendars)
+                .setViewName("plan/newPlanByChatGptResultView");
+
+        return mv;
     }
 
     // 2023.7.24(월) 17h
@@ -172,7 +203,7 @@ public class PlanController {
 
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
     @GetMapping("myPlanDetail.pl")
-    public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model model) {
+    public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
         Plan findPlan = planService.findPlanById(planId);
         MyPlanDetailResponseDto findPlanDto = planMapper.toMyPlanDetailResponseDto(findPlan);
         List<ActionDateResponseDto> actionDatesList = findPlanDto.getActionDatesList();
@@ -180,9 +211,9 @@ public class PlanController {
         // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
         List<List<ActionDate>> calendars = Calendar.getCalendars(findPlan); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
 
-        model.addAttribute("plan", findPlanDto);
-        model.addAttribute("actionDatesList", actionDatesList);
-        model.addAttribute("calendars", calendars);
+        m.addAttribute("plan", findPlanDto);
+        m.addAttribute("actionDatesList", actionDatesList);
+        m.addAttribute("calendars", calendars);
         return "plan/myPlanDetailView";
     }
 
@@ -214,10 +245,10 @@ public class PlanController {
     // 2023.7.31(월) 18h45
     @ResponseBody
     @RequestMapping("bookTitleSearch.pl")
-    public String ajaxSearchBookTitle(String bookSearchKeyword, Model model) {
+    public String ajaxSearchBookTitle(String bookSearchKeyword, Model m) {
         log.info("컨트롤러 메서드 searchBookTitle()에 들어오는 검색 키워드 = " + bookSearchKeyword);
         List<BookInfoDto> responseDtos = planService.searchBookTitle(bookSearchKeyword);
-//        model.addAttribute("bookSearchResults", responseDtos);
+//        m.addAttribute("bookSearchResults", responseDtos);
         return new Gson().toJson(responseDtos);
     }
 }

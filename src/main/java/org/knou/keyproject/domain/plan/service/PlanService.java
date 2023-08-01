@@ -21,4 +21,6 @@ public interface PlanService {
     Plan findPlanById(Long planId);
 
     List<BookInfoDto> searchBookTitle(String bookSearchKeyword);
+
+    String getChatGptResponse(PlanPostRequestDto requestDto);
 }

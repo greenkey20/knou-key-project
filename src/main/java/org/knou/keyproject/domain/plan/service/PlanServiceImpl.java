@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
+import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
+import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.member.service.MemberService;
@@ -14,6 +16,8 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.utils.calculator.Calculator;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,16 @@ public class PlanServiceImpl implements PlanService {
     private final ActionDateRepository actionDateRepository;
     private final MemberService memberService;
     private final ActionDateService actionDateService;
+
+    // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
+    @Qualifier("openaiRestTemplate")
+    private final RestTemplate restTemplate;
+
+    @Value("${openai.model}")
+    private String model;
+
+    @Value("${openai.api.url}")
+    private String apiUrl;
 
     @Override
     @Transactional
@@ -193,6 +207,18 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return bookInfoDtos;
+    }
+
+    // 2023.8.2(수) 2h5
+    @Override
+    public String getChatGptResponse(PlanPostRequestDto requestDto) {
+        String prompt = requestDto.getDeadlinePeriodNum() + requestDto.getDeadlinePeriodUnit() + " 이내에 " + requestDto.getObject() + " 계획을 세워줘"; // ~기간 동안? ~기간 내에
+        ChatGptRequestDto chatGptRequestDto = new ChatGptRequestDto(model, prompt);
+        ChatGptResponseDto chatGptResponseDto = restTemplate.postForObject(apiUrl, chatGptRequestDto, ChatGptResponseDto.class);
+        if (chatGptResponseDto == null || chatGptResponseDto.getChoices() == null || chatGptResponseDto.getChoices().isEmpty()) {
+            return "답변을 받지 못했습니다";
+        }
+        return chatGptResponseDto.getChoices().get(0).getMessage().getContent();
     }
 
     private Integer getNumOfPages(String isbn) {
