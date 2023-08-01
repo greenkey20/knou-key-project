@@ -32,9 +32,13 @@ logging:
       springframework:
         orm:
           jpa: DEBUG
+    org.apache.http: DEBUG
+    httpclient.wire: DEBUG
 server:
   servlet:
     encoding:
       force-response: true
 #aladin:
 #  requesturl: http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbgreenkey201608001&Query={bookSearchKeyword}&QueryType=Title&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101
+api-key:
+  chat-gpt: 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
