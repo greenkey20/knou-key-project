@@ -122,11 +122,20 @@ public interface PlanMapper {
         newPlanResponseDto.planId(entity.getPlanId());
         newPlanResponseDto.object(entity.getObject());
         newPlanResponseDto.totalQuantity(entity.getTotalQuantity());
-        newPlanResponseDto.unit(entity.getUnit());
+
+        if (entity.getIsMeasurable()) {
+            newPlanResponseDto.unit(entity.getUnit());
+        }
+
         newPlanResponseDto.hasStartDate(entity.getHasStartDate());
         newPlanResponseDto.startDate(entity.getStartDate());
         newPlanResponseDto.startYear(entity.getStartDate().getYear());
         newPlanResponseDto.startMonth(entity.getStartDate().getMonthValue());
+
+        // 2023.8.2(수) 3h25 추가
+        if (entity.getDeadlinePeriod() != null) {
+            newPlanResponseDto.deadlinePeriod(entity.getDeadlinePeriod());
+        }
 
         if (entity.getHasDeadline()) {
             newPlanResponseDto.deadlineDate(entity.getDeadlineDate());

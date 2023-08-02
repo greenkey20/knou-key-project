@@ -94,7 +94,7 @@ public class PlanController {
         List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
 
         mv
-                .addObject("savedPlan", planMapper.toNewPlanResponseDto(planRepository.save(savedPlan)))
+                .addObject("savedPlan", planMapper.toNewPlanResponseDto(savedPlan))
                 .addObject("calendars", calendars) // plan 시작일~종료일까지의 달력(들)을 제목(xxxx. x 형식)과 함께 담은 Map
                 .addObject("actionDatesList", actionDateMapper.entitiesToDtos(actionDatesList))
                 .setViewName("plan/newPlanResultView"); // 2023.7.25(화) 21h40 생각 = 여기에서 달력 출력할 정보도 같이 넘겨준다..
@@ -122,7 +122,7 @@ public class PlanController {
 //        List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
 
         mv.addObject("chatGptResponse", chatGptResponse)
-                .addObject("savedPlan", savedPlan)
+                .addObject("savedPlan", planMapper.toNewPlanResponseDto(savedPlan))
                 .addObject("calendars", calendars)
                 .setViewName("plan/newPlanByChatGptResultView");
 

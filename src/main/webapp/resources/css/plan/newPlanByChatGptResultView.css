@@ -30,16 +30,31 @@ div {
 /*    clear: both;*/
 /*}*/
 
-.question {
-    font-weight: bold;
+#new-plan-calculator-result {
+    border: 1px yellow;
+    background-color: lightgreen;
 }
 
-.label {
-    background-color: rgb(182, 238, 86);
+#chat-gpt-response-area {
+    background-color: darkseagreen;
+    /*font-size: smaller;*/
+    color: white;
 }
 
-.smallerLetters {
-    font-size: small;
+.holiday {
+    color: seagreen;
+}
+
+.action {
+    color: greenyellow;
+}
+
+.today {
+    background-color: lightgray;
+}
+
+.actionDatesListTable {
+    text-align: center;
 }
 
 .greenBtn {
@@ -54,29 +69,4 @@ div {
 .grayBtn {
     background-color: gray;
     color: white;
-}
-
-#search-book-on-aladin {
-    background-color: darkseagreen;
-    font-size: small;
-    color: white;
-}
-
-#autoComplete {
-    padding: 3px;
-    position: absolute;
-    width: 200px;
-    height: auto;
-    background: white;
-    margin-top: 3px;
-    cursor: pointer;
-}
-
-#autoComplete > div {
-    /* border : 1px solid #e6e6e6; */
-    margin-top: 3px;
-}
-
-#autoComplete > div:hover {
-    background: rgb(182, 238, 86);
 }
