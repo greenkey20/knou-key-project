@@ -93,14 +93,10 @@
             <input type="checkbox" name="frequencyDetailDate" value="토">토
             <input type="checkbox" name="frequencyDetailDate" value="일">일
         </div>
-        <br>
-        <br>
 
         <div id="frequency-detail-every" style="display: none">
             <input type="number" name="frequencyDetailEveryInterval" min="2">일마다 <input type="number" name="frequencyDetailEveryTimes" min="1">회
         </div>
-        <br>
-        <br>
 
         <div id="frequency-detail-times" style="display: none">
             <select name="frequencyDetailTimesInterval">
@@ -111,7 +107,6 @@
             </select>
              <input type="number" name="frequencyDetailTimesTimes" min="1">회
         </div>
-        <br>
         <br>
 
         <%-- loginUser 속성 값 있으면 아래와 같이 작성자 정보 입력 --%>

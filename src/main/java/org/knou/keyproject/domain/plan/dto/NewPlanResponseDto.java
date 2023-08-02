@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
-import org.knou.keyproject.domain.plan.entity.Plan;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +30,7 @@ public class NewPlanResponseDto {
     private Integer deadlineMonth;
 
     private Boolean hasDeadline;
+    private String deadlinePeriod;
     private Integer totalDurationDays;
 
     private String frequencyDetail;

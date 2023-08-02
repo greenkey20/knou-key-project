@@ -212,13 +212,26 @@ public class PlanServiceImpl implements PlanService {
     // 2023.8.2(수) 2h5
     @Override
     public String getChatGptResponse(PlanPostRequestDto requestDto) {
-        String prompt = requestDto.getDeadlinePeriodNum() + requestDto.getDeadlinePeriodUnit() + " 이내에 " + requestDto.getObject() + " 계획을 세워줘"; // ~기간 동안? ~기간 내에
+        String prompt = requestDto.getDeadlinePeriodNum() + requestDto.getDeadlinePeriodUnit() + " 동안 " + requestDto.getObject(); // ~기간 동안? ~기간 (이)내에?
+
+        if (requestDto.getDeadlinePeriodUnit().equals("일") || requestDto.getDeadlinePeriodUnit().equals("주")) {
+            prompt += " 위한 일간 계획을 세워줘";
+        } else {
+            prompt += " 위한 주간 계획을 세워줘";
+        }
+
         ChatGptRequestDto chatGptRequestDto = new ChatGptRequestDto(model, prompt);
         ChatGptResponseDto chatGptResponseDto = restTemplate.postForObject(apiUrl, chatGptRequestDto, ChatGptResponseDto.class);
         if (chatGptResponseDto == null || chatGptResponseDto.getChoices() == null || chatGptResponseDto.getChoices().isEmpty()) {
             return "답변을 받지 못했습니다";
         }
-        return chatGptResponseDto.getChoices().get(0).getMessage().getContent();
+
+        String content = chatGptResponseDto.getChoices().get(0).getMessage().getContent();
+        return parseChatGptResponse(content);
+    }
+
+    private String parseChatGptResponse(String content) {
+        return content.replaceAll("\n", "<br>");
     }
 
     private Integer getNumOfPages(String isbn) {
