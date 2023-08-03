@@ -35,7 +35,7 @@
 <div class="header" align="center">
     <div class="logo_area">
         <div class="logo_bg">
-            <p class="logo_k"><a href="/">allo</a></p>
+            <p class="logo_k"><a href="/key-project">allo</a></p>
 <%--            <p class="logo_e">allo</p>--%>
         </div>
         <div>

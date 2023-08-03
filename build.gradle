@@ -6,6 +6,9 @@ plugins {
 }
 apply plugin: 'war'
 
+bootWar.enabled = false
+war.enabled = true
+
 group = 'org.knou'
 version = '0.0.1-SNAPSHOT'
 
@@ -41,6 +44,8 @@ dependencies {
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl' //스프링부트 3.0 이상
 
     implementation "org.apache.tomcat.embed:tomcat-embed-jasper"
+
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
     // 2023.7.23(일) 22h35 추가 GSON
     implementation 'com.google.code.gson:gson'
