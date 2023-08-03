@@ -18,6 +18,7 @@ import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 // 2023.7.23(일) 22h
 @Slf4j
 @RequiredArgsConstructor
+@PropertySource(value = "classpath:application-local.yml")
 @Transactional(readOnly = true)
 @Service
 public class PlanServiceImpl implements PlanService {

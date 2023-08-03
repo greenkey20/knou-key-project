@@ -11,8 +11,8 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 @SpringBootApplication
 public class KeyProjectApplication extends SpringBootServletInitializer {
 
-//	@Override
-	protected SpringApplicationBuilder configurer(SpringApplicationBuilder application) {
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(KeyProjectApplication.class);
 
 	}

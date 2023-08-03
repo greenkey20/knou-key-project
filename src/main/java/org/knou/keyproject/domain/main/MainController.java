@@ -24,7 +24,7 @@ public class MainController {
     private final MemberMapper memberMapper;
     private final PlanMapper planMapper;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String index(HttpSession session) {
         if (session.getAttribute("loginUser") != null) {
             Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
