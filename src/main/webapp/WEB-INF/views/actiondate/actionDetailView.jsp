@@ -99,7 +99,7 @@
             <button type="button" class="grayBtn" onclick="window.history.back()">뒤로 가기</button>
             <button type="button" data-toggle="modal" data-target="#deleteForm">삭제</button> <!--id="clickModal" -->
 <%--            <button type="button" onclick="location.href='actionDetailDelete.ad?planID=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">삭제</button>--%>
-            <button type="button" class="greenBtn" onclick="location.href='actionDetailUpdatePage.ad?planID=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">수정</button>
+            <button type="button" class="greenBtn" onclick="location.href='actionDetailUpdatePage.ad?planId=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">수정</button>
         </div>
     </div>
 

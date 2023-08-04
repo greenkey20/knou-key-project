@@ -11,11 +11,11 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 @SpringBootApplication
 public class KeyProjectApplication extends SpringBootServletInitializer {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(KeyProjectApplication.class);
-
-	}
+//	@Override
+//	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//		return application.sources(KeyProjectApplication.class);
+//
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(KeyProjectApplication.class, args);
