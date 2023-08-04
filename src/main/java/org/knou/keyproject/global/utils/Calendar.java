@@ -1,14 +1,15 @@
 package org.knou.keyproject.global.utils;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,35 +20,36 @@ import java.util.Map;
 //@NoArgsConstructor
 @Getter
 //@AllArgsConstructor
-@Builder
-//@RequiredArgsConstructor
+//@Builder
+@RequiredArgsConstructor
+@Component
 public class Calendar {
-    public static ActionDateMapper actionDateMapper;
+    public final ActionDateMapper actionDateMapper;
 
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
 //    @RequestMapping(value = "calendar.pl", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public static List<List<ActionDate>> getCalendars(Plan savedPlan) {
+    /**
+     *
+     * @param savedPlan 계산기에 의해 계산된 결과로 얻어진 Plan -> 그에 따라 정해진 actionDates를 가지고 있음
+     * -> actionDate인 경우에는 달력의 schedule 속성에 "action"이라고 찍음
+     * @return actionDates 중 첫째날부터 마지막날까지를 포괄하는 달력(들)을 반환
+     */
+    public List<List<ActionDate>> getCalendars(Plan savedPlan) {
         // 2023.7.30(일) 0h30 JSP 계산 결과 보여줄 때, 시작달~마지막달 달력 모두 보여주기
-        List<ActionDate> actionDates = savedPlan.getActionDatesList();
-
-        LocalDate startDate = savedPlan.getStartDate();
-//        int startYear = startDate.getYear();
-//        int startMonth = startDate.getMonthValue();
-//        ActionDate startDateInAd = new ActionDate(String.valueOf(startYear), startMonth, String.valueOf(startDate.getDayOfMonth()), startDate.getDayOfWeek().getValue(), DateType.ACTION);
-//        String startMonthAndYear = extractYearAndMonthInStrFromLocalDate(startDate);
-
+        List<ActionDate> actionDates = savedPlan.getActionDatesList(); // 계산기에 의해 계산된 결과로 정해진 actionDates가 들어있음
+        ActionDate startActionDate = actionDates.get(0);
         ActionDate lastActionDate = actionDates.get(actionDates.size() - 1);
         LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
-//        int deadlineYear = deadlineDate.getYear();
-//        int deadlineMonth = deadlineDate.getMonthValue();
-//        ActionDate deadlineDateInAd = new ActionDate(String.valueOf(deadlineYear), deadlineMonth, String.valueOf(deadlineDate.getDayOfMonth()), deadlineDate.getDayOfWeek().getValue(), DateType.ACTION);
-//        String deadlineMonthAndYear = extractYearAndMonthInStrFromLocalDate(deadlineDate);
 
-//        Map<String, List<ActionDate>> calendars = new HashMap<>();
+
+        LocalDate calendarBeginDate = LocalDate.of(Integer.valueOf(startActionDate.getNumOfYear()), startActionDate.getNumOfMonth(), 1);
+        LocalDate calendarEndDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), deadlineDate.lengthOfMonth());
+
+
         List<List<ActionDate>> calendars = new ArrayList<>();
 
-        for (LocalDate date = startDate; date.isBefore(deadlineDate.plusMonths(1)); date = date.plusMonths(1)) {
+        for (LocalDate date = calendarBeginDate; date.isBefore(calendarEndDate.plusDays(1)); date = date.plusMonths(1)) {
 //            String dateMonthAndYear = extractYearAndMonthInStrFromLocalDate(date);
 
             ActionDate dateInAd = new ActionDate(String.valueOf(date.getYear()), date.getMonthValue(), String.valueOf(date.getDayOfMonth()), date.getDayOfWeek().getValue(), null);
@@ -65,7 +67,8 @@ public class Calendar {
 
                     if (thisFormat.equals(actionDateFormat)) {
                         thisDate.setSchedule("action");
-                    log.info("달력 날짜의 schedule로써 action 찍힙니다");
+                        log.info("달력 날짜의 schedule로써 action 찍힙니다");
+                        break; // 2023.8.5(토) 1h10 추가
                     } else {
 //                    log.info("달력 날짜의 schedule로써 action 안 찍힙니다 = format 비교가 안 되거나, 둘 다 null이거나..");
                     }
@@ -130,14 +133,14 @@ public class Calendar {
         return calendars;
     }
 
-    public static String extractYearAndMonthInStrFromLocalDate(LocalDate date) {
+    private String extractYearAndMonthInStrFromLocalDate(LocalDate date) {
         int year = date.getYear();
         int month = date.getMonthValue();
 
         return year + ". " + month;
     }
 
-    public static List<ActionDate> getCalendarDatesList(ActionDate searchDate) {
+    public List<ActionDate> getCalendarDatesList(ActionDate searchDate) {
         Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
         List<ActionDate> calendarDatesList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
@@ -194,5 +197,15 @@ public class Calendar {
         }
 
         return calendarDatesList;
+    }
+
+    // 2023.8.5(토) 컨트롤러에 있었던 기능을 여기로 옮김
+    public List<ActionDate> getArrowCalendar(int year, int month) {
+        if (month == 0) month = 12;
+        LocalDate today = LocalDate.now();
+        ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
+
+        // searchDate로부터 todayInfo를 만들어냄
+        return getCalendarDatesList(searchDate);
     }
 }
