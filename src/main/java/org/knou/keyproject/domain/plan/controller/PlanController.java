@@ -8,17 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
-import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
-import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseDto;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
-import org.knou.keyproject.global.utils.Calendar;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,13 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static org.knou.keyproject.global.utils.Calendar.getCalendarDatesList;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -88,7 +80,7 @@ public class PlanController {
 //        log.info("controller postNewPlan에서 getActionDays의 크기 = " + savedPlan.getActionDates().size());
 
         // 2023.7.25(화) 21h45
-        List<List<ActionDate>> calendars = Calendar.getCalendars(savedPlan);
+        List<List<ActionDate>> calendars = planService.getPlanCalendars(savedPlan);
 
         // 2023.7.26(수) 3h35
         List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
@@ -118,7 +110,7 @@ public class PlanController {
         log.info("컨트롤러 postNewPlanByChatGpt() 메서드에서 받은 답변 = " + chatGptResponse);
 
         Plan savedPlan = planService.saveNewPlan(requestDto);
-        List<List<ActionDate>> calendars = Calendar.getCalendars(savedPlan);
+        List<List<ActionDate>> calendars = planService.getPlanCalendars(savedPlan);
 //        List<ActionDate> actionDatesList = savedPlan.getActionDatesList();
 
         mv.addObject("chatGptResponse", chatGptResponse)
@@ -204,15 +196,17 @@ public class PlanController {
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
     @GetMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
-        Plan findPlan = planService.findPlanById(planId);
-        MyPlanDetailResponseDto findPlanDto = planMapper.toMyPlanDetailResponseDto(findPlan);
-        List<ActionDateResponseDto> actionDatesList = findPlanDto.getActionDatesList();
+        MyPlanDetailResponseDto myPlanDetailResponseDto = planMapper.toMyPlanDetailResponseDto(planService.findPlanById(planId));
+        List<ActionDateResponseDto> actionDatesList = myPlanDetailResponseDto.getActionDatesList();
+
+        MyPlanStatisticDetailResponseDto statisticDetailResponseDto = planService.getPlanStatisticDetailById(planId);
 
         // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
-        List<List<ActionDate>> calendars = Calendar.getCalendars(findPlan); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
+        List<List<ActionDate>> calendars = planService.getActionDatesCalendars(planId); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
 
-        m.addAttribute("plan", findPlanDto);
+        m.addAttribute("plan", myPlanDetailResponseDto);
         m.addAttribute("actionDatesList", actionDatesList);
+        m.addAttribute("statPlan", statisticDetailResponseDto);
         m.addAttribute("calendars", calendars);
         return "plan/myPlanDetailView";
     }
@@ -224,12 +218,9 @@ public class PlanController {
                                          @RequestParam(name = "month", defaultValue = "7") int month,
                                          ModelAndView mv) {
 //        log.info("calendar.pl 처리하는 controller에 들어오는 request params 값 = year " + year + ", month " + month);
-        if (month == 0) month = 12;
-        LocalDate today = LocalDate.now();
-        ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
+        List<ActionDate> calendarDatesList = planService.getArrowCalendar(year, month);
 
-        // searchDate로부터 todayInfo를 만들어냄
-        List<ActionDate> calendarDatesList = getCalendarDatesList(searchDate);
+
 //        Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
 //        Map<String, Object> result = new HashMap<>();
@@ -250,5 +241,21 @@ public class PlanController {
         List<BookInfoDto> responseDtos = planService.searchBookTitle(bookSearchKeyword);
 //        m.addAttribute("bookSearchResults", responseDtos);
         return new Gson().toJson(responseDtos);
+    }
+
+    // 2023.8.5(토) 3h30
+    @RequestMapping("resumePlan.pl")
+    public String resumePlan(@RequestParam(name = "planId") @Positive Long planId) {
+        return "";
+    }
+
+    @RequestMapping("pausePlan.pl")
+    public String pausePlan(@RequestParam(name = "planId") @Positive Long planId) {
+        return "";
+    }
+
+    @RequestMapping("giveUpPlan.pl")
+    public String giveUpPlan(@RequestParam(name = "planId") @Positive Long planId) {
+        return "";
     }
 }
