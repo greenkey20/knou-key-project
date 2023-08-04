@@ -1,5 +1,6 @@
 package org.knou.keyproject.domain.plan.service;
 
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
 
@@ -18,9 +19,18 @@ public interface PlanService {
 
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
 
-    Plan findPlanById(Long planId);
+    Plan findPlanById(Long planId); // plain Plan 객체를 찾는 메서드
+
+    // 2023.8.4(금) 22h50 plan 상세보기 요청 controller에 대응하기 위한 메서드
+    MyPlanStatisticDetailResponseDto getPlanStatisticDetailById(Long planId);
 
     List<BookInfoDto> searchBookTitle(String bookSearchKeyword);
 
     String getChatGptResponse(PlanPostRequestDto requestDto);
+
+    List<List<ActionDate>> getActionDatesCalendars(Long planId);
+
+    List<List<ActionDate>> getPlanCalendars(Plan savedPlan);
+
+    List<ActionDate> getArrowCalendar(int year, int month);
 }

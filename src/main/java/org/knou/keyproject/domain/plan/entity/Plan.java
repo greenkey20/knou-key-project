@@ -197,33 +197,12 @@ public class Plan extends BaseTimeEntity {
     // 2023.7.29(토) 2h25 아래 작업을 Calculator로 옮김
 //    public void setActionDatesList() {
 //        List<ActionDate> actionDays = new ArrayList<>();
-//
-//        if (this.hasDeadline) {
-//            switch (this.frequencyType) {
-//                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
-//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeDATE(actionDays);
-//                    break;
-//                case EVERY: // EVERY-TIMES 계산 원리는 비슷
-//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeEVERY(actionDays);
-//                    break;
-//                case TIMES:
-//                    actionDays = getActionDatesWithDeadlineAndFrequencyTypeTIMES(actionDays);
-//                    break;
-//            }
-//        } else {
-//            switch (this.frequencyType) {
-//                case DATE: // frequencyType이 DATE일 때 활동일 목록을 구함
-//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeDATE(actionDays);
-//                    break;
-//                case EVERY: // EVERY-TIMES 계산 원리는 비슷
-//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeEVERY(actionDays);
-//                    break;
-//                case TIMES:
-//                    actionDays = getActionDatesWithNoDeadlineAndFrequencyTypeTIMES(actionDays);
-//                    break;
-//            }
-//        }
-//
 //        this.actionDatesList = actionDays;
+//    }
+
+    // 2023.8.4(금) 23h PlanService에서 처리했었으나, service 클래스/메소드는 트랜잭션과 도메인 간 순서만 보장 + 비즈니스 로직 처리는 도메인이 담당
+    // 그런데 그러려면 엔티티에서 repository를 사용해야 하는데, 이상한 것 같다 + 엔티티의 성질을 바꾸는(x) 엔티티의 성질을 가지고 통계를 내는(O) 기능이므로, 여기는 아닌 것 같네..
+//    public Integer getAccumulatedRealActionQuantity(Long planId) {
+//
 //    }
 }

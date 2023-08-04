@@ -25,29 +25,55 @@
 
     <div id="my-plan-detail-stats">
         <br>
-        ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안
-        매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
+        <p style="font-weight: bold">
+            ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안
+            매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
+        </p>
         <br>
-        - 오늘까지 진행 분량 ${ plan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던
-        분량 ${ plan.accumulatedPlanActionQuantity }${ plan.unit }
+        
         <c:choose>
-            <c:when test="${ plan.accumulatedRealActionQuantity > plan.accumulatedPlanActionQuantity }">
-                → 계획보다 ${ plan.accumulatedRealActionQuantity - plan.accumulatedPlanActionQuantity }${ plan.unit }만큼 앞서 있어요 👍<br>
+            <c:when test="${ plan.status.toString() eq 'ACTIVE'}">
+                - 오늘까지 진행 분량 ${ statPlan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던
+                분량 ${ statPlan.accumulatedPlanActionQuantity }${ plan.unit }
+                <c:choose>
+                    <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal lt 0 }">
+                        → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal * (-1) }${ plan.unit }만큼 앞서 있어요 👍<br>
+                    </c:when>
+                    <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal gt 0 }">
+                        → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal }${ plan.unit }만큼 뒤처져 있어요 🌱<br>
+                    </c:when>
+                    <c:otherwise>
+                        → 계획대로 잘 진행하고 있어요 💯<br>
+                    </c:otherwise>
+                </c:choose>
+
+                - 목표 달성까지는 ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%) 남았어요!<br>
+                <br>
+                - 오늘까지 ${ statPlan.accumulatedNumOfActions} 회 수행했고, ${ statPlan.numOfActionsToEndPlan }회 남았습니다. 파이팅입니다 🍀<br>
+                - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되고 있어요
             </c:when>
-            <c:when test="${ plan.accumulatedRealActionQuantity < plan.accumulatedPlanActionQuantity }">
-                → 계획보다 ${ plan.accumulatedPlanActionQuantity - plan.accumulatedRealActionQuantity }${ plan.unit }만큼 뒤처져 있어요 🌱<br>
+            <c:when test="${ plan.status.toString() eq 'COMPLETE'}">
+                - ${ plan.lastStatusChangedAt }자 완료했어요! 🎉
+                <br>
+                <br>
+                - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
+            </c:when>
+            <c:when test="${ plan.status.toString() eq 'PAUSE'}">
+                - ${ plan.lastStatusChangedAt }자 일시 중지한 상태에요
+                - ${ plan.lastStatusChangedAt }자 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 진행하고 있었어요
+                <span class="smallerLetters">(${ plan.lastStatusChangedAt }자까지 계획했던 분량: ${ statPlan.accumulatedPlanActionQuantityBeforePause }${ plan.unit })</span>
+                <br>
+                <br>
+                - 아직 목표 달성까지 ${ statPlan.numOfActionsToEndPlan }회, ${ statPlan.quantityToEndPlan }${ plan.unit } ((${ statPlan.ratioOfQuantityToEndPlan }%)) 남았어요
+                - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
             </c:when>
             <c:otherwise>
-                → 계획대로 잘 진행하고 있어요 💯<br>
+                - ${ plan.lastStatusChangedAt }자 중도 포기한 활동이에요
+                - 총 ${ statPlan.accumulatedNumOfActions }회 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 수행했었어요
             </c:otherwise>
         </c:choose>
 
-        - 목표 달성까지는 ${ plan.totalQuantity - plan.accumulatedRealActionQuantity }${ plan.unit }
-        (${ plan.accumulatedRealActionQuantity / plan.totalQuantity * 100}%) 남았어요!<br>
-        <br>
-        - 오늘까지 ${ plan.accumulatedNumOfActions} 회 수행했고, ${ plan.totalNumOfActions - plan.accumulatedNumOfActions }회
-        남았습니다. 파이팅입니다 🍀<br>
-        - 매 회 ${ quantityPerDay }${ plan.unit } 수행하는 데 평균적으로 ${ plan.averageTimeTakenForRealAction }분이 소요되고 있어요
+
         <br>
         <br>
     </div>
@@ -95,7 +121,7 @@
                                 <c:when test="${ date.schedule eq 'action'}">
                                     <c:choose>
                                         <c:when test="${ date.isDone }">
-                                            </tr><tr><td class="action done" align="left"> ${ date.numOfDate } </td>
+                                            </tr><tr><td class="action done" align="left" bgcolor="#228b22"> ${ date.numOfDate } </td>
                                         </c:when>
                                         <c:otherwise>
                                             </tr><tr><td class="action" align="left"> ${ date.numOfDate } </td>
@@ -119,7 +145,7 @@
                                 <c:when test="${ date.schedule eq 'action'}">
                                     <c:choose>
                                         <c:when test="${ date.isDone }">
-                                            <td class="action done" align="left"> ${ date.numOfDate } </td>
+                                            <td class="action done" align="left" bgcolor="#228b22"> ${ date.numOfDate } </td>
                                         </c:when>
                                         <c:otherwise>
                                             <td class="action" align="left"> ${ date.numOfDate } </td>
@@ -230,7 +256,81 @@
         <br>
     </div>
 
+    <!--plan 상태에 따라 버튼 보여주기-->
+    <div align="center">
+    <c:choose>
+        <c:when test="${ plan.status.toString() eq 'ACTIVE'}">
+            <!--게시판에 공유하기 + 일시 중지하기 + 포기하기-->
+            <button type="button" class="greenBtn" onclick="location.href='boardEnrollForm.bd?planId=${ plan.planId }&planStatus=${ plan.status.toString() }'">게시판에 공유하기</button> <!--게시판에 글 쓰는(post) 양식으로 이동-->
+            <button type="button" class="grayBtn" data-toggle="modal" data-target="#pauseForm">일시 중지하기</button>
+            <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+        </c:when>
+        <c:when test="${ plan.status.toString() eq 'COMPLETE'}">
+            <!--게시판에 공유하기-->
+            <button type="button" class="greenBtn" onclick="location.href='boardEnrollForm.bd?planId=${ plan.planId }&planStatus=${ plan.status.toString() }'">게시판에 공유하기</button> <!--게시판에 글 쓰는(post) 양식으로 이동-->
+        </c:when>
+        <c:when test="${ plan.status.toString() eq 'PAUSE'}">
+            <!--이어서 하기 + 포기하기-->
+            <button type="button" class="greenBtn" onclick="location.href='resumePlan.pl?planId=${ plan.planId }'">이어서 하기</button>
+            <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+        </c:when>
+    </c:choose>
+    </div>
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
+
+<!-- The Modal : pauseForm -->
+<div class="modal pause-form fade" id="pauseForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">활동 일시 중지하기</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <ul id="pauseList"></ul>
+                <span>일시 중지하면 이어서 하기로 결정할 때까지 활동 내역을 기록할 수 없습니다. 그래도 일시 중지하시겠습니까?</span>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="grayBtn" data-dismiss="modal">취소</button>
+                <button type="button" id="pauseBtn" onclick="location.href='pausePlan.pl?planId=${ plan.planId }'">포기하기</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- The Modal : giveUpForm -->
+<div class="modal give-up-form fade" id="giveUpForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">활동 포기하기</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <ul id=giveUpList"></ul>
+                <span>포기하면 더 이상 활동 내역 기록이 불가능합니다. 언젠가 다시 수행하려면 '일시 중지'가 가능해요. 그래도 포기하시겠습니까?</span>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="grayBtn" data-dismiss="modal">취소</button>
+                <button type="button" id="giveUpBtn" onclick="location.href='giveUpPlan.pl?planId=${ plan.planId }'">일시 중지하기</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp"/>
 

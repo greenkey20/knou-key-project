@@ -52,7 +52,11 @@ div {
 }
 
 .done {
-    background-color: green;
+    background-color: forestgreen;
+}
+
+.smallerLetters {
+    font-size: smaller;
 }
 
 .greenBtn {

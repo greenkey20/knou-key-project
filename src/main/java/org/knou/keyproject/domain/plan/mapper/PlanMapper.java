@@ -243,6 +243,8 @@ public interface PlanMapper {
         myPlanDetailResponseDto.actionDatesList(actionDateListToActionDateResponseDtoList(entity.getActionDatesList()));
         myPlanDetailResponseDto.status(entity.getStatus());
 
+        myPlanDetailResponseDto.lastStatusChangedAt(entity.getLastStatusChangedAt());
+
         return myPlanDetailResponseDto.build();
     }
 

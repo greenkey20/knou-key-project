@@ -15,6 +15,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
+import org.knou.keyproject.global.utils.Calendar;
 import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,7 @@ public class PlanServiceImpl implements PlanService {
     private final ActionDateRepository actionDateRepository;
     private final MemberService memberService;
     private final ActionDateService actionDateService;
+    private final Calendar calendar;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -160,7 +163,8 @@ public class PlanServiceImpl implements PlanService {
     // 2023.7.28(금) 1h45 MapStruct 사용하여 수정
     @Override
     public Plan findPlanById(Long planId) {
-        Plan findPlan = planRepository.findById(planId).orElse(null);
+        Plan findPlan = findVerifiedPlan(planId);
+
 
         // 2023.7.31(월) 4h 일정 상세보기 페이지에서 달력 출력하기 위해 추가(fetch lazy라서 이게 필요하다? JPA 잘 모르고 하려니까 힘들다 ㅠㅠ)
         List<ActionDate> findActionDates = actionDateRepository.findByPlanPlanId(planId);
@@ -169,6 +173,90 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return findPlan;
+    }
+
+    // 2023.8.4(금) 22h50 plan 상세보기 요청 controller에 대응하기 위한 메서드 + JSP에서 비즈니스 로직 최대한 빼기 위해 2023.8.5(토) 1H30 추가
+    @Override
+    public MyPlanStatisticDetailResponseDto getPlanStatisticDetailById(Long planId) {
+        Plan findPlan = findVerifiedPlan(planId);
+        LocalDate startDate = findPlan.getStartDate();
+        LocalDate lastStatusChangedAt = findPlan.getLastStatusChangedAt();
+
+        int accumulatedRealActionQuantity = getAccumulatedRealActionQuantity(planId);
+        int accumulatedPlanActionQuantity = getAccumulatedPlanActionQuantity(planId, startDate);
+        int quantityDifferenceBetweenPlanAndReal = getQuantityDifferenceBetweenPlanAndReal(accumulatedPlanActionQuantity, accumulatedRealActionQuantity);
+
+        int totalQuantity = findPlan.getTotalQuantity();
+        int quantityToEndPlan = getQuantityToEndPlan(totalQuantity, accumulatedRealActionQuantity);
+
+        double ratioOfQuantityToEndPlan = getRatioOfQuantityToEndPlan(accumulatedRealActionQuantity, totalQuantity);
+
+        int accumulatedNumOfActions = getAccumulatedNumOfActions(planId);
+        int numOfActionsToEndPlan = getNumOfActionsToEndPlan(findPlan.getTotalNumOfActions(), accumulatedNumOfActions);
+
+        int accumulatedPlanActionQuantityBeforePause = getAccumulatedPlanActionQuantityBeforePause(planId, startDate, lastStatusChangedAt);
+
+        return MyPlanStatisticDetailResponseDto.builder()
+                .accumulatedRealActionQuantity(accumulatedRealActionQuantity)
+                .accumulatedPlanActionQuantity(accumulatedPlanActionQuantity)
+                .quantityDifferenceBetweenPlanAndReal(quantityDifferenceBetweenPlanAndReal)
+                .quantityToEndPlan(quantityToEndPlan)
+                .ratioOfQuantityToEndPlan(formatPercentage(ratioOfQuantityToEndPlan))
+                .accumulatedNumOfActions(getAccumulatedNumOfActions(planId))
+                .numOfActionsToEndPlan(numOfActionsToEndPlan)
+                .averageTimeTakenForRealAction(getAverageTimeTakenForRealAction(planId))
+                .accumulatedPlanActionQuantityBeforePause(accumulatedPlanActionQuantityBeforePause)
+                .build();
+    }
+
+    // 2023.8.5(토) 4h10 숫자 null -> 0으로 처리하기 위해 만듦
+    private int makeNullAsZero(Integer num) {
+        if (num != null) {
+            return num;
+        }
+
+        return 0;
+    }
+
+    private Integer getAccumulatedRealActionQuantity(Long planId) {
+        return makeNullAsZero(actionDateRepository.getAccumulatedRealActionQuantity(planId));
+    }
+
+    private Integer getAccumulatedPlanActionQuantity(Long planId, LocalDate startDate) {
+        return makeNullAsZero(actionDateRepository.getAccumulatedPlanActionQuantity(planId, startDate));
+    }
+
+    private Integer getAccumulatedPlanActionQuantityBeforePause(Long planId, LocalDate startDate, LocalDate lastStatusChangedAt) {
+        return makeNullAsZero(actionDateRepository.getAccumulatedPlanActionQuantityBeforePause(planId, startDate, lastStatusChangedAt));
+    }
+
+    private Integer getQuantityDifferenceBetweenPlanAndReal(Integer plan, Integer real) {
+        return plan - real; // 양의 정수 = 계획보다 실행이 뒤처지고 있음 vs 음의 정수 = 계획보다 더 많이 실행해서 일정보다 앞서고 있음
+    }
+
+    private Integer getQuantityToEndPlan(Integer total, Integer real) {
+        return total - real;
+    }
+
+    private Double getRatioOfQuantityToEndPlan(Integer real, Integer total) {
+        return (1 - (double) real / total) * 100;
+    }
+
+    private String formatPercentage(Double num) {
+        DecimalFormat df = new DecimalFormat("###.#");
+        return df.format(num);
+    }
+
+    private Integer getNumOfActionsToEndPlan(Integer total, Integer real) {
+        return total - real;
+    }
+
+    private Integer getAverageTimeTakenForRealAction(Long planId) {
+        return actionDateRepository.getAverageTimeTakenForRealAction(planId);
+    }
+
+    private Integer getAccumulatedNumOfActions(Long planId) {
+        return actionDateRepository.getAccumulatedNumOfActions(planId);
     }
 
     // 2023.7.31(월) 19h20
@@ -230,6 +318,25 @@ public class PlanServiceImpl implements PlanService {
 
         String content = chatGptResponseDto.getChoices().get(0).getMessage().getContent();
         return parseChatGptResponse(content);
+    }
+
+    // 2023.8.5(토) 0h25 컨트롤러에서 하던 역할을 여기로 분리
+    @Override
+    public List<List<ActionDate>> getActionDatesCalendars(Long planId) {
+        Plan findPlan = findVerifiedPlan(planId);
+        return calendar.getCalendars(findPlan);
+    }
+
+    // 2023.8.5(토) 0h25 컨트롤러에서 하던 역할을 여기로 분리
+    @Override
+    public List<List<ActionDate>> getPlanCalendars(Plan savedPlan) {
+        return calendar.getCalendars(savedPlan);
+    }
+
+    // 2023.8.5(토) 0h25 컨트롤러에서 하던 역할을 여기로 분리
+    @Override
+    public List<ActionDate> getArrowCalendar(int year, int month) {
+        return calendar.getArrowCalendar(year, month);
     }
 
     private String parseChatGptResponse(String content) {
