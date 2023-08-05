@@ -102,7 +102,7 @@ public class MemberController {
     }
 
     @GetMapping("enroll.me")
-    public String enroll() {
+    public String memberEnrollForm() {
         return "member/memberEnrollForm";
     }
 

@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>allo 메인</title>
+    <title>alloc 메인</title>
     <link rel="stylesheet" href="resources/css/common/main.css">
 </head>
 <body>

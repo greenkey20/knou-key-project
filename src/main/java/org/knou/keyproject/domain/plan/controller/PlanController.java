@@ -246,16 +246,20 @@ public class PlanController {
     // 2023.8.5(토) 3h30
     @RequestMapping("resumePlan.pl")
     public String resumePlan(@RequestParam(name = "planId") @Positive Long planId) {
-        return "";
+        planService.resumePlan(planId);
+        return "redirect:myPlanDetail.pl?planId=" + planId;
     }
 
+    // 2023.8.5(토) 15h25
     @RequestMapping("pausePlan.pl")
     public String pausePlan(@RequestParam(name = "planId") @Positive Long planId) {
-        return "";
+        planService.pausePlan(planId);
+        return "redirect:myPlanDetail.pl?planId=" + planId;
     }
 
     @RequestMapping("giveUpPlan.pl")
     public String giveUpPlan(@RequestParam(name = "planId") @Positive Long planId) {
-        return "";
+        planService.giveUpPlan(planId);
+        return "redirect:myPlanDetail.pl?planId=" + planId;
     }
 }

@@ -9,15 +9,23 @@ import org.knou.keyproject.domain.member.entity.MemberStatus;
 import org.knou.keyproject.domain.member.entity.Role;
 import org.mapstruct.Mapper;
 
+import java.time.LocalDate;
+
 // 2023.7.28(금) 1h30
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
     default Member toEntity(MemberPostRequestDto memberPostRequestDto) {
+        int yearOfBirth = 0;
+        if (memberPostRequestDto.getAge() != null) {
+            yearOfBirth = LocalDate.now().getYear() - memberPostRequestDto.getAge();
+        }
+
         return Member.builder()
                 .email(memberPostRequestDto.getEmail())
                 .nickname(memberPostRequestDto.getNickname())
                 .password(memberPostRequestDto.getPassword())
                 .age(memberPostRequestDto.getAge())
+                .yearOfBirth(yearOfBirth)
                 .gender(memberPostRequestDto.getGender())
                 .memberPlatform(MemberPlatform.WEBSITE)
                 .role(Role.USER)

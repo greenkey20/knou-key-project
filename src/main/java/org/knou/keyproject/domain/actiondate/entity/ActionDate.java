@@ -33,7 +33,7 @@ public class ActionDate extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private DateType dateType; // 달력 생성 시 today, normal day 등 ou actionDatesList 생성 시 action 등
+    private DateType dateType; // 달력 생성 시 today, normal day 등 + actionDatesList 생성 시 action + pause plan 시 pause, giveUp 시 giveup
 
     private String schedule; // 달력 생성 시 action
 

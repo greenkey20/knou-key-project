@@ -24,8 +24,15 @@ public class MainController {
     private final MemberMapper memberMapper;
     private final PlanMapper planMapper;
 
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public String index(HttpSession session) {
+//    @RequestMapping(value = "/main", method = RequestMethod.GET)
+//    public String index(HttpSession session) {
+//
+//
+//        return "redirect:mainPage.cm";
+//    }
+
+    @RequestMapping(value = "mainPage.cm", method = RequestMethod.GET)
+    public String mainPage(HttpSession session) {
         if (session.getAttribute("loginUser") != null) {
             Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
             Member loginMember = memberService.findVerifiedMember(memberId);
@@ -37,11 +44,6 @@ public class MainController {
             }
         }
 
-        return "redirect:mainPage.cm";
-    }
-
-    @RequestMapping(value = "mainPage.cm", method = RequestMethod.GET)
-    public String mainPage(HttpSession session) {
         return "main/main";
     }
 }

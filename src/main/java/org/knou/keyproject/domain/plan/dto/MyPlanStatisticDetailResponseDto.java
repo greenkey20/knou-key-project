@@ -24,6 +24,7 @@ public class MyPlanStatisticDetailResponseDto {
     private Integer numOfActionsToEndPlan;
     private Integer averageTimeTakenForRealAction; // 평균 수행 소요 시간 = 시작일~오늘 중 actionDate 객체의 timeTakenForRealAction 값의 평균
 
+    private Integer periodDaysBeforePause;
     private Integer accumulatedPlanActionQuantityBeforePause;
 
     // 2. COMPLETE인 경우

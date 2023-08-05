@@ -1,17 +1,14 @@
 package org.knou.keyproject.global.utils.calculator;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
-import org.knou.keyproject.domain.actiondate.entity.DateType;
-import org.knou.keyproject.domain.plan.dto.PlanPostRequestDto;
 import org.knou.keyproject.domain.plan.entity.DeadlineType;
 import org.knou.keyproject.domain.plan.entity.FrequencyType;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
+import org.knou.keyproject.global.utils.PlanStatisticUtils;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -24,7 +21,9 @@ import static org.knou.keyproject.global.utils.calculator.CalculatorUtils.*;
 //@NoArgsConstructor // constructor ... is already defined in class ... 빌드 오류 때문에 주석 처리하고, 기본 생성자 수기로 만듦
 @Getter
 //@AllArgsConstructor
-@Builder
+//@Builder
+@RequiredArgsConstructor
+@Component
 public class Calculator {
 //    private PlanPostRequestDto requestDto;
 //    private Plan plan;
@@ -37,10 +36,11 @@ public class Calculator {
 //    private Integer totalDurationDays;
 //    private Integer totalNumOfActions;
 //    private Integer quantityPerDay;
+    private final PlanStatisticUtils planStatisticUtils;
 
     // 생성자
-    public Calculator() {
-    }
+//    public Calculator() {
+//    }
 
 //    public Calculator(PlanPostRequestDto requestDto) {
 //        this.requestDto = requestDto;
@@ -125,13 +125,95 @@ public class Calculator {
 
     // 2023.7.25(목) '나의 일정'에 저장하며 시작일이 새로 지정된 경우 호출되는 메서드
     public Plan calculateRealNewPlan(Plan planToCalculate) {
-        log.info("calculator에서 계산 전 deadline date" + planToCalculate.getDeadlineDate());
-        setDeadlineDate(planToCalculate);
-        log.info("calculator에서 계산 후 deadline date" + planToCalculate.getDeadlineDate());
+        // 2023.8.5(토) 16h 로직 수정
+        if (planToCalculate.getHasDeadline()) {
+            if (planToCalculate.getDeadlineType().equals(DeadlineType.PERIOD)) { // deadlineType이 PERIOD로써, 마감일이 시작일 대비 정해지는 경우 -> planToCalculate.getDeadlineDate() == null인 경우는 조정할 필요 없는 게 맞지?!
+                log.info("calculator에서 계산 전 deadline date" + planToCalculate.getDeadlineDate());
+                setDeadlineDate(planToCalculate);
+                log.info("calculator에서 계산 후 deadline date" + planToCalculate.getDeadlineDate());
+
+//                setActionDatesList(planToCalculate);
+            } else { // deadlineType이 DATE로써, 마감일이 딱 정해져 있는 경우
+                setTotalDurationDays(planToCalculate);
+                setTotalNumOfActions(planToCalculate);
+                setQuantityPerDay(planToCalculate);
+//                setActionDatesList(planToCalculate);
+            }
+        }
+
         setActionDatesList(planToCalculate);
 
 //        planToCalculate.setActionDatesList(); // 2023.7.29(토) 3h30 교체 완료
         return planToCalculate;
+    }
+
+    // 2023.8.5(토) 16h45 추가
+    public Plan calculateResumePlan(Plan resumedPlan) {
+        LocalDate originalStartDate = resumedPlan.getStartDate();
+
+        setResumeStartDate(resumedPlan);
+        setResumeDeadlineDate(resumedPlan, originalStartDate);
+        setTotalDurationDays(resumedPlan);
+        setTotalNumOfActions(resumedPlan);
+        setResumeTotalQuantity(resumedPlan);
+        setQuantityPerDay(resumedPlan);
+        setActionDatesList(resumedPlan);
+
+        return resumedPlan;
+    }
+
+    private void setResumeStartDate(Plan resumedPlan) {
+        resumedPlan.setStartDate(LocalDate.now());
+    }
+
+    private void setResumeDeadlineDate(Plan resumedPlan, LocalDate originalStartDate) {
+        LocalDate startDate = resumedPlan.getStartDate();
+        LocalDate deadlineDate = resumedPlan.getDeadlineDate();
+
+        if (resumedPlan.getHasDeadline()) {
+            if (resumedPlan.getDeadlineType() == DeadlineType.PERIOD) {
+                String deadlinePeriod = resumedPlan.getDeadlinePeriod(); // x일/주/개월
+
+                StringBuilder nums = new StringBuilder();
+                StringBuilder unit = new StringBuilder();
+                for (int i = 0; i < deadlinePeriod.length(); i++) {
+                    char ch = deadlinePeriod.charAt(i);
+
+                    if (Character.isDigit(ch)) {
+                        nums.append(ch);
+                    } else {
+                        unit.append(ch);
+                    }
+                }
+
+                int endDatePeriod = Integer.parseInt(nums.toString());
+                int periodDaysBeforePause = planStatisticUtils.getPeriodDaysBeforePause(resumedPlan, originalStartDate);
+
+                String endDatePeriodUnit = unit.toString();
+
+                switch (endDatePeriodUnit) {
+                    case "일":
+                        deadlineDate = startDate.plusDays(endDatePeriod).minusDays(periodDaysBeforePause);
+                        break;
+                    case "주":
+                        deadlineDate = startDate.plusWeeks(endDatePeriod).minusDays(periodDaysBeforePause);
+                        break;
+                    case "개월":
+                        deadlineDate = startDate.plusMonths(endDatePeriod).minusDays(periodDaysBeforePause);
+                        break;
+                }
+            } else {
+                deadlineDate = resumedPlan.getDeadlineDate();
+            }
+
+            resumedPlan.setDeadlineDate(deadlineDate);
+        }
+    }
+
+    private void setResumeTotalQuantity(Plan resumedPlan) {
+        Integer originalTotalQuantity = resumedPlan.getTotalQuantity();
+        Integer accumulatedRealActionQuantity = planStatisticUtils.getAccumulatedRealActionQuantity(resumedPlan.getPlanId());
+        resumedPlan.setTotalQuantity(originalTotalQuantity - accumulatedRealActionQuantity);
     }
 
     public void setStartDate(Plan planToCalculate) {
@@ -286,19 +368,21 @@ public class Calculator {
                     totalNumOfActions = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
                 }
             }
-        } else {
+        } else { // 측정 어려운 활동의 경우, 계산기에서 deadlineType이 deadlinePeriod로만 가능하게 되어있음
             String deadlinePeriodUnit = planToCalculate.getDeadlinePeriodUnit();
             Integer deadlinePeriodNum = planToCalculate.getDeadlinePeriodNum();
+            // 2023.8.5(토) 16h20 로직 수정
+            int delim = (int) (deadlinePeriodNum * frequencyFactor);
 
             switch (deadlinePeriodUnit) {
                 case "일":
-                    totalNumOfActions = deadlinePeriodNum;
+                    totalNumOfActions = delim;
                     break;
                 case "주":
-                    totalNumOfActions = deadlinePeriodNum * 7;
+                    totalNumOfActions = delim * 7;
                     break;
                 case "개월":
-                    totalNumOfActions = deadlinePeriodNum * 30;
+                    totalNumOfActions = delim * 30;
                     break;
             }
         }
@@ -307,32 +391,34 @@ public class Calculator {
     }
 
     private void setTotalQuantity(Plan planToCalculate) {
-        planToCalculate.setTotalQuantity(planToCalculate.getTotalNumOfActions());
+        planToCalculate.setTotalQuantity(planToCalculate.getTotalDurationDays()); // 2023.8.5(토) 16h35 로직 수정
     }
 
     // 2023.8.2(수) 2h25 수정해봄
     public void setQuantityPerDay(Plan planToCalculate) {
-        if (planToCalculate.getIsMeasurable()) {
-            Integer totalQuantity = planToCalculate.getTotalQuantity();
-            Integer totalNumOfActions = planToCalculate.getTotalNumOfActions();
-            Integer quantityPerDay = 0;
+        Integer totalQuantity = planToCalculate.getTotalQuantity();
+        Integer totalNumOfActions = planToCalculate.getTotalNumOfActions();
+        Integer quantityPerDay = 0;
 
-            if (planToCalculate.getHasDeadline()) {
-                int delim = totalQuantity % totalNumOfActions;
+        if (planToCalculate.getHasDeadline()) {
+            int delim = totalQuantity % totalNumOfActions;
 
-                if (delim != 0) {
-                    quantityPerDay = (int) (Math.ceil(totalQuantity / totalNumOfActions)) + 1;
-                } else {
-                    quantityPerDay = totalQuantity / totalNumOfActions;
-                }
+            if (delim != 0) {
+                quantityPerDay = (int) (Math.ceil(totalQuantity / totalNumOfActions)) + 1;
             } else {
-                quantityPerDay = planToCalculate.getQuantityPerDayPredicted();
+                quantityPerDay = totalQuantity / totalNumOfActions;
             }
-
-            planToCalculate.setQuantityPerDay(quantityPerDay);
         } else {
-            planToCalculate.setQuantityPerDay(1);
+            quantityPerDay = planToCalculate.getQuantityPerDayPredicted();
         }
+
+        planToCalculate.setQuantityPerDay(quantityPerDay); // 2023.8.5(토) 16h35 측정 불가능한 일의 경우도 deadline이 있는 일인 바, 계산 방식은 동일할 것 같아 로직 수정 + 측정 불가능한 일의 경우 quantityPerDay를 사용/제시하는 일이 없긴 함
+
+//        if (planToCalculate.getIsMeasurable()) {
+//
+//        } else {
+//            planToCalculate.setQuantityPerDay(1);
+//        }
     }
 
     // 2023.7.26(수) 18h15 활동일 리스트 구하는 메서드들 Plan 엔티티 클래스로부터 여기로 분리?!

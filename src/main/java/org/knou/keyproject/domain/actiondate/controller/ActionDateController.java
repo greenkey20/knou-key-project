@@ -85,6 +85,7 @@ public class ActionDateController {
         return "actiondate/actionDetailUpdateForm";
     }
 
+    // 2023.8.5(토) 15h25 나의 생각 = 이걸 굳이 post로 보내야 하나? 쿼리스트링으로 id들 정보 붙여서 보내도 될 것 같은데?
     @RequestMapping(value = "actionDetailDelete.ad", method = RequestMethod.POST)
     public String deleteActionDate(@RequestParam(name = "actionDateId") @Positive Long actionDateId,
                                    @RequestParam(name = "planId") @Positive Long planId) {

@@ -1,14 +1,11 @@
 package org.knou.keyproject.domain.actiondate.repository;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.knou.keyproject.domain.actiondate.entity.QActionDate.actionDate;
 

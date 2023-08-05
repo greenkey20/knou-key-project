@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,8 +26,9 @@
 
     <div id="my-plan-detail-stats">
         <br>
-        <p style="font-weight: bold">
-            ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안
+        <p style="font-weight: bold; font-size: larger">
+            ${ plan.startDate } ~ ${ plan.deadlineDate } (${ plan.totalDurationDays }일) 기간 중<br>
+            ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안<br>
             매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
         </p>
         <br>
@@ -59,16 +61,16 @@
                 - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
             </c:when>
             <c:when test="${ plan.status.toString() eq 'PAUSE'}">
-                - ${ plan.lastStatusChangedAt }자 일시 중지한 상태에요
-                - ${ plan.lastStatusChangedAt }자 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 진행하고 있었어요
-                <span class="smallerLetters">(${ plan.lastStatusChangedAt }자까지 계획했던 분량: ${ statPlan.accumulatedPlanActionQuantityBeforePause }${ plan.unit })</span>
+                - ${ plan.lastStatusChangedAt }자 일시 중지한 상태에요<br>
+                - ${ statPlan.periodDaysBeforePause }일 동안 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 진행하고 있었어요
+                <span class="smallerLetters">(계획했던 분량: ${ statPlan.accumulatedPlanActionQuantityBeforePause }${ plan.unit })</span>
                 <br>
                 <br>
-                - 아직 목표 달성까지 ${ statPlan.numOfActionsToEndPlan }회, ${ statPlan.quantityToEndPlan }${ plan.unit } ((${ statPlan.ratioOfQuantityToEndPlan }%)) 남았어요
+                - 아직 목표 달성까지 ${ statPlan.numOfActionsToEndPlan }회, ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%) 남았어요<br>
                 - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
             </c:when>
             <c:otherwise>
-                - ${ plan.lastStatusChangedAt }자 중도 포기한 활동이에요
+                - ${ plan.lastStatusChangedAt }자 중도 포기한 활동이에요<br>
                 - 총 ${ statPlan.accumulatedNumOfActions }회 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 수행했었어요
             </c:otherwise>
         </c:choose>
@@ -194,7 +196,7 @@
                 <td>날짜</td>
                 <td>수행 여부</td>
                 <td>수행 분량</td>
-                <td>활동 만족도</td>
+                <td>활동 점수</td>
                 <td>기록</td>
             </tr>
             </thead>
@@ -204,15 +206,25 @@
                     <td class="holiday"> ${ status.count } </td>
 
                     <td>
-                            ${ day.numOfYear }. ${ day.numOfMonth }. ${ day.numOfDate }
                         <c:choose>
-                            <c:when test="${ day.numOfDay == 1 }"> (월) </c:when>
-                            <c:when test="${ day.numOfDay == 2 }"> (화) </c:when>
-                            <c:when test="${ day.numOfDay == 3 }"> (수) </c:when>
-                            <c:when test="${ day.numOfDay == 4 }"> (목) </c:when>
-                            <c:when test="${ day.numOfDay == 5 }"> (금) </c:when>
-                            <c:when test="${ day.numOfDay == 6 }"> (토) </c:when>
-                            <c:otherwise> (일) </c:otherwise>
+                            <c:when test="${ day.isDone }">
+                                <fmt:parseDate value="${ day.realActionDate }" pattern="yyyy-MM-dd" var="parsedDate" type="date"/>
+                                ${ parsedDate }
+                            </c:when>
+                            <c:otherwise>
+                                ${ day.numOfYear }. ${ day.numOfMonth }. ${ day.numOfDate }
+                                <c:choose>
+                                    <c:when test="${ day.numOfDay == 1 }"> (월) </c:when>
+                                    <c:when test="${ day.numOfDay == 2 }"> (화) </c:when>
+                                    <c:when test="${ day.numOfDay == 3 }"> (수) </c:when>
+                                    <c:when test="${ day.numOfDay == 4 }"> (목) </c:when>
+                                    <c:when test="${ day.numOfDay == 5 }"> (금) </c:when>
+                                    <c:when test="${ day.numOfDay == 6 }"> (토) </c:when>
+                                    <c:otherwise> (일) </c:otherwise>
+                                </c:choose>
+
+                                <span class="smallerLetters">[예정]</span>
+                            </c:otherwise>
                         </c:choose>
                     </td>
 
@@ -221,7 +233,16 @@
                             <td class="check">-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td><button type="button" onclick="location.href='actionDetailRecordPage.ad?planId=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${ day.dateType.toString() eq 'PAUSE' or day.dateType.toString() eq 'GIVEUP' }">
+                                        <button type="button" disabled="disabled">상세 기록</button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" onclick="location.href='actionDetailRecordPage.ad?planId=${ plan.planId }&actionDateId=${ day.actionDateId }'">상세 기록</button>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                         </c:when>
                         <c:otherwise>
                             <td class="check">✅</td>
@@ -292,13 +313,13 @@
             <!-- Modal body -->
             <div class="modal-body">
                 <ul id="pauseList"></ul>
-                <span>일시 중지하면 이어서 하기로 결정할 때까지 활동 내역을 기록할 수 없습니다. 그래도 일시 중지하시겠습니까?</span>
+                <span>일시 중지하면 이어서 하기로 결정할 때까지 활동 내역을 기록할 수 없습니다. 또한 이어서 하실 때는 잔여일/잔여량에 따라 마감일이나 매 회 활동 분량이 재조정됩니다. 그래도 일시 중지하시겠습니까?</span>
             </div>
 
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="grayBtn" data-dismiss="modal">취소</button>
-                <button type="button" id="pauseBtn" onclick="location.href='pausePlan.pl?planId=${ plan.planId }'">포기하기</button>
+                <button type="button" id="pauseBtn" onclick="location.href='pausePlan.pl?planId=${ plan.planId }'">일시 중지하기</button>
             </div>
 
         </div>
@@ -325,7 +346,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="grayBtn" data-dismiss="modal">취소</button>
-                <button type="button" id="giveUpBtn" onclick="location.href='giveUpPlan.pl?planId=${ plan.planId }'">일시 중지하기</button>
+                <button type="button" id="giveUpBtn" onclick="location.href='giveUpPlan.pl?planId=${ plan.planId }'">포기하기</button>
             </div>
 
         </div>

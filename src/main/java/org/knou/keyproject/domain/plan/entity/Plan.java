@@ -14,6 +14,7 @@ import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,6 +171,16 @@ public class Plan extends BaseTimeEntity {
         this.totalQuantity = totalQuantity;
     }
 
+    // 2023.8.5(토) 15h40 특정 plan의 resume/pause/giveUp 처리하기 위해 추가
+    public void setLastStatusChangedAt(LocalDate lastStatusChangedAt) {
+        this.lastStatusChangedAt = lastStatusChangedAt;
+    }
+
+    // 2023.8.5(토) 16h50 plan을 resume하며 '수정된 plan'으로 하나의 별도 레코드로 만들기 위해 추가
+    public void setParentPlan(Plan parentPlan) {
+        this.parentPlan = parentPlan;
+    }
+
     // 2023.7.25(화) 23h50
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @Column
@@ -205,4 +216,29 @@ public class Plan extends BaseTimeEntity {
 //    public Integer getAccumulatedRealActionQuantity(Long planId) {
 //
 //    }
+
+    // 2023.8.5(토) 18h35
+    public void pauseActionDates() {
+        List<ActionDate> actionDatesToPause = this.actionDatesList;
+        for (ActionDate actionDate : actionDatesToPause) {
+            if (LocalDate.parse(actionDate.getDateFormat(), DateTimeFormatter.ISO_DATE).isAfter(LocalDate.now())) {
+                actionDate.setDateType(DateType.PAUSE);
+            }
+        }
+
+        this.actionDatesList = actionDatesToPause;
+    }
+
+    // 2023.8.5(토) 18h45
+    public void giveUpActionDates() {
+        List<ActionDate> actionDatesToGiveUp = this.actionDatesList;
+        for (ActionDate actionDate : actionDatesToGiveUp) {
+            LocalDate thisDate = LocalDate.parse(actionDate.getDateFormat(), DateTimeFormatter.ISO_DATE);
+            if (thisDate.equals(LocalDate.now()) || thisDate.isAfter(LocalDate.now())) {
+                actionDate.setDateType(DateType.GIVEUP);
+            }
+        }
+
+        this.actionDatesList = actionDatesToGiveUp;
+    }
 }

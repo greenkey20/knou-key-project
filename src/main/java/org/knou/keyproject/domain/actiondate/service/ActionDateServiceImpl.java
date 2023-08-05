@@ -11,6 +11,8 @@ import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -60,7 +62,7 @@ public class ActionDateServiceImpl implements ActionDateService {
         actionDateToSave.setRealActionQuantity(requestDto.getRealActionQuantity());
         actionDateToSave.setTimeTakenForRealAction(requestDto.getTimeTakenForRealAction());
         actionDateToSave.setReviewScore(requestDto.getReviewScore());
-        actionDateToSave.setRealActionDate(requestDto.getRealActionDate());
+        actionDateToSave.setRealActionDate(LocalDate.of(requestDto.getRealActionDate().getYear(), requestDto.getRealActionDate().getMonthValue(), requestDto.getRealActionDate().getDayOfMonth()));
         actionDateToSave.setIsDone(true);
 
         ActionDate savedActionDate = actionDateRepository.save(actionDateToSave);

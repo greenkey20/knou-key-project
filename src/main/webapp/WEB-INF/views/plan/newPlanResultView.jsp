@@ -190,7 +190,7 @@
     2. action 속성 대신, button에 formaction 속성 줌(값 = 요청 url) -> form 태그 안에서 여러 개 버튼별 원하는 요청을 각기 다르게 할 수 있음-->
     <form method="post" action="myNewPlanInsert.pl" modelAttribute="plan">
         <c:if test="${ !savedPlan.hasStartDate }">
-            <span>시작일 지정하고 </span>
+            <span>시작일 지정하고 <span class="smallerLetters">(단, 마감일이 정해져있는 경우, 시작일을 오늘 외의 날짜로 지정하면 총 활동 횟수 및 매 회 활동 분량 계산 결과가 위 예시와 달라질 수 있습니다)</span> </span>
             <input type="date" name="startDate" required>
             <br>
         </c:if>
