@@ -34,7 +34,7 @@ public interface PlanService {
 
     List<ActionDate> getArrowCalendar(int year, int month);
 
-    void resumePlan(Long planId);
+    Long resumePlan(Long planId);
 
     void pausePlan(Long planId);
 

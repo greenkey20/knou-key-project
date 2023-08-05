@@ -50,6 +50,8 @@
     <br>
 
     <div class="calendar" align="center">
+        <h4> 활동일 목록 예시 </h4>
+        <br>
         <!--2023.7.25(화) 11h45 -> 2023.7.30(일) 해당 plan 시작일~종료일까지의 달력을 보여주기로 함-->
         <c:forEach var="calendarDatesList" items="${ calendars }" varStatus="status">
             <!--JSP/Java로 달력 만들기-->
@@ -143,7 +145,6 @@
         </c:forEach>
 
         <br>
-        <h4> 활동일 목록 예시 </h4>
         <table class="actionDatesListTable" border="black" align="center">
             <thead>
                 <tr>

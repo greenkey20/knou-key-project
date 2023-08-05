@@ -244,6 +244,8 @@ public interface PlanMapper {
         myPlanDetailResponseDto.status(entity.getStatus());
 
         myPlanDetailResponseDto.lastStatusChangedAt(entity.getLastStatusChangedAt());
+        myPlanDetailResponseDto.isChild(entity.getIsChild());
+        myPlanDetailResponseDto.sizeOfModifiedPlansList(entity.getModifiedPlans().size());
 
         return myPlanDetailResponseDto.build();
     }
@@ -270,6 +272,7 @@ public interface PlanMapper {
         actionDateResponseDto.isDone(actionDate.getIsDone());
         actionDateResponseDto.realActionQuantity(actionDate.getRealActionQuantity());
         actionDateResponseDto.reviewScore(actionDate.getReviewScore());
+        actionDateResponseDto.realActionDate(actionDate.getRealActionDate());
 
         return actionDateResponseDto.build();
     }

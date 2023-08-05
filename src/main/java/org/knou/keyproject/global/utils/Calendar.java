@@ -9,6 +9,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +30,10 @@ public class Calendar {
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
 //    @RequestMapping(value = "calendar.pl", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+
     /**
-     *
      * @param savedPlan 계산기에 의해 계산된 결과로 얻어진 Plan -> 그에 따라 정해진 actionDates를 가지고 있음
-     * -> actionDate인 경우에는 달력의 schedule 속성에 "action"이라고 찍음
+     *                  -> actionDate인 경우에는 달력의 schedule 속성에 "action"이라고 찍음
      * @return actionDates 중 첫째날부터 마지막날까지를 포괄하는 달력(들)을 반환
      */
     public List<List<ActionDate>> getCalendars(Plan savedPlan) {
@@ -68,10 +69,26 @@ public class Calendar {
                     if (thisFormat.equals(actionDateFormat)) {
                         thisDate.setSchedule("action");
                         log.info("달력 날짜의 schedule로써 action 찍힙니다");
+
+                        // 실행한 날짜에 초록색 배경색을 칠하는 방법
+                        // idea1)
+                        if (ad.getIsDone()) {
+                            thisDate.setDateType(DateType.DONE);
+                        }
+
                         break; // 2023.8.5(토) 1h10 추가
                     } else {
 //                    log.info("달력 날짜의 schedule로써 action 안 찍힙니다 = format 비교가 안 되거나, 둘 다 null이거나..");
                     }
+
+                    // idea2) 2023.8.6(일) 5h20 아래와 같이 해도 DateTimeParseException: Text 'null-null-null' could not be parsed at index 0
+                    /*
+                    if (thisDate.getDateFormat() != null) {
+                        if (LocalDate.parse(thisDate.getDateFormat(), DateTimeFormatter.ISO_DATE).equals(ad.getRealActionDate())) {
+                            thisDate.setDateType(DateType.DONE);
+                        }
+                    }
+                     */
                 }
             }
 

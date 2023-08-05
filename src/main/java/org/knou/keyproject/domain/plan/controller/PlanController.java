@@ -246,8 +246,8 @@ public class PlanController {
     // 2023.8.5(토) 3h30
     @RequestMapping("resumePlan.pl")
     public String resumePlan(@RequestParam(name = "planId") @Positive Long planId) {
-        planService.resumePlan(planId);
-        return "redirect:myPlanDetail.pl?planId=" + planId;
+        Long resumedPlanId = planService.resumePlan(planId);
+        return "redirect:myPlanDetail.pl?planId=" + resumedPlanId;
     }
 
     // 2023.8.5(토) 15h25

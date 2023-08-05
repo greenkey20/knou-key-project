@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.knou.keyproject.domain.actiondate.entity.QActionDate.actionDate;
 
@@ -35,7 +36,7 @@ public class ActionDateCustomRepositoryImpl implements ActionDateCustomRepositor
         return jpaQueryFactory
                 .select(actionDate.planActionQuantity.sum())
                 .from(actionDate)
-                .where(actionDate.plan.planId.eq(planId).and(actionDate.realActionDate.between(startDate, LocalDate.now()))) // 해당 plan 시작일~오늘 계획된 분량들의 합
+                .where(actionDate.plan.planId.eq(planId).and(actionDate.dateFormat.between(startDate.toString(), LocalDate.now().toString()))) // 해당 plan 시작일~오늘 계획된 분량들의 합
                 .fetchOne();
     }
 

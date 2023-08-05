@@ -46,4 +46,7 @@ public class MyPlanDetailResponseDto {
 //                .planId(findPlan.getPlanId())
 //                .build();
 //    }
+
+    private Boolean isChild;
+    private int sizeOfModifiedPlansList;
 }

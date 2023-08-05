@@ -27,12 +27,16 @@
     <div id="my-plan-detail-stats">
         <br>
         <p style="font-weight: bold; font-size: larger">
+            <c:if test="${ plan.isChild }">
+                <div class="smallerLetters" style="font-weight: bold">[일시 중지 후 이어서 하고 있어요]</div>
+            </c:if>
+
             ${ plan.startDate } ~ ${ plan.deadlineDate } (${ plan.totalDurationDays }일) 기간 중<br>
             ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안<br>
             매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
         </p>
         <br>
-        
+
         <c:choose>
             <c:when test="${ plan.status.toString() eq 'ACTIVE'}">
                 - 오늘까지 진행 분량 ${ statPlan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던
@@ -122,7 +126,7 @@
                             <c:choose>
                                 <c:when test="${ date.schedule eq 'action'}">
                                     <c:choose>
-                                        <c:when test="${ date.isDone }">
+                                        <c:when test="${ date.dateType.toString() eq 'DONE' }">
                                             </tr><tr><td class="action done" align="left" bgcolor="#228b22"> ${ date.numOfDate } </td>
                                         </c:when>
                                         <c:otherwise>
@@ -146,7 +150,7 @@
                             <c:choose>
                                 <c:when test="${ date.schedule eq 'action'}">
                                     <c:choose>
-                                        <c:when test="${ date.isDone }">
+                                        <c:when test="${ date.dateType.toString() eq 'DONE' }">
                                             <td class="action done" align="left" bgcolor="#228b22"> ${ date.numOfDate } </td>
                                         </c:when>
                                         <c:otherwise>
@@ -209,7 +213,8 @@
                         <c:choose>
                             <c:when test="${ day.isDone }">
                                 <fmt:parseDate value="${ day.realActionDate }" pattern="yyyy-MM-dd" var="parsedDate" type="date"/>
-                                ${ parsedDate }
+                                <fmt:formatDate value="${ parsedDate }" type="date" pattern="yyyy.MM.dd" var="printDate"/>
+                                ${ printDate }
                             </c:when>
                             <c:otherwise>
                                 ${ day.numOfYear }. ${ day.numOfMonth }. ${ day.numOfDate }
@@ -281,20 +286,42 @@
     <div align="center">
     <c:choose>
         <c:when test="${ plan.status.toString() eq 'ACTIVE'}">
-            <!--게시판에 공유하기 + 일시 중지하기 + 포기하기-->
-            <button type="button" class="greenBtn" onclick="location.href='boardEnrollForm.bd?planId=${ plan.planId }&planStatus=${ plan.status.toString() }'">게시판에 공유하기</button> <!--게시판에 글 쓰는(post) 양식으로 이동-->
-            <button type="button" class="grayBtn" data-toggle="modal" data-target="#pauseForm">일시 중지하기</button>
-            <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+            <c:choose>
+                <c:when test="${ plan.sizeOfModifiedPlansList eq 0 }"> <!--아직 일시 정지한 적 없는 경우-->
+                    <!--뒤로 가기 + 게시판에 공유하기 + 일시 중지하기 + 포기하기-->
+                    <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+                    <button type="button" class="greenBtn" onclick="location.href='boardEnrollForm.bd?planId=${ plan.planId }&planStatus=${ plan.status.toString() }'">게시판에 공유하기</button> <!--게시판에 글 쓰는(post) 양식으로 이동-->
+                    <button type="button" class="grayBtn" data-toggle="modal" data-target="#pauseForm">일시 중지하기</button>
+                    <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+                </c:when>
+                <c:otherwise>
+                    <!--뒤로/목록으로 가기 버튼만-->
+                    <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+                </c:otherwise>
+            </c:choose>
         </c:when>
         <c:when test="${ plan.status.toString() eq 'COMPLETE'}">
-            <!--게시판에 공유하기-->
+            <!--뒤로 가기 + 게시판에 공유하기-->
+            <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
             <button type="button" class="greenBtn" onclick="location.href='boardEnrollForm.bd?planId=${ plan.planId }&planStatus=${ plan.status.toString() }'">게시판에 공유하기</button> <!--게시판에 글 쓰는(post) 양식으로 이동-->
         </c:when>
         <c:when test="${ plan.status.toString() eq 'PAUSE'}">
-            <!--이어서 하기 + 포기하기-->
-            <button type="button" class="greenBtn" onclick="location.href='resumePlan.pl?planId=${ plan.planId }'">이어서 하기</button>
-            <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+            <c:choose>
+                <c:when test="${ plan.sizeOfModifiedPlansList eq 0 }"> <!--아직 일시 정지한 적 없는 경우-->
+                    <!--뒤로 가기 + 이어서 하기 + 포기하기-->
+                    <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+                    <button type="button" class="greenBtn" onclick="location.href='resumePlan.pl?planId=${ plan.planId }'">이어서 하기</button>
+                    <button type="button" data-toggle="modal" data-target="#giveUpForm">포기하기</button>
+                </c:when>
+                <c:otherwise>
+                    <!--뒤로/목록으로 가기 버튼만-->
+                    <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+                </c:otherwise>
+            </c:choose>
         </c:when>
+        <c:otherwise> <!--'포기' 상태인 경우-->
+            <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+        </c:otherwise>
     </c:choose>
     </div>
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
