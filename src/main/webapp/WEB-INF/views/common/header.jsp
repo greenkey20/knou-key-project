@@ -2,6 +2,7 @@
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +36,7 @@
 <div class="header" align="center">
     <div class="logo_area">
         <div class="logo_bg">
-            <p class="logo_k"><a href="/key-project">allo</a></p>
+            <p class="logo_k"><a href="mainPage.cm">alloc</a></p> <!--Tomcat war 배포 시에는 key-project-->
 <%--            <p class="logo_e">allo</p>--%>
         </div>
         <div>

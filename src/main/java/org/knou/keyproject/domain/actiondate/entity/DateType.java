@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum DateType {
     TODAY(1),
     NORMALDAY(2),
-    ACTION(3);
+    ACTION(3),
+    PAUSE(4),
+    GIVEUP(5);
 
     @Getter
     private final Integer num;

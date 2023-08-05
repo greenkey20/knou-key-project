@@ -24,9 +24,9 @@ div {
 .header .logo_area {
     position: relative;
     height: 56px;
-    width: 360px;
+    width: 768px;
     margin: auto;
-    padding-top: 20px;
+    padding-top: 5px;
     background-color: forestgreen;
     color: lightgreen;
 }
@@ -42,19 +42,19 @@ div {
 
 .logo_k {
     font-weight: bold;
-    font-size: large;
+    /*font-size: 30px;*/
     color: lightgreen;
 }
 
 .logo_k a {
     text-decoration: none;
     color: lightgreen;
-    font-size: 22px;
+    font-size: 30px;
 }
 
 .logo_k a:hover {
     color: greenyellow;
-    font-size: 22px;
+    font-size: 31px;
     font-weight: bolder;
 }
 
@@ -82,50 +82,50 @@ div {
 
 .service_area a {
     text-decoration: none;
-    color: black;
-    font-size: 13px;
+    color: mediumseagreen;
+    font-size: 16px;
 }
 
 .service_area a:hover {
-    color: rgb(182, 238, 86);
-    font-size: 14px;
+    color: lightgreen;
+    font-size: 17px;
     font-weight: bolder;
 }
 
-.group_navi {
-    position: relative;
-    width: 360px;
-    margin: auto;
-    height: 40px;
-    border: 1px solid yellowgreen;
-}
+/*.group_navi {*/
+/*    position: relative;*/
+/*    width: 768px;*/
+/*    margin: auto;*/
+/*    height: 40px;*/
+/*    border: 1px solid yellowgreen;*/
+/*}*/
 
-.list_navi {
-    font-size: 15px;
-    font-weight: 600;
-    list-style: none;
-    display: block;
-}
+/*.list_navi {*/
+/*    font-size: 15px;*/
+/*    font-weight: 600;*/
+/*    list-style: none;*/
+/*    display: block;*/
+/*}*/
 
-.navi_item {
-    display: inline-block;
-    width: 30%;
-    text-align: center;
-    position: relative;
-    /*padding-top: 8px;*/
-}
+/*.navi_item {*/
+/*    display: inline-block;*/
+/*    width: 30%;*/
+/*    text-align: center;*/
+/*    position: relative;*/
+/*    !*padding-top: 8px;*!*/
+/*}*/
 
-.navi:hover {
-    color: rgb(255, 163, 63);
-    font-weight: bolder;
-}
+/*.navi:hover {*/
+/*    color: rgb(255, 163, 63);*/
+/*    font-weight: bolder;*/
+/*}*/
 
-.list_navi a {
-    display: block;
-    text-decoration: none;
-    color: black;
-}
+/*.list_navi a {*/
+/*    display: block;*/
+/*    text-decoration: none;*/
+/*    color: black;*/
+/*}*/
 
-.list_navi > li > a:hover {
-    display: block;
-}
+/*.list_navi > li > a:hover {*/
+/*    display: block;*/
+/*}*/

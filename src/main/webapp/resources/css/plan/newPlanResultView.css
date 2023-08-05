@@ -51,6 +51,10 @@ div {
     text-align: center;
 }
 
+.smallerLetters {
+    font-size: small;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }

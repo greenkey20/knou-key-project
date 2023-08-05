@@ -16,18 +16,21 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.utils.Calendar;
+import org.knou.keyproject.global.utils.PlanStatisticUtils;
 import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +49,8 @@ public class PlanServiceImpl implements PlanService {
     private final MemberService memberService;
     private final ActionDateService actionDateService;
     private final Calendar calendar;
+    private final Calculator calculator;
+    private final PlanStatisticUtils planStatisticUtils;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -66,7 +71,7 @@ public class PlanServiceImpl implements PlanService {
             planToCalculate.setMember(memberRepository.findById(requestDto.getMemberId()).orElse(null));
         }
 
-        Plan calculatedPlan = new Calculator().calculateNewPlan(planToCalculate);
+        Plan calculatedPlan = calculator.calculateNewPlan(planToCalculate);
         log.info("계산 결과 시작일 = " + calculatedPlan.getStartDate()); // 2023.7.29(토) 4h25 '계산 결과 시작일 = 2023-07-29' 찍힘
         log.info("계산 결과 활동일 중 첫번째 것 = " + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.29(토) 4h25 actionDatesList()가 비었다고 한다..
 //        System.out.println("이거 안 찍히나?" + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.28(금) 3h15 이거 안 찍히나?ACTION 찍히는데
@@ -97,6 +102,7 @@ public class PlanServiceImpl implements PlanService {
         // 애초에 startDate 지정하지 않았던 계획의 경우에만 금번 requestDto에 startDate가 들어있음
         if (!findPlan.getHasStartDate()) {
             if (findPlan.getStartDate() != requestDto.getStartDate()) {
+                findPlan.setStartDate(requestDto.getStartDate()); // 2023.8.5(토) 21h15 버그 발견 = 이 부분을 누락했었음
                 // 2023.7.29(토) 21h30 '오늘'을 임의의 시작일로 계산했던 actionDatesList 삭제
 //                actionDateRepository.deleteAll(findPlan.getActionDatesList()); // 2023.7.29(토) 22h 이렇게는 delete 쿼리가 안 나갔음
                 actionDateService.deleteActionDatesByPlanId(findPlan.getPlanId());
@@ -107,7 +113,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         log.info("planService에서 calculator 호출 전 findPlan.deadline date" + findPlan.getDeadlineDate());
-        findPlan = new Calculator().calculateRealNewPlan(findPlan); // 2023.7.29(토) 1h25 나의 생각 = 여기서 actionDate들 다시 set됨 = 이게 insert가 됨 -> 나의 질문 = 이걸 update되게 하려면 어떻게 해야 하지? 현재 repository 거치지 않아서 그런가?
+        findPlan = calculator.calculateRealNewPlan(findPlan); // 2023.7.29(토) 1h25 나의 생각 = 여기서 actionDate들 다시 set됨 = 이게 insert가 됨 -> 나의 질문 = 이걸 update되게 하려면 어떻게 해야 하지? 현재 repository 거치지 않아서 그런가?
         log.info("planService에서 calculator 호출 후 findPlan.deadline date = " + findPlan.getDeadlineDate());
 //        List<ActionDate> actionDatesAfterNewCal = findPlan.getActionDatesList();
 //        actionDateRepository.saveAll(actionDatesAfterNewCal);
@@ -182,81 +188,32 @@ public class PlanServiceImpl implements PlanService {
         LocalDate startDate = findPlan.getStartDate();
         LocalDate lastStatusChangedAt = findPlan.getLastStatusChangedAt();
 
-        int accumulatedRealActionQuantity = getAccumulatedRealActionQuantity(planId);
-        int accumulatedPlanActionQuantity = getAccumulatedPlanActionQuantity(planId, startDate);
-        int quantityDifferenceBetweenPlanAndReal = getQuantityDifferenceBetweenPlanAndReal(accumulatedPlanActionQuantity, accumulatedRealActionQuantity);
+        int accumulatedRealActionQuantity = planStatisticUtils.getAccumulatedRealActionQuantity(planId);
+        int accumulatedPlanActionQuantity = planStatisticUtils.getAccumulatedPlanActionQuantity(planId, startDate);
+        int quantityDifferenceBetweenPlanAndReal = planStatisticUtils.getQuantityDifferenceBetweenPlanAndReal(accumulatedPlanActionQuantity, accumulatedRealActionQuantity);
 
         int totalQuantity = findPlan.getTotalQuantity();
-        int quantityToEndPlan = getQuantityToEndPlan(totalQuantity, accumulatedRealActionQuantity);
+        int quantityToEndPlan = planStatisticUtils.getQuantityToEndPlan(totalQuantity, accumulatedRealActionQuantity);
 
-        double ratioOfQuantityToEndPlan = getRatioOfQuantityToEndPlan(accumulatedRealActionQuantity, totalQuantity);
+        double ratioOfQuantityToEndPlan = planStatisticUtils.getRatioOfQuantityToEndPlan(accumulatedRealActionQuantity, totalQuantity);
 
-        int accumulatedNumOfActions = getAccumulatedNumOfActions(planId);
-        int numOfActionsToEndPlan = getNumOfActionsToEndPlan(findPlan.getTotalNumOfActions(), accumulatedNumOfActions);
+        int accumulatedNumOfActions = planStatisticUtils.getAccumulatedNumOfActions(planId);
+        int numOfActionsToEndPlan = planStatisticUtils.getNumOfActionsToEndPlan(findPlan.getTotalNumOfActions(), accumulatedNumOfActions);
 
-        int accumulatedPlanActionQuantityBeforePause = getAccumulatedPlanActionQuantityBeforePause(planId, startDate, lastStatusChangedAt);
+        int accumulatedPlanActionQuantityBeforePause = planStatisticUtils.getAccumulatedPlanActionQuantityBeforePause(planId, startDate, lastStatusChangedAt);
 
         return MyPlanStatisticDetailResponseDto.builder()
                 .accumulatedRealActionQuantity(accumulatedRealActionQuantity)
                 .accumulatedPlanActionQuantity(accumulatedPlanActionQuantity)
                 .quantityDifferenceBetweenPlanAndReal(quantityDifferenceBetweenPlanAndReal)
                 .quantityToEndPlan(quantityToEndPlan)
-                .ratioOfQuantityToEndPlan(formatPercentage(ratioOfQuantityToEndPlan))
-                .accumulatedNumOfActions(getAccumulatedNumOfActions(planId))
+                .ratioOfQuantityToEndPlan(planStatisticUtils.formatPercentage(ratioOfQuantityToEndPlan))
+                .accumulatedNumOfActions(planStatisticUtils.getAccumulatedNumOfActions(planId))
                 .numOfActionsToEndPlan(numOfActionsToEndPlan)
-                .averageTimeTakenForRealAction(getAverageTimeTakenForRealAction(planId))
+                .averageTimeTakenForRealAction(planStatisticUtils.getAverageTimeTakenForRealAction(planId))
+                .periodDaysBeforePause(planStatisticUtils.getPeriodDaysBeforePause(findPlan, startDate))
                 .accumulatedPlanActionQuantityBeforePause(accumulatedPlanActionQuantityBeforePause)
                 .build();
-    }
-
-    // 2023.8.5(토) 4h10 숫자 null -> 0으로 처리하기 위해 만듦
-    private int makeNullAsZero(Integer num) {
-        if (num != null) {
-            return num;
-        }
-
-        return 0;
-    }
-
-    private Integer getAccumulatedRealActionQuantity(Long planId) {
-        return makeNullAsZero(actionDateRepository.getAccumulatedRealActionQuantity(planId));
-    }
-
-    private Integer getAccumulatedPlanActionQuantity(Long planId, LocalDate startDate) {
-        return makeNullAsZero(actionDateRepository.getAccumulatedPlanActionQuantity(planId, startDate));
-    }
-
-    private Integer getAccumulatedPlanActionQuantityBeforePause(Long planId, LocalDate startDate, LocalDate lastStatusChangedAt) {
-        return makeNullAsZero(actionDateRepository.getAccumulatedPlanActionQuantityBeforePause(planId, startDate, lastStatusChangedAt));
-    }
-
-    private Integer getQuantityDifferenceBetweenPlanAndReal(Integer plan, Integer real) {
-        return plan - real; // 양의 정수 = 계획보다 실행이 뒤처지고 있음 vs 음의 정수 = 계획보다 더 많이 실행해서 일정보다 앞서고 있음
-    }
-
-    private Integer getQuantityToEndPlan(Integer total, Integer real) {
-        return total - real;
-    }
-
-    private Double getRatioOfQuantityToEndPlan(Integer real, Integer total) {
-        return (1 - (double) real / total) * 100;
-    }
-
-    private String formatPercentage(Double num) {
-        DecimalFormat df = new DecimalFormat("###.#");
-        return df.format(num);
-    }
-
-    private Integer getNumOfActionsToEndPlan(Integer total, Integer real) {
-        return total - real;
-    }
-
-    private Integer getAverageTimeTakenForRealAction(Long planId) {
-        return actionDateRepository.getAverageTimeTakenForRealAction(planId);
-    }
-
-    private Integer getAccumulatedNumOfActions(Long planId) {
-        return actionDateRepository.getAccumulatedNumOfActions(planId);
     }
 
     // 2023.7.31(월) 19h20
@@ -337,6 +294,74 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<ActionDate> getArrowCalendar(int year, int month) {
         return calendar.getArrowCalendar(year, month);
+    }
+
+    @Override
+    @Transactional
+    public void resumePlan(Long planId) {
+        Plan planToResume = findVerifiedPlan(planId);
+        planToResume.setStatus(PlanStatus.ACTIVE); // 부모 plan의 상태를 다시 active로 바꿈 -> 새로 만들어지는 자식 plan의 상태도 active로 세팅됨
+
+        // 기존/부모 plan이 가지고 있던 actionDatesList 중 오늘 이후의 것들은 삭제하는 것이 맞을 것 같은데..
+        /* 2023.8.5(토) 18h30 Plan 엔티티/도메인 영역으로 옮겨봄
+        List<ActionDate> originalActionDatesList = actionDateRepository.findByPlanPlanId(planId);
+        int lastIndex = originalActionDatesList.size() - 1;
+        LocalDate lastActionDate = LocalDate.parse(originalActionDatesList.get(lastIndex).getDateFormat(), DateTimeFormatter.ISO_DATE);
+        for (LocalDate date = LocalDate.now(); date.isBefore(lastActionDate); date.plusDays(1), lastIndex--) {
+            actionDateRepository.delete(originalActionDatesList.get(lastIndex));
+        }
+
+        planToResume.setActionDatesList(originalActionDatesList); // 기존 plan의 actionDatesList로써 위와 같이 삭제하고 난 결과를 세팅함
+         */
+
+        List<ActionDate> resultList = deleteActionDatesAfterResumePlan(actionDateRepository.findByPlanPlanId(planId));
+        planToResume.setActionDatesList(resultList);
+
+        // 기존/부모/수정 전 plan의 내용을 그대로 가지고 가도록 이렇게 대입 -> 2023.8.5(토) 17h15 나의 생각 = 이게 의도한대로 가능한지는 테스트 필요
+        Plan resumedPlan = planToResume;
+        resumedPlan.setParentPlan(planToResume);
+        resumedPlan = calculator.calculateResumePlan(resumedPlan);
+
+        planRepository.save(resumedPlan);
+
+        planToResume.setLastStatusChangedAt(LocalDate.now()); // 기존 plan의 상태가 오늘 바뀐 바, 해당 내용 업데이트
+    }
+
+    // 2023.8.5(토) 18h25 PlanServiceImpl에 resume plan 관련해서 작성했던 내용을 여기로 옮김 -> 2023.8.5(토) 21h20 테스트 실행 시 ActionDate 영속성 컨텍스트에 반영 안 됨(ActionDate 영속성 없음)
+    public List<ActionDate> deleteActionDatesAfterResumePlan(List<ActionDate> originalActionDatesList) {
+        int lastIndex = originalActionDatesList.size() - 1;
+        log.info("deleteActionDatesAfterResumePlan()에서의 originalActionDatesList의 길이 = " + originalActionDatesList.size());
+        LocalDate lastActionDate = LocalDate.parse(originalActionDatesList.get(lastIndex).getDateFormat(), DateTimeFormatter.ISO_DATE);
+        log.info("lastActionDate = " + lastActionDate);
+        for (LocalDate date = lastActionDate; date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()); date = date.minusDays(1)) {
+            LocalDate actionDate = LocalDate.parse(originalActionDatesList.get(lastIndex).getDateFormat(), DateTimeFormatter.ISO_DATE);
+
+            if (actionDate.equals(date)) {
+                originalActionDatesList.remove(originalActionDatesList.get(lastIndex));
+                lastIndex--;
+            }
+            log.info("for문 돌 때 date = " + date + ", lastIndex = " + lastIndex);
+        }
+
+        return originalActionDatesList;
+    }
+
+    @Override
+    @Transactional
+    public void pausePlan(Long planId) {
+        Plan planToPause = findVerifiedPlan(planId);
+        planToPause.setStatus(PlanStatus.PAUSE);
+        planToPause.setLastStatusChangedAt(LocalDate.now());
+        planToPause.pauseActionDates();
+    }
+
+    @Override
+    @Transactional
+    public void giveUpPlan(Long planId) {
+        Plan planToGiveUp = findVerifiedPlan(planId);
+        planToGiveUp.setStatus(PlanStatus.GIVEUP);
+        planToGiveUp.setLastStatusChangedAt(LocalDate.now());
+        planToGiveUp.giveUpActionDates();
     }
 
     private String parseChatGptResponse(String content) {

@@ -16,7 +16,7 @@
 <%--            전화:0000-0000(FAX:000-000-000)<br>--%>
 <%--            개인정보관리책임자:위메셀(wemakesalad@naver.com) 마케팅 제휴 문의:wemakesalad@naver.com<br>--%>
 <%--            Copyrightⓒ2023알로. All rights Reserved.--%>
-            allo<br>
+            alloc<br>
             by Green Umbrella Studio, 2023
         </p>
     </div>
