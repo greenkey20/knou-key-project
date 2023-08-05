@@ -1,9 +1,6 @@
 package org.knou.keyproject.domain.plan.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 // 2023.8.5(토) 0h10
 @Getter
@@ -24,6 +21,7 @@ public class MyPlanStatisticDetailResponseDto {
     private Integer numOfActionsToEndPlan;
     private Integer averageTimeTakenForRealAction; // 평균 수행 소요 시간 = 시작일~오늘 중 actionDate 객체의 timeTakenForRealAction 값의 평균
 
+    @Setter
     private Integer periodDaysBeforePause;
     private Integer accumulatedPlanActionQuantityBeforePause;
 

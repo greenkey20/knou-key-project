@@ -73,7 +73,11 @@ public class PlanStatisticUtils {
     // 2023.8.5(토) 17h40 plan resume 시 deadline 새로 계산(Calculator)하며 추가
     public Integer getPeriodDaysBeforePause(Plan resumedPlan, LocalDate originalStartDate) {
 //        LocalDate lastActionDateBeforePause = actionDateRepository.getLastActionDateBeforePause(planId);
+        log.info("plan 통계 utils의 getPeriodDaysBeforePause()에 들어오는 originalStartDate = " + originalStartDate);
+
         LocalDate pauseDate = resumedPlan.getLastStatusChangedAt();
+        log.info("plan 통계 utils의 getPeriodDaysBeforePause()에서 구해진 pauseDate = " + pauseDate);
+
         if (pauseDate != null) {
             return Math.toIntExact(ChronoUnit.DAYS.between(originalStartDate, pauseDate));
         }

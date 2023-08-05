@@ -212,7 +212,7 @@ public class Calculator {
 
     private void setResumeTotalQuantity(Plan resumedPlan) {
         Integer originalTotalQuantity = resumedPlan.getTotalQuantity();
-        Integer accumulatedRealActionQuantity = planStatisticUtils.getAccumulatedRealActionQuantity(resumedPlan.getPlanId());
+        Integer accumulatedRealActionQuantity = planStatisticUtils.getAccumulatedRealActionQuantity(resumedPlan.getParentPlan().getPlanId());
         resumedPlan.setTotalQuantity(originalTotalQuantity - accumulatedRealActionQuantity);
     }
 

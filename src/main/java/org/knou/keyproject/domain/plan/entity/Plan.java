@@ -1,10 +1,7 @@
 package org.knou.keyproject.domain.plan.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
@@ -22,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Builder
 @Getter
-//@Setter // 2023.7.24(월) 22h 계산기 구현하며 고민하다가 추가
+//@Setter // 2023.7.24(월) 22h 계산기 구현하며 고민하다가 추가 + 2023.8.6(일) 0h45 BeanUtils 사용하려고 추가
 @AllArgsConstructor
 @NoArgsConstructor/*(access = AccessLevel.PROTECTED)*/
 @Entity
@@ -72,8 +69,8 @@ public class Plan extends BaseTimeEntity {
 
     private LocalDate deadlineDate;
 
-    // 2023.8.2(수) 2H15 계산기 UI 바꿀 경우 추가될 멤버변수
     private String deadlinePeriod;
+    // 2023.8.2(수) 2H15 계산기 UI 바꿀 경우 추가될 멤버변수
     private Integer deadlinePeriodNum;
     private String deadlinePeriodUnit;
 
@@ -85,6 +82,18 @@ public class Plan extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "parentPlan", fetch = FetchType.LAZY)
     private List<Plan> modifiedPlans = new ArrayList<>();
+
+    // 2023.8.6(일) 3h50 resumedPlan을 db에 저장하며 추가
+    public void addModifiedPlan(Plan modifiedPlan) {
+        this.modifiedPlans.add(modifiedPlan);
+        if (modifiedPlan.getParentPlan() != this) {
+            modifiedPlan.setParentPlan(this);
+        }
+    }
+
+    public void setModifiedPlans(List<Plan> modifiedPlans) {
+        this.modifiedPlans = modifiedPlans;
+    }
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -99,6 +108,9 @@ public class Plan extends BaseTimeEntity {
     private Integer totalNumOfActions;
     private Integer quantityPerDay;
     private Double frequencyFactor;
+
+    // 2023.8.6(일) 0h40
+    private Boolean isChild;
 
     // 2023.7.26(수) 14h
     // 누적 수행/기록량, 횟수
@@ -181,6 +193,11 @@ public class Plan extends BaseTimeEntity {
         this.parentPlan = parentPlan;
     }
 
+    // 2023.8.6(일) 1h5 plan resume 시 추가
+    public void setIsChild(Boolean isChild) {
+        this.isChild = isChild;
+    }
+
     // 2023.7.25(화) 23h50
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @Column
@@ -221,7 +238,8 @@ public class Plan extends BaseTimeEntity {
     public void pauseActionDates() {
         List<ActionDate> actionDatesToPause = this.actionDatesList;
         for (ActionDate actionDate : actionDatesToPause) {
-            if (LocalDate.parse(actionDate.getDateFormat(), DateTimeFormatter.ISO_DATE).isAfter(LocalDate.now())) {
+            LocalDate thisDate = LocalDate.parse(actionDate.getDateFormat(), DateTimeFormatter.ISO_DATE);
+            if (thisDate.equals(LocalDate.now()) || thisDate.isAfter(LocalDate.now())) {
                 actionDate.setDateType(DateType.PAUSE);
             }
         }
