@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
+import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
@@ -32,8 +33,8 @@ public class Plan extends BaseTimeEntity {
     @JoinColumn(columnDefinition = "INTEGER", name = "MEMBER_ID")
     private Member member;
 
-//    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-//    private List<Action> actionList = new ArrayList<>();
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    private List<Board> actionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     private List<Scrap> scrapList = new ArrayList<>();

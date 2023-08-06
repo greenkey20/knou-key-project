@@ -6,19 +6,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.board.dto.BoardPostRequestDto;
 import org.knou.keyproject.domain.board.entity.Board;
+import org.knou.keyproject.domain.board.mapper.BoardMapper;
 import org.knou.keyproject.domain.board.service.BoardService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
-import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.service.MemberService;
 import org.knou.keyproject.domain.plan.dto.MyPlanStatisticDetailResponseDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.service.PlanService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // 2023.8.5(토) 15h10 클래스 생성
 @Slf4j
@@ -30,7 +36,7 @@ public class BoardController {
     private final PlanService planService;
     private final PlanMapper planMapper;
     private final MemberService memberService;
-    private final MemberMapper memberMapper;
+    private final BoardMapper boardMapper;
 
     @GetMapping("boardEnrollForm.bd")
     public String boardEnrollForm(@RequestParam(name = "planId") @Positive Long planId,
@@ -47,7 +53,7 @@ public class BoardController {
 
         model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
         model.addAttribute("statPlan", statisticDto);
-        model.addAttribute("member", memberMapper.toBoardWriterDto(findMember));
+//        model.addAttribute("member", memberMapper.toBoardWriterDto(findMember)); // 필요 없음
 //        model.addAttribute("status", status);
 
         return "board/boardEnrollForm";
@@ -62,7 +68,40 @@ public class BoardController {
     }
 
     @GetMapping("boardList.bd")
-    public String getBoardList() {
+    public String getBoardList(@PageableDefault(size = 10, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable,
+                               @RequestParam(required = false, defaultValue = "") String keyword,
+                               Model model) {
+        Page<Board> boardList = boardService.findAllBoards(pageable);
+
+        if (keyword != null) {
+            boardList = boardService.findByTitleContainingOrContentContaining(keyword, pageable);
+        }
+
+        int pageNumber = boardList.getPageable().getPageNumber(); // 현재 페이지
+        int totalPages = boardList.getTotalPages(); // 총 페이지 수 = boardList의 size 값
+        int pageBlock = 5; // 블럭의 수
+        int startBlockPage = (pageNumber / pageBlock) * pageBlock + 1;
+        int endBlockPage = startBlockPage + pageBlock - 1;
+        endBlockPage = Math.min(totalPages, endBlockPage);
+
+        List<Board> list = boardList.getContent();
+
+        model.addAttribute("startBlockPage", startBlockPage);
+        model.addAttribute("endBlockPage", endBlockPage);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("list", boardMapper.toBoardResponseDtos(list));
+
         return "board/boardListView";
+    }
+
+    @GetMapping("boardDetail.pl")
+    public String getBoardDetail(@RequestParam(name = "boardId") @Positive Long boardId, Model model) {
+        Board findBoard = boardService.findBoardById(boardId);
+        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(findBoard.getPlan().getPlanId());
+
+        model.addAttribute("board", boardMapper.toBoardResponseDto(findBoard));
+        model.addAttribute("statPlan", statisticDto);
+
+        return "board/boardDetailView";
     }
 }

@@ -3,6 +3,7 @@ package org.knou.keyproject.domain.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
@@ -24,6 +25,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Plan> planList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Scrap> scrapList = new ArrayList<>();
