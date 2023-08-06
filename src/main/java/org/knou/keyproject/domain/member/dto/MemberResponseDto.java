@@ -15,13 +15,22 @@ public class MemberResponseDto {
 
     // 2023.7.27(목) 18h40
     @Getter
-    @AllArgsConstructor
     @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
-    public static class AfterLoginMemberDto{
+    public static class AfterLoginMemberDto {
         private Long memberId;
         private String nickname;
         private String profileImageUrl;
         private MemberStatus status;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class BoardWriterDto {
+        private Long memberId;
+        private String nickname;
     }
 }

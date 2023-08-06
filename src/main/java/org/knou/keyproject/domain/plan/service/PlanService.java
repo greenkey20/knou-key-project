@@ -17,6 +17,8 @@ public interface PlanService {
 
     // 2023.7.24(월) 17h20 선언만 해둠
 
+    Plan findVerifiedPlan(Long planId);
+
     List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size);
 
     Plan findPlanById(Long planId); // plain Plan 객체를 찾는 메서드
