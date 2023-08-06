@@ -47,6 +47,14 @@ div {
 /*    clear: both;*/
 /*}*/
 
+.table-bordered {
+    border: 1px solid darkgreen;
+}
+
+.smallerLetters {
+    font-size: small;
+}
+
 .greenBtn {
     background-color: rgb(182, 238, 86);
 }

@@ -165,7 +165,8 @@ public class PlanController {
                                       ModelAndView mv) {
         Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
         log.info("planController getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
-        Page<Plan> planList = planRepository.findAllByMemberMemberId(memberId, pageable); // todo dto 반환 고민해보기
+        Page<Plan> planList = planService.findAllByMemberMemberIdOrderByPlanIdDesc(memberId, pageable);
+        List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
 
         if (keyword != null) {
             planList = planRepository.findByMemberMemberIdAndObjectContaining(memberId, keyword, pageable);
@@ -183,7 +184,8 @@ public class PlanController {
         mv.addObject("startBlockPage", startBlockPage)
                 .addObject("endBlockPage", endBlockPage)
                 .addObject("planList", planList)
-                .addObject("list", list)
+                .addObject("list", planMapper.toMyPlanDetailResponseDtos(list))
+                .addObject("statList", statisticDtos)
                 .setViewName("plan/myPlanListView");
 
 //        Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();

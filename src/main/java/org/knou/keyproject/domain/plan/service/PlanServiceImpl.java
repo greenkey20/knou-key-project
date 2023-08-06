@@ -22,7 +22,9 @@ import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -161,7 +163,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<MyPlanListResponseDto> findPlansByMember(Long memberId, int currentPage, int size) {
         Member findMember = memberRepository.findById(memberId).orElse(null);
-        return planRepository.findAllByMemberMemberId(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
+        return planRepository.findAllByMemberMemberIdOrderByPlanIdDesc(findMember.getMemberId(), PageRequest.of(currentPage - 1, size, Sort.by("planId").descending()))
                 .stream()
                 .map(plan -> planMapper.toMyPlanListResponseDto(plan))
                 .collect(Collectors.toList());
@@ -410,6 +412,28 @@ public class PlanServiceImpl implements PlanService {
         planToGiveUp.setStatus(PlanStatus.GIVEUP);
         planToGiveUp.setLastStatusChangedAt(LocalDate.now());
         planToGiveUp.giveUpActionDates();
+    }
+
+    @Override
+    public Page<Plan> findAllByMemberMemberIdOrderByPlanIdDesc(Long memberId, Pageable pageable) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+        return planRepository.findAllByMemberMemberIdOrderByPlanIdDesc(findMember.getMemberId(), pageable);
+    }
+
+    @Override
+    public List<MyPlanStatisticDetailResponseDto> findStatisticDtosByMember(Long memberId) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+
+        List<MyPlanStatisticDetailResponseDto> statisticDtos = new ArrayList<>();
+
+        List<Plan> findPlansByMember = planRepository.findAllByMemberMemberIdOrderByPlanIdDesc(findMember.getMemberId());
+        for (Plan plan : findPlansByMember) {
+            Long thisPlanId = plan.getPlanId();
+            MyPlanStatisticDetailResponseDto statisticDto = getPlanStatisticDetailById(thisPlanId);
+            statisticDtos.add(statisticDto);
+        }
+
+        return statisticDtos;
     }
 
     private String parseChatGptResponse(String content) {
