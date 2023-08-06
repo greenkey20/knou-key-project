@@ -27,7 +27,7 @@
     <div id="my-plan-detail-stats">
         <br>
         <p style="font-weight: bold; font-size: larger">
-            <c:if test="${ plan.isChild }">
+            <c:if test="${ plan.status.toString() eq 'ACTIVE' and plan.isChild }">
                 <div class="smallerLetters" style="font-weight: bold">[일시 중지 후 이어서 하고 있어요]</div>
             </c:if>
 
