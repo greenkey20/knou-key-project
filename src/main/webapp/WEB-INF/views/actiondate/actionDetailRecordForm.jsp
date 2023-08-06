@@ -28,10 +28,10 @@
     <div class="actionDetailForm" align="center">
         <form id="action-detail-form" action="newActionDateInsert.ad" method="post" modelAttribute="actionDate">
             <table border="seagreen">
-<%--                <colgroup>--%>
-<%--                    <col style="width: 25%">--%>
-<%--                    <col style="width: 75%">--%>
-<%--                </colgroup>--%>
+                <colgroup>
+                    <col style="width: 35%">
+                    <col style="width: 65%">
+                </colgroup>
                 <tr>
                     <td class="info">
                         오늘의 날짜<span class="required">*</span>
@@ -76,6 +76,10 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td class="info">메모</td>
+                    <td><textarea name="memo" placeholder="오늘 활동에서 기억하고 싶은 내용을 기록해 보아요"></textarea></td>
+                </tr>
             </table>
             <br>
             <div align="left"><p class="info">메모</p></div>
@@ -99,7 +103,7 @@
             <div align="center">
                 <button type="button" onclick="window.history.back()">뒤로 가기</button>
 <%--                <button type="button" onclick="window.location.reload()" class="grayBtn">초기화</button>--%>
-                <button type="submit" class="greenBtn">저장</button> <!--onclick="location.href='newPlanInsert.pl'"-->
+                <button type="submit" class="greenBtn">저장</button> <!--onclick="location.href='newActionDateInsert.ad'"-->
             </div>
         </form>
     </div>

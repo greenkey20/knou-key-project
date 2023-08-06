@@ -8,8 +8,8 @@ import java.time.LocalDate;
 // 2023.7.31(월) 1h5
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ActionDatePostRequestDto {
     private Long actionDateId;
