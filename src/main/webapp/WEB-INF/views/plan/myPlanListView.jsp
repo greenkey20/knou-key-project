@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,7 +45,7 @@
             <!--테이블 영역 시작-->
             <div>
 
-                <c:forEach var="p" items="${ list }">
+                <c:forEach var="p" items="${ list }" varStatus="status"> <!--statList도 순회해야 함 + 두 lists 모두 planId desc으로 정렬되어있음-->
                     <div class="object">
                         <h3>${ p.object }</h3>
                     </div>
@@ -60,15 +61,37 @@
                             <tr>
                                 <td class="title">상태</td>
                                 <td>
+                                    <jsp:useBean id="now" class="java.util.Date" />
+                                    <fmt:formatDate value="${ now }" pattern="yyyy-MM-dd" var="today" />
+
                                     <c:choose>
                                         <c:when test="${ p.status eq 'ACTIVE' }">
-                                            수행 중 (일정대로 진행하고 있어요 등등)<!--통계 데이터 만든 다음에 작성-->
+                                            <span class="smallerLetters">
+                                            <c:choose>
+                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal lt 0 }">
+                                                    ⭐️ 수행 중 → 계획보다 앞서 있어요 👍<br>
+                                                </c:when>
+                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal gt 0 }">
+                                                    ⭐️ 수행 중 → 계획보다 뒤처져 있어요 🌱<br>
+                                                </c:when>
+                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal eq 0 }">
+                                                    ⭐️ 수행 중 → 계획대로 잘 진행하고 있어요 💯<br>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    아직 시작일이 되지 않았어요
+                                                </c:otherwise>
+                                            </c:choose>
+                                            </span>
                                         </c:when>
                                         <c:when test="${ p.status eq 'COMPLETE' }">
                                             완료했어요!
                                         </c:when>
                                         <c:when test="${ p.status eq 'PAUSE' }">
                                             일시 정지 중이에요
+                                            <c:if test="${ p.sizeOfModifiedPlansList gt 0 }">
+                                                <span> → </span>
+                                                <span style="color: lightgreen; background-color: green">새로 계산된 내역으로 이어서 하고 있어요</span>
+                                            </c:if>
                                         </c:when>
                                         <c:otherwise>
                                             포기했어요 ㅠㅠ
@@ -90,7 +113,12 @@
                             </tr>
                             <tr>
                                 <td class="title">진행률</td>
-                                <td><!--통계 데이터 만든 다음에 작성--> 진행 분량 / totalQuantity나 totalNumOfActions</td>
+                                <td>
+                                    ${ statList[status.index].accumulatedNumOfActions }회 진행,<br>
+                                    현재 ${ statList[status.index].accumulatedRealActionQuantity } ${ p.unit }
+                                    <span class="smallerLetters">(/전체 ${ p.totalQuantity } ${ p.unit }) </span>
+                                    전체 분량의 ${ statList[status.index].ratioOfRealActionQuantityTillToday }% 완료
+                                </td>
                             </tr>
                             </tbody>
                         </table>
