@@ -41,6 +41,17 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.save(boardToSave);
     }
 
+    @Override
+    @Transactional
+    public Board updateBoard(Long boardId, BoardPostRequestDto requestDto) {
+        Board findBoard = findVerifiedBoard(boardId);
+
+        findBoard.updateTitle(requestDto.getTitle());
+        findBoard.updateContent(requestDto.getContent());
+
+        return findBoard;
+    }
+
     // 2023.8.6(일) 23h45
     @Override
     public Page<Board> findAllBoards(Pageable pageable) {
@@ -71,5 +82,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Board findVerifiedBoard(Long boardId) {
         return boardRepository.findById(boardId).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public void increaseReadCount(Long boardId) {
+        Board findBoard = findVerifiedBoard(boardId);
+        findBoard.increaseReadCount();
     }
 }

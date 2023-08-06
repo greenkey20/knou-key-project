@@ -66,22 +66,20 @@
 
                                     <c:choose>
                                         <c:when test="${ p.status eq 'ACTIVE' }">
-                                            <span class="smallerLetters">
                                             <c:choose>
                                                 <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal lt 0 }">
-                                                    ⭐️ 수행 중 → 계획보다 앞서 있어요 👍<br>
+                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 앞서 있어요 👍</span>
                                                 </c:when>
                                                 <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal gt 0 }">
-                                                    ⭐️ 수행 중 → 계획보다 뒤처져 있어요 🌱<br>
+                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 뒤처져 있어요 🌱</span>
                                                 </c:when>
-                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal eq 0 }">
-                                                    ⭐️ 수행 중 → 계획대로 잘 진행하고 있어요 💯<br>
+                                                <c:when test="${ today < p.startDate }">
+                                                    아직 시작일이 되지 않았어요
                                                 </c:when>
                                                 <c:otherwise>
-                                                    아직 시작일이 되지 않았어요
+                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획대로 잘 진행하고 있어요 💯</span>
                                                 </c:otherwise>
                                             </c:choose>
-                                            </span>
                                         </c:when>
                                         <c:when test="${ p.status eq 'COMPLETE' }">
                                             완료했어요!

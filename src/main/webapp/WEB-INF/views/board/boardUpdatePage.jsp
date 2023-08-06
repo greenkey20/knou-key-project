@@ -5,28 +5,21 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>공유 게시판 글 작성</title>
-    <link rel="stylesheet" href="resources/css/board/boardEnrollForm.css">
+    <title>공유 게시판 글 수정</title>
+    <link rel="stylesheet" href="resources/css/board/boardUpdatePage.css">
 </head>
 <body>
-<!--2023.8.6(일) 6h30 파일 생성 + 작업 시작-->
+<!--2023.8.7(월) 3h20 파일 생성 + 작업 시작-->
 
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<%--<script src="resources/js/board/boardEnrollForm.js"></script>--%>
-
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
-    <h2>공유 게시판 글 작성</h2>
-    <br>
-    <div class="object">
-        <h4>나의 활동 내역을 공유해 보아요!</h4>
-    </div>
+    <h2>공유 게시판 글 수정</h2>
     <br>
 
-    <%--    <p>* 표시는 필수 입력 사항입니다.</p>--%>
-    <div class="boardEnrollForm" align="center">
-        <form id="board-enroll-form" action="newBoardInsert.bd" method="post" modelAttribute="board">
+    <div class="boardUpdatePage" align="center">
+        <form id="board-update-page" action="boardUpdate.bd?boardId=${ board.boardId }" method="post" modelAttribute="board">
             <table border="seagreen">
                 <colgroup>
                     <col style="width: 25%">
@@ -36,14 +29,14 @@
                     <td class="info">상태</td>
                     <td>
                         <c:choose>
-                            <c:when test="${ plan.status eq 'ACTIVE' }"><span style="color: lightgreen; background-color: green"> 진행중 </span></c:when>
-                            <c:when test="${ plan.status eq 'COMPLETE' }"><span style="color: green; background-color: lightgreen"> 완료 </span></c:when>
+                            <c:when test="${ board.boardType eq 'PLAN' }"><span style="color: lightgreen; background-color: green"> 진행중 </span></c:when>
+                            <c:when test="${ board.boardType eq 'SUCCESS' }"><span style="color: green; background-color: lightgreen"> 완료 </span></c:when>
                         </c:choose>
                     </td>
                 </tr>
                 <tr>
                     <td class="info">게시글 제목<span class="required">*</span></td>
-                    <td><input type="text" name="title" placeholder="게시글의 제목을 입력해 주세요" required width="100%"></td>
+                    <td><input type="text" name="title" value="${ board.title }}" required width="100%"></td>
                 </tr>
                 <tr>
                     <td class="info">활동 제목</td>
@@ -70,7 +63,7 @@
                 </tr>
                 <tr>
                     <td class="info">게시글 내용<span class="required">*</span></td>
-                    <td><textarea class="contentTextArea" name="content" placeholder="활동 중 좋았던 점, 배운 점, 자랑스러운 점, 힘들었던 점, 실행 팁 등을 자유롭게 작성해 주세요"></textarea></td>
+                    <td><textarea class="contentTextArea" name="content">${ board.content }</textarea></td>
                 </tr>
             </table>
             <br>
@@ -86,15 +79,11 @@
                 </c:otherwise>
             </c:choose>
 
-            <input type="hidden" name="planId" value="${ plan.planId }">
-            <c:choose>
-                <c:when test="${ plan.status eq 'ACTIVE' }"><input type="hidden" name="boardType" value="PLAN"></c:when>
-                <c:when test="${ plan.status eq 'COMPLETE' }"><input type="hidden" name="boardType" value="SUCCESS"></c:when>
-            </c:choose>
+            <input type="hidden" name="planId" value="${ board.planId }">
 
             <div align="center">
-                <button type="button" onclick="window.history.back()">뒤로 가기</button>
-                <button type="submit" class="greenBtn">저장</button> <!--onclick="location.href='newBoardInsert.bd'"-->
+                <button type="button" onclick="location.href='boardList.bd'">목록으로 가기</button>
+                <button type="submit" class="greenBtn">수정</button> <!--onclick="location.href='boardUpdate.bd?boardId='"-->
             </div>
         </form>
     </div>

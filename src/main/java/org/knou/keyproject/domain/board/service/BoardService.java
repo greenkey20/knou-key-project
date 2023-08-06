@@ -17,4 +17,8 @@ public interface BoardService {
     Board findBoardById(Long boardId);
 
     Board findVerifiedBoard(Long boardId);
+
+    void increaseReadCount(Long boardId);
+
+    Board updateBoard(Long boardId, BoardPostRequestDto requestDto);
 }
