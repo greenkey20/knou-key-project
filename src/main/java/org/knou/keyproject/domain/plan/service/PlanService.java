@@ -47,4 +47,6 @@ public interface PlanService {
     Page<Plan> findAllByMemberMemberIdOrderByPlanIdDesc(Long memberId, Pageable pageable);
 
     List<MyPlanStatisticDetailResponseDto> findStatisticDtosByMember(Long memberId);
+
+    List<Plan> findAllActivePlansByMemberMemberId(Long memberId);
 }
