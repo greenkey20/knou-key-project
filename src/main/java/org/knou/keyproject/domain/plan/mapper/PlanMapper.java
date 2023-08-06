@@ -61,25 +61,26 @@ public interface PlanMapper {
                 break;
         }
 
-        if (planPostRequestDto.getIsMeasurableNum() == 1) { // 측정 가능한 일일 경우 2023.8.2(화) 1h25 현재 UI = 사용자가 String으로 직접 입력
-            plan.frequencyDetail(planPostRequestDto.getFrequencyDetail());
-        } else { // 측정 어려운 일일 경우(ChatGPT 계산기로부터 정보 넘어오는 경우) 2023.8.2(화) 1h25 현재 UI = 사용자가 여러 칸 선택
-            String frequencyDetail = "";
-            switch (planPostRequestDto.getFrequencyTypeNum()) {
-                case 1:
-                    for (String str : planPostRequestDto.getFrequencyDetailDate()) {
-                        frequencyDetail += str;
-                    }
-                    break;
-                case 2:
-                    frequencyDetail = planPostRequestDto.getFrequencyDetailEveryInterval() + "일마다 " + planPostRequestDto.getFrequencyDetailEveryTimes() + "회";
-                    break;
-                case 3:
-                    frequencyDetail = planPostRequestDto.getFrequencyDetailTimesInterval() + " " + planPostRequestDto.getFrequencyDetailTimesTimes() + "회";
-                    break;
-            }
-            plan.frequencyDetail(frequencyDetail);
+        // 2023.8.7(월) 6h40 해당 UI 전체 적용
+//        if (planPostRequestDto.getIsMeasurableNum() == 1) { // 측정 가능한 일일 경우 2023.8.2(화) 1h25 현재 UI = 사용자가 String으로 직접 입력
+//            plan.frequencyDetail(planPostRequestDto.getFrequencyDetail());
+//        } else { // 측정 어려운 일일 경우(ChatGPT 계산기로부터 정보 넘어오는 경우) 2023.8.2(화) 1h25 현재 UI = 사용자가 여러 칸 선택
+        String frequencyDetail = "";
+        switch (planPostRequestDto.getFrequencyTypeNum()) {
+            case 1:
+                for (String str : planPostRequestDto.getFrequencyDetailDate()) {
+                    frequencyDetail += str;
+                }
+                break;
+            case 2:
+                frequencyDetail = planPostRequestDto.getFrequencyDetailEveryInterval() + "일마다 " + planPostRequestDto.getFrequencyDetailEveryTimes() + "회";
+                break;
+            case 3:
+                frequencyDetail = planPostRequestDto.getFrequencyDetailTimesInterval() + " " + planPostRequestDto.getFrequencyDetailTimesTimes() + "회";
+                break;
         }
+        plan.frequencyDetail(frequencyDetail);
+//        }
 
         if (planPostRequestDto.getHasDeadline() == 1) {
             plan.hasDeadline(true);
@@ -90,15 +91,16 @@ public interface PlanMapper {
             } else {
                 plan.deadlineType(DeadlineType.PERIOD);
 
-                if (planPostRequestDto.getIsMeasurableNum() == 1) {
-                    plan.deadlinePeriod(planPostRequestDto.getDeadlinePeriod());
-                } else {
-                    String deadlinePeriod = planPostRequestDto.getDeadlinePeriodNum() + planPostRequestDto.getDeadlinePeriodUnit();
-                    plan.deadlinePeriod(deadlinePeriod);
+                // 2023.8.7(월) 6h55 ui 전체 적용
+//                if (planPostRequestDto.getIsMeasurableNum() == 1) {
+//                    plan.deadlinePeriod(planPostRequestDto.getDeadlinePeriod());
+//                } else {
+                String deadlinePeriod = planPostRequestDto.getDeadlinePeriodNum() + planPostRequestDto.getDeadlinePeriodUnit();
+                plan.deadlinePeriod(deadlinePeriod);
 
-                    plan.deadlinePeriodNum(planPostRequestDto.getDeadlinePeriodNum());
-                    plan.deadlinePeriodUnit(planPostRequestDto.getDeadlinePeriodUnit());
-                }
+                plan.deadlinePeriodNum(planPostRequestDto.getDeadlinePeriodNum());
+                plan.deadlinePeriodUnit(planPostRequestDto.getDeadlinePeriodUnit());
+//                }
             }
         } else {
             plan.hasDeadline(false);

@@ -172,7 +172,13 @@
 
         <div id="deadline-type-period" style="display: none">
             <div class="question">달성 목표 기간이 얼마나 되나요?</div>
-            시작일로부터 <input type="text" name="deadlinePeriod" placeholder="x일/주/개월">
+            시작일로부터 <input type="number" name="deadlinePeriodNum" min="1">
+            <select name="deadlinePeriodUnit">
+                <option selected disabled>선택해 주세요</option>
+                <option>일</option>
+                <option>주</option>
+                <option>개월</option>
+            </select>
             <br>
             <br>
         </div>
