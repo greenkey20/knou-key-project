@@ -28,9 +28,30 @@
     <div class="actionDetailForm" align="center">
         <form id="action-detail-form" action="newActionDateInsert.ad" method="post" modelAttribute="actionDate">
             <table border="seagreen">
+<%--                <colgroup>--%>
+<%--                    <col style="width: 25%">--%>
+<%--                    <col style="width: 75%">--%>
+<%--                </colgroup>--%>
                 <tr>
-                    <td class="info">오늘의 날짜<span class="required">*</span></td>
-                    <td><input type="date" name="realActionDate" value="${ actionDate.dateFormat }" required></td>
+                    <td class="info">
+                        오늘의 날짜<span class="required">*</span>
+                        <span class="smallerLetters">
+                            (계획된 날짜: ${ actionDate.numOfYear }. ${ actionDate.numOfMonth }. ${ actionDate.numOfDay }
+                            <c:choose>
+                                <c:when test="${ actionDate.numOfDay == 1 }"> (월) </c:when>
+                                <c:when test="${ actionDate.numOfDay == 2 }"> (화) </c:when>
+                                <c:when test="${ actionDate.numOfDay == 3 }"> (수) </c:when>
+                                <c:when test="${ actionDate.numOfDay == 4 }"> (목) </c:when>
+                                <c:when test="${ actionDate.numOfDay == 5 }"> (금) </c:when>
+                                <c:when test="${ actionDate.numOfDay == 6 }"> (토) </c:when>
+                                <c:otherwise> (일) </c:otherwise>
+                            </c:choose>
+                            )
+                        </span>
+                    </td>
+                    <td>
+                        <input type="date" name="realActionDate" value="${ actionDate.dateFormat }" required>
+                    </td>
                 </tr>
                 <tr>
                     <td class="info">

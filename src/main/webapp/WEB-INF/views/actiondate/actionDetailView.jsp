@@ -32,7 +32,20 @@
             </colgroup>
             <tr>
                 <td class="info">오늘의 날짜</td>
-                <td>${ actionDate.realActionDate }</td>
+                <td class="smallerLetters">
+                    ${ actionDate.realActionDate }<br>
+                    [ 계획된 날짜: ${ actionDate.numOfYear }. ${ actionDate.numOfMonth }. ${ actionDate.numOfDay }
+                    <c:choose>
+                        <c:when test="${ actionDate.numOfDay == 1 }"> (월) </c:when>
+                        <c:when test="${ actionDate.numOfDay == 2 }"> (화) </c:when>
+                        <c:when test="${ actionDate.numOfDay == 3 }"> (수) </c:when>
+                        <c:when test="${ actionDate.numOfDay == 4 }"> (목) </c:when>
+                        <c:when test="${ actionDate.numOfDay == 5 }"> (금) </c:when>
+                        <c:when test="${ actionDate.numOfDay == 6 }"> (토) </c:when>
+                        <c:otherwise> (일) </c:otherwise>
+                    </c:choose>
+                    ]
+                </td>
             </tr>
             <tr>
                 <td class="info">오늘 수행 분량</td>
