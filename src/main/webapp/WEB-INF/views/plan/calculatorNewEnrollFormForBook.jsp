@@ -71,11 +71,11 @@
             <input type="radio" name="hasStartDate" value="0" onclick="selectHasStartDate()"> 아니오, 아직 몰라요
         </div>
         <br>
-        <br>
 
         <div id="select-start-date" style="display: none">
             <span class="question">언제부터 시작할 예정인가요?</span>
             <input type="date" name="startDate">
+            <br>
             <br>
             <br>
         </div>
@@ -86,15 +86,62 @@
             <input type="radio" name="frequencyTypeNum" value="2" onclick="selectFrequencyType()"> x일마다 x회
             <input type="radio" name="frequencyTypeNum" value="3" onclick="selectFrequencyType()"> 주/월 x회
         </div>
-        <br>
+
+<%--        <div id="frequency-detail-question" style="display: none">--%>
+<%--            <div class="question">구체적인 활동/수행 빈도를 입력해 주세요</div>--%>
+<%--            <input id="frequency-detail" type="text" name="frequencyDetail">--%>
+<%--            <br>--%>
+<%--            <br>--%>
+<%--        </div>--%>
+
+        <div id="frequency-detail-date" style="display: none">
+            <div class="smallerLetters">수행 예정 요일(들)을 선택해 주세요</div>
+            <input type="checkbox" name="frequencyDetailDate" value="월">월
+            <input type="checkbox" name="frequencyDetailDate" value="화">화
+            <input type="checkbox" name="frequencyDetailDate" value="수">수
+            <input type="checkbox" name="frequencyDetailDate" value="목">목
+            <input type="checkbox" name="frequencyDetailDate" value="금">금
+            <input type="checkbox" name="frequencyDetailDate" value="토">토
+            <input type="checkbox" name="frequencyDetailDate" value="일">일
+        </div>
+
+        <div id="frequency-detail-every" style="display: none">
+            <input type="number" name="frequencyDetailEveryInterval" min="2">일마다 <input type="number" name="frequencyDetailEveryTimes" min="1">회
+        </div>
+
+        <div id="frequency-detail-times" style="display: none">
+            <select name="frequencyDetailTimesInterval">
+                <option selected disabled>선택해 주세요</option>
+                <option>주</option>
+                <option>월</option>
+                <%--                <option>연</option>--%>
+            </select>
+            <input type="number" name="frequencyDetailTimesTimes" min="1">회
+        </div>
         <br>
 
-        <div id="frequency-detail-question" style="display: none">
-            <div class="question">구체적인 활동/수행 빈도를 입력해 주세요</div>
-            <input id="frequency-detail" type="text" name="frequencyDetail">
-            <br>
-            <br>
-        </div>
+        <script>
+            // 2023.7.23(일) 16h5 -> 2023.8.7(월) 6h25 변경
+            function selectFrequencyType() {
+                $("#frequency-detail-question").show();
+
+                let $valueFrequencyType = $("#frequency-type input[type=radio]:checked").val();
+
+                if ($valueFrequencyType == 1) {
+                    $("#frequency-detail-date").show();
+                    $("#frequency-detail-every").hide();
+                    $("#frequency-detail-times").hide();
+                } else if ($valueFrequencyType == 2) {
+                    $("#frequency-detail-date").hide();
+                    $("#frequency-detail-every").show();
+                    $("#frequency-detail-times").hide();
+                } else {
+                    $("#frequency-detail-date").hide();
+                    $("#frequency-detail-every").hide();
+                    $("#frequency-detail-times").show();
+                }
+            }
+        </script>
 
         <div class="question">목표 달성 (희망)기한이 정해져 있나요?</div>
         <div id="has-deadline">

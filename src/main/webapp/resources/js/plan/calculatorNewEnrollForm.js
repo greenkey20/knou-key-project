@@ -35,20 +35,6 @@ function selectHasStartDate() {
     }
 }
 
-// 2023.7.23(일) 16h5
-function selectFrequencyType() {
-    $("#frequency-detail-question").show();
-
-    let $valueFrequencyType = $("#frequency-type input[type=radio]:checked").val();
-
-    if ($valueFrequencyType == 1) {
-        $("#frequency-detail").attr("placeholder", "예시) 월화수목금토일, 월수금, 월화수목금 등");
-    } else if ($valueFrequencyType == 2) {
-        $("#frequency-detail").attr("placeholder", "예시) 2일마다 1회, 5일마다 2회 등");
-    } else {
-        $("#frequency-detail").attr("placeholder", "예시) 주 2회, 월 10회 등");
-    }}
-
 // 2023.7.23(일) 16h20
 function selectHasDeadline() {
     let $valueHasDeadline = $("#has-deadline input[type=radio]:checked").val();
@@ -64,6 +50,7 @@ function selectHasDeadline() {
 
     }
 }
+
 // 2023.7.23(일) 16h25
 function selectDeadlineType() {
     let $valueDeadlineTypeNum = $("#deadline-type input[type=radio]:checked").val();
