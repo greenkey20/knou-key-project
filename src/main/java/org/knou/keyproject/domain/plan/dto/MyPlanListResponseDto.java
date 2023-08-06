@@ -11,8 +11,8 @@ import java.time.LocalDate;
 
 // 2023.7.25(화) 0h10
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MyPlanListResponseDto {
     private Long planId;

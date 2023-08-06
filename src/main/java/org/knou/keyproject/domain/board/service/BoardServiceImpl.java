@@ -10,6 +10,8 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.service.MemberService;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.service.PlanService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class BoardServiceImpl implements BoardService {
     private final PlanService planService;
 
     @Override
+    @Transactional
     public Board saveNewBoard(BoardPostRequestDto requestDto) {
         Member findMember = memberService.findVerifiedMember(requestDto.getMemberId());
         Plan findPlan = planService.findVerifiedPlan(requestDto.getPlanId());
@@ -38,6 +41,22 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.save(boardToSave);
     }
 
+    // 2023.8.6(일) 23h45
+    @Override
+    public Page<Board> findAllBoards(Pageable pageable) {
+        return boardRepository.findAll(pageable);
+    }
+
+    // 2023.8.6(일) 23h50
+    public Page<Board> findByTitleContainingOrContentContaining(String keyword, Pageable pageable) {
+        return boardRepository.findByTitleOrContentKeyword(keyword, pageable);
+    }
+
+    @Override
+    public Board findBoardById(Long boardId) {
+        return findVerifiedBoard(boardId);
+    }
+
     private BoardType getBoardTypeFromString(String boardTypeStr) {
         switch (boardTypeStr) {
             case "PLAN":
@@ -47,5 +66,10 @@ public class BoardServiceImpl implements BoardService {
         }
 
         return null;
+    }
+
+    @Override
+    public Board findVerifiedBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElse(null);
     }
 }

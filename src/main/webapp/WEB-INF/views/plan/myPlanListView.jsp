@@ -47,7 +47,7 @@
 
                 <c:forEach var="p" items="${ list }" varStatus="status"> <!--statList도 순회해야 함 + 두 lists 모두 planId desc으로 정렬되어있음-->
                     <div class="object">
-                        <h3>${ p.object }</h3>
+                        <h4>${ p.object }</h4>
                     </div>
 
                     <div class="object" align="right">
@@ -90,7 +90,7 @@
                                             일시 정지 중이에요
                                             <c:if test="${ p.sizeOfModifiedPlansList gt 0 }">
                                                 <span> → </span>
-                                                <span style="color: lightgreen; background-color: green">새로 계산된 내역으로 이어서 하고 있어요</span>
+                                                <span style="color: lightgreen; background-color: green"> 새로 계산된 내역으로 이어서 하고 있어요 </span>
                                             </c:if>
                                         </c:when>
                                         <c:otherwise>
@@ -136,7 +136,7 @@
                         <c:when test=" ${ planList.first }"></c:when>
                         <c:otherwise>
                             <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=0">처음</a></li>
-                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number - 1}">&lAarr;</a></li>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number - 1}">⬅️</a></li>
                         </c:otherwise>
                     </c:choose>
 
@@ -156,7 +156,7 @@
                     <c:choose>
                         <c:when test=" ${ planList.last }"></c:when>
                         <c:otherwise>
-                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number + 1}">&rAarr;</a></li>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number + 1}">➡️</a></li>
                             <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.totalPages - 1}">마지막</a></li>
                         </c:otherwise>
                     </c:choose>

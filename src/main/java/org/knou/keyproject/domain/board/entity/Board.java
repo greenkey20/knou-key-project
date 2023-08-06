@@ -40,4 +40,6 @@ public class Board extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
+
+    private Integer readCount; // 게시글 조회 수
 }
