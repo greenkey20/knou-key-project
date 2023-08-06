@@ -436,6 +436,12 @@ public class PlanServiceImpl implements PlanService {
         return statisticDtos;
     }
 
+    // 2023.8.7(월) 4h55
+    @Override
+    public List<Plan> findAllActivePlansByMemberMemberId(Long memberId) {
+        return planRepository.findAllActivePlansByMemberMemberId(memberId);
+    }
+
     private String parseChatGptResponse(String content) {
         return content.replaceAll("\n", "<br>");
     }

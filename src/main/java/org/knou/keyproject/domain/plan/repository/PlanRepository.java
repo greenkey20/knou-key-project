@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 // 2023.7.22(토) 1h55
-public interface PlanRepository extends JpaRepository<Plan, Long> {
+public interface PlanRepository extends JpaRepository<Plan, Long>, PlanCustomRepository {
     List<Plan> findAllByMemberMemberIdOrderByPlanIdDesc(Long memberId, PageRequest of);
 
     // 2023.7.27(목) 21h10 reference(https://amongthestar.tistory.com/173) 보며 추가

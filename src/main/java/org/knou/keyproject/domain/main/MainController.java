@@ -8,11 +8,16 @@ import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.service.MemberService;
+import org.knou.keyproject.domain.plan.dto.MyPlanStatisticDetailResponseDto;
+import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
+import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 // 2023.7.30(일) 21h45
 @Slf4j
@@ -23,6 +28,7 @@ public class MainController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
     private final PlanMapper planMapper;
+    private final PlanService planService;
 
 //    @RequestMapping(value = "/main", method = RequestMethod.GET)
 //    public String index(HttpSession session) {
@@ -38,9 +44,16 @@ public class MainController {
             Member loginMember = memberService.findVerifiedMember(memberId);
 
             if (loginMember != null) {
-                Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
+//                Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
 //            session.setAttribute("loginUser", memberMapper.toAfterLoginMemberDto(loginMember));
-                session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(loginMember.getPlanList()));
+//                session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(loginMember.getPlanList()));
+
+                // 2023.8.7(월) 5h
+                List<Plan> planList = planService.findAllActivePlansByMemberMemberId(memberId);
+                List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
+
+                session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(planList));
+                session.setAttribute("statList", statisticDtos);
             }
         }
 
