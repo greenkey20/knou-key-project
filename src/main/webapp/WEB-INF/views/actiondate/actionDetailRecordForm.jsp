@@ -29,12 +29,12 @@
         <form id="action-detail-form" action="newActionDateInsert.ad" method="post" modelAttribute="actionDate">
             <table border="seagreen">
                 <colgroup>
-                    <col style="width: 35%">
-                    <col style="width: 65%">
+                    <col style="width: 45%">
+                    <col style="width: 55%">
                 </colgroup>
                 <tr>
                     <td class="info">
-                        오늘의 날짜<span class="required">*</span>
+                        오늘의 날짜<span class="required">*</span><br>
                         <span class="smallerLetters">
                             (계획된 날짜: ${ actionDate.numOfYear }. ${ actionDate.numOfMonth }. ${ actionDate.numOfDay }
                             <c:choose>
@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td class="info">
-                        오늘 수행 분량을 기재해 주세요<span class="required">* </span>
+                        오늘 수행 분량을 기재해 주세요<span class="required">*</span><br>
                         <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
                     </td>
                     <td><input type="number" name="realActionQuantity" value="${ actionDate.planActionQuantity }" min="1" required> ${ plan.unit }</td>
@@ -81,9 +81,6 @@
                     <td><textarea name="memo" placeholder="오늘 활동에서 기억하고 싶은 내용을 기록해 보아요"></textarea></td>
                 </tr>
             </table>
-            <br>
-            <div align="left"><p class="info">메모</p></div>
-            <textarea name="memo" placeholder="오늘 활동에서 기억하고 싶은 내용을 기록해 보아요"></textarea>
             <br>
             <br>
 
