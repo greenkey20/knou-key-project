@@ -36,4 +36,6 @@ public interface MemberMapper {
     Member toEntity(MemberLoginRequestDto memberLoginRequestDto);
 
     MemberResponseDto.AfterLoginMemberDto toAfterLoginMemberDto(Member entity);
+
+    MemberResponseDto.BoardWriterDto toBoardWriterDto(Member entity);
 }
