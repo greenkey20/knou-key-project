@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @Builder
 public class MyPlanListResponseDto {
     private Long planId;
+    private Boolean isChild;
+
     private String nickname;
     private String object;
     private Boolean isMeasurable;
@@ -23,6 +25,9 @@ public class MyPlanListResponseDto {
     private LocalDate startDate;
     private Boolean hasDeadline;
     private LocalDate deadlineDate;
+
+    private Integer totalDurationDays;
+
     private Integer totalNumOfActions;
     private Integer totalQuantity;
     private String frequencyDetail;

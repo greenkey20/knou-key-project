@@ -24,12 +24,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -154,6 +152,7 @@ public class PlanServiceImpl implements PlanService {
         findPlan.setMember(memberService.findVerifiedMember(requestDto.getMemberId()));
     }
 
+    @Override
     public Plan findVerifiedPlan(Long planId) {
         return planRepository.findById(planId).orElse(null);
     }
@@ -197,6 +196,7 @@ public class PlanServiceImpl implements PlanService {
         int totalQuantity = findPlan.getTotalQuantity();
         int quantityToEndPlan = planStatisticUtils.getQuantityToEndPlan(totalQuantity, accumulatedRealActionQuantity);
 
+        double ratioOfRealActionQuantityTillToday = planStatisticUtils.getRatioOfRealActionQuantityTillToday(accumulatedRealActionQuantity, totalQuantity);
         double ratioOfQuantityToEndPlan = planStatisticUtils.getRatioOfQuantityToEndPlan(accumulatedRealActionQuantity, totalQuantity);
 
         int accumulatedNumOfActions = planStatisticUtils.getAccumulatedNumOfActions(planId);
@@ -209,6 +209,7 @@ public class PlanServiceImpl implements PlanService {
                 .accumulatedPlanActionQuantity(accumulatedPlanActionQuantity)
                 .quantityDifferenceBetweenPlanAndReal(quantityDifferenceBetweenPlanAndReal)
                 .quantityToEndPlan(quantityToEndPlan)
+                .ratioOfRealActionQuantityTillToday(planStatisticUtils.formatPercentage(ratioOfRealActionQuantityTillToday))
                 .ratioOfQuantityToEndPlan(planStatisticUtils.formatPercentage(ratioOfQuantityToEndPlan))
                 .accumulatedNumOfActions(planStatisticUtils.getAccumulatedNumOfActions(planId))
                 .numOfActionsToEndPlan(numOfActionsToEndPlan)

@@ -49,6 +49,10 @@ public class PlanStatisticUtils {
         return total - real;
     }
 
+    public Double getRatioOfRealActionQuantityTillToday(Integer real, Integer total) {
+        return (double) real / total * 100;
+    }
+
     public Double getRatioOfQuantityToEndPlan(Integer real, Integer total) {
         return (1 - (double) real / total) * 100;
     }
