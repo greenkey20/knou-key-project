@@ -41,7 +41,7 @@ public class ActionDateServiceImpl implements ActionDateService {
     public ActionDate saveNewActionDate(ActionDatePostRequestDto requestDto) {
 //        ActionDate actionDateToSave = actionDateMapper.toEntity(requestDto);
 
-        ActionDate actionDateToSave = actionDateRepository.findById(requestDto.getActionDateId()).orElse(null);
+        ActionDate actionDateToSave = findVerifiedActionDate(requestDto.getActionDateId());
 
         // 2023.7.31(월) 3h5 나의 생각 = 굳이 바뀌지는 않으니까 update/set 안 해도 될 듯?
 //        Plan findPlan = planRepository.findById(requestDto.getPlanId()).orElse(null);
@@ -87,5 +87,24 @@ public class ActionDateServiceImpl implements ActionDateService {
         actionDateToDelete.setIsDone(false);
 
         ActionDate deletedActionDate = actionDateRepository.save(actionDateToDelete);
+    }
+
+    @Override
+    @Transactional
+    public ActionDate updateActionDate(ActionDatePostRequestDto requestDto) {
+        ActionDate actionDateToUpdate = findVerifiedActionDate(requestDto.getActionDateId());
+
+        actionDateToUpdate.setRealActionDate(requestDto.getRealActionDate());
+        actionDateToUpdate.setRealActionQuantity(requestDto.getRealActionQuantity());
+        actionDateToUpdate.setTimeTakenForRealAction(requestDto.getTimeTakenForRealAction());
+        actionDateToUpdate.setReviewScore(requestDto.getReviewScore());
+        actionDateToUpdate.setMemo(requestDto.getMemo());
+        actionDateToUpdate.setIsDone(true);
+
+        return actionDateToUpdate;
+    }
+
+    public ActionDate findVerifiedActionDate(Long actionDateId) {
+        return actionDateRepository.findById(actionDateId).orElse(null);
     }
 }

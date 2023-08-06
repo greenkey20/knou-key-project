@@ -57,6 +57,17 @@ public class ActionDateController {
         return "redirect:myPlanDetail.pl?planId=" + planId;
     }
 
+    // 2023.8.7(월) 5h35
+    @RequestMapping(value = "actionDateUpdate.ad", method = RequestMethod.POST)
+    public String patchActionDate(@RequestParam(name = "actionDateId") @Positive Long actionDateId,
+                                  @ModelAttribute("actionDate") ActionDatePostRequestDto requestDto) {
+        log.info("컨트롤러 메서드 patchActionDate()로 받은 requestDto = " + requestDto);
+        ActionDate updatedActionDate = actionDateService.updateActionDate(requestDto);
+
+        Long planId = updatedActionDate.getPlan().getPlanId();
+        return "redirect:actionDetailView.ad?planId=" + planId + "&actionDateId=" + actionDateId;
+    }
+
     // 2023.7.30(일) 23h25
     @GetMapping("actionDetailView.ad")
     public String actionDetailView(@RequestParam(name = "planId") @Positive Long planId,
@@ -84,6 +95,7 @@ public class ActionDateController {
 
         return "actiondate/actionDetailUpdateForm";
     }
+
 
     // 2023.8.5(토) 15h25 나의 생각 = 이걸 굳이 post로 보내야 하나? 쿼리스트링으로 id들 정보 붙여서 보내도 될 것 같은데?
     @RequestMapping(value = "actionDetailDelete.ad", method = RequestMethod.POST)

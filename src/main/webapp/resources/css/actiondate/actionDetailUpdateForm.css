@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+body {
+    font-family: 'IBM Plex Sans KR', sans-serif;
+}
+
+div {
+    border: 1px solid green;
+    box-sizing: border-box;
+}
+
+/* 헤더 아래 영역 전체 */
+.outer {
+    width: 768px;
+    margin: auto;
+    height: auto;
+    border: 1px blue;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* 중간~우측 내용 영역 */
+/*.content {*/
+/*    width: 1000px;*/
+/*    height: 100%;*/
+/*    float: left;*/
+/*    padding: 50px 50px 50px 50px; !* 시계 방향으로 각각 지정 *!*/
+/*}*/
+
+/* footer에 float 적용되지 않도록 해제 */
+/*.footer {*/
+/*    clear: both;*/
+/*}*/
+
+.required {
+    /*글자 굵게 + 글자 색상 초록 계열*/
+    font-weight: bold;
+    color: yellowgreen;
+}
+
+.info {
+    width: 250px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.smallerLetters {
+    font-size: small;
+}
+
+.greenBtn {
+    background-color: rgb(182, 238, 86);
+}
+
+.orangeBtn {
+    background-color: rgb(255, 163, 63);
+    color: white;
+}
+
+.grayBtn {
+    background-color: gray;
+    color: white;
+}

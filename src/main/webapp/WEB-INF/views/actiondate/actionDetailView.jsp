@@ -32,8 +32,9 @@
             </colgroup>
             <tr>
                 <td class="info">오늘의 날짜</td>
-                <td class="smallerLetters">
-                    ${ actionDate.realActionDate } [ 계획된 날짜: ${ actionDate.numOfYear }. ${ actionDate.numOfMonth }. ${ actionDate.numOfDay }
+                <td>
+                    ${ actionDate.realActionDate }
+                    <span class="smallerLetters">[ 계획된 날짜: ${ actionDate.numOfYear }. ${ actionDate.numOfMonth }. ${ actionDate.numOfDate }
                     <c:choose>
                         <c:when test="${ actionDate.numOfDay == 1 }"> (월) </c:when>
                         <c:when test="${ actionDate.numOfDay == 2 }"> (화) </c:when>
@@ -43,7 +44,7 @@
                         <c:when test="${ actionDate.numOfDay == 6 }"> (토) </c:when>
                         <c:otherwise> (일) </c:otherwise>
                     </c:choose>
-                    ]
+                    ]</span>
                 </td>
             </tr>
             <tr>
@@ -108,7 +109,7 @@
         <input type="hidden" name="actionDateId" value="${ actionDate.actionDateId }">
 
         <div align="center">
-            <button type="button" class="grayBtn" onclick="window.history.back()">뒤로 가기</button>
+            <button type="button" class="grayBtn" onclick="location.href='myPlanDetail.pl?planId=${ plan.planId }'">상세보기로 가기</button>
             <button type="button" data-toggle="modal" data-target="#deleteForm">삭제</button> <!--id="clickModal" -->
 <%--            <button type="button" onclick="location.href='actionDetailDelete.ad?planID=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">삭제</button>--%>
             <button type="button" class="greenBtn" onclick="location.href='actionDetailUpdatePage.ad?planId=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">수정</button>
