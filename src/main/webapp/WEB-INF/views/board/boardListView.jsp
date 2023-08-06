@@ -58,11 +58,16 @@
 
                 <c:choose>
                     <c:when test=" ${ empty list } ">
-                        <tr><td colspan="7" align="center">게시글이 없습니다</td></tr>
+                        <tr>
+                            <td colspan="7" align="center">게시글이 없습니다</td>
+                            <br>
+                            <br>
+                            <div align="center"><button type="button" onclick="location.href='boardList.bd'">목록으로 돌아가기</button></div>
+                        </tr>
                     </c:when>
                     <c:otherwise>
-                        <tr>
-                            <c:forEach var="b" items="${ list }">
+                        <c:forEach var="b" items="${ list }">
+                            <tr>
                                 <td>${ b.boardId }</td>
                                 <td>
                                     <c:choose>
@@ -74,9 +79,10 @@
                                 <td>${ b.object }</td>
                                 <td>${ b.nickname }</td>
                                 <td>${ b.createdAt }</td>
-                                <td>${ b.readCount}</td>
-                            </c:forEach>
-                        </tr>
+                                <td>${ b.readCount }</td>
+                            </tr>
+                        </c:forEach>
+
                     </c:otherwise>
                 </c:choose>
         </table>

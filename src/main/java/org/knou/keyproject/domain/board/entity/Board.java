@@ -41,5 +41,17 @@ public class Board extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private Integer readCount; // 게시글 조회 수
+    private int readCount; // 게시글 조회 수
+
+    public void increaseReadCount() {
+        this.readCount++;
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }

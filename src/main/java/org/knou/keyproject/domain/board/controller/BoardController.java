@@ -67,6 +67,15 @@ public class BoardController {
         return "redirect:boardList.bd";
     }
 
+    @RequestMapping(value = "boardUpdate.bd", method = RequestMethod.POST)
+    public String patchBoard(@RequestParam(name = "boardId") @Positive Long boardId,
+                             @ModelAttribute("board") BoardPostRequestDto requestDto) {
+        log.info("컨트롤러 메서드 patchBoard()로 받은 requestDto = " + requestDto);
+        Board board = boardService.updateBoard(boardId, requestDto);
+
+        return "redirect:boardDetail.bd?boardId=" + board.getBoardId();
+    }
+
     @GetMapping("boardList.bd")
     public String getBoardList(@PageableDefault(size = 10, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable,
                                @RequestParam(required = false, defaultValue = "") String keyword,
@@ -89,19 +98,40 @@ public class BoardController {
         model.addAttribute("startBlockPage", startBlockPage);
         model.addAttribute("endBlockPage", endBlockPage);
         model.addAttribute("boardList", boardList);
-        model.addAttribute("list", boardMapper.toBoardResponseDtos(list));
+        model.addAttribute("list", boardMapper.toBoardListResponseDtos(list));
 
         return "board/boardListView";
     }
 
-    @GetMapping("boardDetail.pl")
+    @GetMapping("boardDetail.bd")
     public String getBoardDetail(@RequestParam(name = "boardId") @Positive Long boardId, Model model) {
-        Board findBoard = boardService.findBoardById(boardId);
-        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(findBoard.getPlan().getPlanId());
+        boardService.increaseReadCount(boardId);
 
-        model.addAttribute("board", boardMapper.toBoardResponseDto(findBoard));
+        Board findBoard = boardService.findBoardById(boardId);
+
+        Long planId = findBoard.getPlan().getPlanId();
+        Plan findPlan = planService.findVerifiedPlan(planId);
+        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(planId);
+
+        model.addAttribute("board", boardMapper.toBoardDetailResponseDto(findBoard));
+        model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
         model.addAttribute("statPlan", statisticDto);
 
         return "board/boardDetailView";
+    }
+
+    @GetMapping("boardUpdatePage.bd")
+    public String boardUpdatePage(@RequestParam(name = "boardId") @Positive Long boardId, Model model) {
+        Board findBoard = boardService.findVerifiedBoard(boardId);
+
+        Long planId = findBoard.getPlan().getPlanId();
+        Plan findPlan = planService.findVerifiedPlan(planId);
+        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(planId);
+
+        model.addAttribute("board", boardMapper.toBoardDetailResponseDto(findBoard));
+        model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
+        model.addAttribute("statPlan", statisticDto);
+
+        return "board/boardUpdatePage";
     }
 }
