@@ -28,7 +28,7 @@
         <br>
         <p style="font-weight: bold; font-size: larger">
             <c:if test="${ plan.status.toString() eq 'ACTIVE' and plan.isChild }">
-                <div class="smallerLetters" style="font-weight: bold">[일시 중지 후 이어서 하고 있어요]</div>
+                <div class="smallerLetters" style="font-weight: bold; background-color: darkgreen; color: lightgreen">[일시 중지 후 이어서 하고 있어요]</div>
             </c:if>
 
             ${ plan.startDate } ~ ${ plan.deadlineDate } (${ plan.totalDurationDays }일) 기간 중<br>
