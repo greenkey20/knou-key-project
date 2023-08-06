@@ -16,6 +16,7 @@ public class MyPlanStatisticDetailResponseDto {
     private Integer accumulatedPlanActionQuantity; // 오늘까지 누적 계획 수행 분량 = 시작일~오늘 중 actionDate 객체의 planActionQuantity 값의 총합
     private Integer quantityDifferenceBetweenPlanAndReal;
     private Integer quantityToEndPlan;
+    private String ratioOfRealActionQuantityTillToday;
     private String ratioOfQuantityToEndPlan;
     private Integer accumulatedNumOfActions; // 오늘까지 actionDate 객체 중 isDone true 상태인 것 계수
     private Integer numOfActionsToEndPlan;
