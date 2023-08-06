@@ -59,7 +59,7 @@ dependencies {
     // 2023.8.4(금) 0h25 jasypt: 특정 값을 암호화해주는 라이브러리
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
-    // 20238.4(금) 20h55 Querydsl 추가
+    // 2023.8.4(금) 20h55 Querydsl 추가
     implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta" // Querydsl 라이브러리
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta" // Querydsl 관련 코드 생성 기능 제공
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
