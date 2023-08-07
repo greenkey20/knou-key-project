@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 public class MyPlanDetailResponseDto {
     private Long planId;
+    private Boolean isMeasurable;
     private String object;
     private Integer totalQuantity;
     private String unit;

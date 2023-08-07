@@ -55,9 +55,20 @@
                 <tr>
                     <td class="info">
                         오늘 수행 분량을 기재해 주세요<span class="required">*</span><br>
-                        <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
+                        <c:if test="${ plan.isMeasurable }">
+                            <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
+                        </c:if>
                     </td>
-                    <td><input type="number" name="realActionQuantity" value="${ actionDate.realActionQuantity }" min="1" required> ${ plan.unit }</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${ plan.isMeasurable }">
+                                <input type="number" name="realActionQuantity" value="${ actionDate.realActionQuantity }" min="1" required> ${ plan.unit }
+                            </c:when>
+                            <c:otherwise>
+                                -
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                 </tr>
                 <tr>
                     <td class="info">오늘 활동 소요시간을 기록해 보아요</td>

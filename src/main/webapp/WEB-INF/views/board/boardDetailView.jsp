@@ -60,8 +60,10 @@
                 <td class="info">현재 진행률</td>
                 <td>
                     작성일까지 ${ statPlan.accumulatedNumOfActions }회 수행
-                    <span class="smallerLetters"> ( / 전체 ${ plan.totalNumOfActions}회),</span><br>
-                    작성일까지 ${ statPlan.ratioOfRealActionQuantityTillToday }% 분량 수행
+                    <span class="smallerLetters"> ( / 전체 ${ plan.totalNumOfActions}회)</span><br>
+                    <c:if test="${ plan.isMeasurable }">
+                        작성일까지 ${ statPlan.ratioOfRealActionQuantityTillToday }% 분량 수행
+                    </c:if>
                 </td>
             </tr>
             <tr>

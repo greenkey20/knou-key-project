@@ -38,7 +38,7 @@ public class MemberController {
         }
 
         // 2023.7.28(금) 16h30 비회원이 계산 도중(거의 마지막 단계)에 결과 저장을 위해 회원 가입 + 로그인하는 경우 다시 그 결과로 돌려보내고 싶어서 추가
-        if (referer.contains("newPlanInsert")) {
+        if (referer.contains("newPlanInsert") || referer.contains("newPlanByChatGptInsert")) {
             request.getSession().setAttribute("status", "in calculation");
         }
 

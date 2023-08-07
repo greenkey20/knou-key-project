@@ -108,6 +108,7 @@ public class PlanController {
 
         String chatGptResponse = planService.getChatGptResponse(requestDto);
         log.info("컨트롤러 postNewPlanByChatGpt() 메서드에서 받은 답변 = " + chatGptResponse);
+        requestDto.setChatGptResponse(chatGptResponse);
 
         Plan savedPlan = planService.saveNewPlan(requestDto);
         List<List<ActionDate>> calendars = planService.getPlanCalendars(savedPlan);

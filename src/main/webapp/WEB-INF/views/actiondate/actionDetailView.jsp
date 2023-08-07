@@ -50,8 +50,16 @@
             <tr>
                 <td class="info">오늘 수행 분량</td>
                 <td>
-                    ${ actionDate.realActionQuantity }${ plan.unit }
-                    <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
+                    <c:choose>
+                        <c:when test="${ plan.isMeasurable }">
+                            ${ actionDate.realActionQuantity }${ plan.unit }
+                            <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
+                        </c:when>
+                        <c:otherwise>
+                            -
+                        </c:otherwise>
+                    </c:choose>
+
                 </td>
             </tr>
             <tr>
