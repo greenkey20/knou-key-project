@@ -5,13 +5,13 @@ body {
 }
 
 div {
-    border: 1px solid green;
+    /*border: 1px solid green;*/
     box-sizing: border-box;
 }
 
 /* 전체 영역 */
 .outer {
-    border: 1px solid green;
+    /*border: 1px solid green;*/
     width: 768px;
     margin: auto;
     height: auto;
@@ -23,7 +23,7 @@ div {
 }
 
 #my-plans-summary {
-    border: 1px yellow;
+    /*border: 1px yellow;*/
     background-color: lightgreen;
 }
 
