@@ -77,6 +77,10 @@ public class Plan extends BaseTimeEntity {
 
     private Integer quantityPerDayPredicted;
 
+    // 2023.8.7(월) 8h30 추가
+    @Column(columnDefinition = "LONGTEXT")
+    private String chatGptResponse;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_PLAN_ID"/*, referencedColumnName = "PARENT_PLAN_ID"*/)
     private Plan parentPlan;

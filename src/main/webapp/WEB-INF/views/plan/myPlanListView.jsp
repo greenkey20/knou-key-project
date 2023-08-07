@@ -67,18 +67,23 @@
                                     <c:choose>
                                         <c:when test="${ p.status eq 'ACTIVE' }">
                                             <c:choose>
-                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal lt 0 }">
-                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 앞서 있어요 👍</span>
+                                                <c:when test="${ p.isMeasurable }">
+                                                    <c:choose>
+                                                        <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal lt 0 }">
+                                                            ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 앞서 있어요 👍</span>
+                                                        </c:when>
+                                                        <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal gt 0 }">
+                                                            ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 뒤처져 있어요 🌱</span>
+                                                        </c:when>
+                                                        <c:when test="${ today < p.startDate }">
+                                                            아직 시작일이 되지 않았어요
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            ⭐️ 수행 중 <span class="smallerLetters">→ 계획대로 잘 진행하고 있어요 💯</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </c:when>
-                                                <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal gt 0 }">
-                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 뒤처져 있어요 🌱</span>
-                                                </c:when>
-                                                <c:when test="${ today < p.startDate }">
-                                                    아직 시작일이 되지 않았어요
-                                                </c:when>
-                                                <c:otherwise>
-                                                    ⭐️ 수행 중 <span class="smallerLetters">→ 계획대로 잘 진행하고 있어요 💯</span>
-                                                </c:otherwise>
+                                                <c:otherwise>⭐️ 수행 중</c:otherwise>
                                             </c:choose>
                                         </c:when>
                                         <c:when test="${ p.status eq 'COMPLETE' }">
@@ -107,15 +112,23 @@
                             </tr>
                             <tr>
                                 <td class="title">매 회 수행 분량</td>
-                                <td>${ p.quantityPerDay } ${ p.unit } </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${ p.isMeasurable }">${ p.quantityPerDay } ${ p.unit }</c:when>
+                                        <c:otherwise>-</c:otherwise>
+                                    </c:choose>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="title">진행률</td>
                                 <td>
-                                    ${ statList[status.index].accumulatedNumOfActions }회 진행,<br>
-                                    현재 ${ statList[status.index].accumulatedRealActionQuantity } ${ p.unit }
-                                    <span class="smallerLetters">(/전체 ${ p.totalQuantity } ${ p.unit }) </span>
-                                    전체 분량의 ${ statList[status.index].ratioOfRealActionQuantityTillToday }% 완료
+                                    ${ statList[status.index].accumulatedNumOfActions }회 진행,
+                                    <c:if test="${ p.isMeasurable }">
+                                        <br>
+                                        현재 ${ statList[status.index].accumulatedRealActionQuantity } ${ p.unit }
+                                        <span class="smallerLetters">(/전체 ${ p.totalQuantity } ${ p.unit }) </span>
+                                        전체 분량의 ${ statList[status.index].ratioOfRealActionQuantityTillToday }% 완료
+                                    </c:if>
                                 </td>
                             </tr>
                             </tbody>

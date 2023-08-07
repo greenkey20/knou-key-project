@@ -22,6 +22,7 @@ public class PlanPostRequestDto {
     //    final MemberRepository memberRepository;
     private Long memberId;
     private Integer isMeasurableNum;
+    private String chatGptResponse;
     private String object;
     private Integer totalQuantity;
     private String unit;

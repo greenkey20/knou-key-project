@@ -33,28 +33,32 @@
 
             ${ plan.startDate } ~ ${ plan.deadlineDate } (${ plan.totalDurationDays }일) 기간 중<br>
             ${ plan.frequencyDetail } 총 ${ plan.totalNumOfActions }회 동안<br>
-            매 회 ${ plan.quantityPerDay }${ plan.unit }만큼~
+            <c:if test="${ plan.isMeasurable }">
+                매 회 ${ plan.quantityPerDay }${ plan.unit }만큼
+            </c:if>
+            수행합니다 ⭐️
         </p>
         <br>
 
         <c:choose>
             <c:when test="${ plan.status.toString() eq 'ACTIVE'}">
-                - 오늘까지 진행 분량 ${ statPlan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던
-                분량 ${ statPlan.accumulatedPlanActionQuantity }${ plan.unit }
-                <c:choose>
-                    <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal lt 0 }">
-                        → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal * (-1) }${ plan.unit }만큼 앞서 있어요 👍<br>
-                    </c:when>
-                    <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal gt 0 }">
-                        → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal }${ plan.unit }만큼 뒤처져 있어요 🌱<br>
-                    </c:when>
-                    <c:otherwise>
-                        → 계획대로 잘 진행하고 있어요 💯<br>
-                    </c:otherwise>
-                </c:choose>
+                <c:if test="${ plan.isMeasurable }">
+                    - 오늘까지 진행 분량 ${ statPlan.accumulatedRealActionQuantity}${ plan.unit } / 오늘까지 계획했었던 분량 ${ statPlan.accumulatedPlanActionQuantity }${ plan.unit }
+                    <c:choose>
+                        <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal lt 0 }">
+                            → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal * (-1) }${ plan.unit }만큼 앞서 있어요 👍<br>
+                        </c:when>
+                        <c:when test="${ statPlan.quantityDifferenceBetweenPlanAndReal gt 0 }">
+                            → 계획보다 ${ statPlan.quantityDifferenceBetweenPlanAndReal }${ plan.unit }만큼 뒤처져 있어요 🌱<br>
+                        </c:when>
+                        <c:otherwise>
+                            → 계획대로 잘 진행하고 있어요 💯<br>
+                        </c:otherwise>
+                    </c:choose>
 
-                - 목표 달성까지는 ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%) 남았어요!<br>
-                <br>
+                    - 목표 달성까지는 ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%) 남았어요!<br>
+                    <br>
+                </c:if>
                 - 오늘까지 ${ statPlan.accumulatedNumOfActions} 회 수행했고, ${ statPlan.numOfActionsToEndPlan }회 남았습니다. 파이팅입니다 🍀<br>
                 - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되고 있어요
             </c:when>
@@ -66,20 +70,26 @@
             </c:when>
             <c:when test="${ plan.status.toString() eq 'PAUSE'}">
                 - ${ plan.lastStatusChangedAt }자 일시 중지한 상태에요<br>
-                - ${ statPlan.periodDaysBeforePause }일 동안 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 진행하고 있었어요
-                <span class="smallerLetters">(계획했던 분량: ${ statPlan.accumulatedPlanActionQuantityBeforePause }${ plan.unit })</span>
+                <c:if test="${ plan.isMeasurable }">
+                    - ${ statPlan.periodDaysBeforePause }일 동안 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 진행하고 있었어요
+                    <span class="smallerLetters">(계획했던 분량: ${ statPlan.accumulatedPlanActionQuantityBeforePause }${ plan.unit })</span>
+                </c:if>
                 <br>
                 <br>
-                - 아직 목표 달성까지 ${ statPlan.numOfActionsToEndPlan }회, ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%) 남았어요<br>
+                - 아직 목표 달성까지 ${ statPlan.numOfActionsToEndPlan }회
+                <c:if test="${ plan.isMeasurable }">
+                    , ${ statPlan.quantityToEndPlan }${ plan.unit } (${ statPlan.ratioOfQuantityToEndPlan }%)
+                </c:if>
+                남았어요<br>
                 - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
             </c:when>
             <c:otherwise>
                 - ${ plan.lastStatusChangedAt }자 중도 포기한 활동이에요<br>
-                - 총 ${ statPlan.accumulatedNumOfActions }회 ${ statPlan.accumulatedRealActionQuantity }${ plan.unit } 수행했었어요
+                - 총 ${ statPlan.accumulatedNumOfActions }회
+                <c:if test="${ plan.isMeasurable }">${ statPlan.accumulatedRealActionQuantity }${ plan.unit }</c:if>
+                수행했었어요
             </c:otherwise>
         </c:choose>
-
-
         <br>
         <br>
     </div>
@@ -251,8 +261,13 @@
                         </c:when>
                         <c:otherwise>
                             <td class="check">✅</td>
-                            <td>${ day.realActionQuantity }</td>
-                            
+                            <td>
+                                <c:choose>
+                                    <c:when test="${ plan.isMeasurable }">${ day.realActionQuantity }</c:when>
+                                    <c:otherwise>-</c:otherwise>
+                                </c:choose>
+                            </td>
+
                             <c:choose>
                                 <c:when test="${ not empty day.reviewScore }">
                                     <c:choose>

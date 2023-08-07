@@ -35,6 +35,7 @@ public interface PlanMapper {
             plan.isMeasurable(true);
         } else {
             plan.isMeasurable(false);
+            plan.chatGptResponse(planPostRequestDto.getChatGptResponse());
         }
 
         plan.object(planPostRequestDto.getObject());
@@ -215,6 +216,7 @@ public interface PlanMapper {
         MyPlanDetailResponseDto.MyPlanDetailResponseDtoBuilder myPlanDetailResponseDto = MyPlanDetailResponseDto.builder();
 
         myPlanDetailResponseDto.planId(entity.getPlanId());
+        myPlanDetailResponseDto.isMeasurable(entity.getIsMeasurable());
         myPlanDetailResponseDto.object(entity.getObject());
         myPlanDetailResponseDto.totalQuantity(entity.getTotalQuantity());
         myPlanDetailResponseDto.unit(entity.getUnit());

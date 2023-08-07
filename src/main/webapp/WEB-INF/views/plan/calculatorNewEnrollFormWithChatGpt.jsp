@@ -24,7 +24,7 @@
         <input type="hidden" name="isMeasurableNum" value="2">
 
         <div class="prompt">
-            <h4>"[기간]일 동안 [수행 목표 대상] 계획을 세워줘!"</h4>
+            <h4>"[x기간] 동안 [수행 목표 대상] 계획을 세워줘!"</h4>
         </div>
         <br>
 

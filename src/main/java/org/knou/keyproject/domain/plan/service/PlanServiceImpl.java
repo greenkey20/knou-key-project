@@ -348,6 +348,8 @@ public class PlanServiceImpl implements PlanService {
                 .deadlineType(planToResume.getDeadlineType())
                 .deadlineDate(planToResume.getDeadlineDate())
                 .deadlinePeriod(planToResume.getDeadlinePeriod())
+                .deadlinePeriodNum(planToResume.getDeadlinePeriodNum())
+                .deadlinePeriodUnit(planToResume.getDeadlinePeriodUnit())
                 .quantityPerDayPredicted(planToResume.getQuantityPerDayPredicted())
                 .parentPlan(planToResume)
                 .status(PlanStatus.ACTIVE)

@@ -58,7 +58,9 @@
                     <td>
                         오늘까지 ${ statPlan.accumulatedNumOfActions }회 수행
                         <span class="smallerLetters"> ( / 전체 ${ plan.totalNumOfActions}회),</span><br>
-                        오늘까지 ${ statPlan.ratioOfRealActionQuantityTillToday }% 분량 수행
+                        <c:if test="${ plan.isMeasurable }">
+                            오늘까지 ${ statPlan.ratioOfRealActionQuantityTillToday }% 분량 수행
+                        </c:if>
                     </td>
                 </tr>
                 <tr>

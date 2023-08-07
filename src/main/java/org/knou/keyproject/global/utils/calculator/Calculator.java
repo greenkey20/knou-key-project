@@ -268,6 +268,7 @@ public class Calculator {
 
             planToCalculate.setDeadlineDate(deadlineDate);
         }
+        // 처음 계산 시 deadline 없다/모른다고 한 경우, PLAN 엔티티/테이블에는 deadlineDate 저장 안 됨 + 마지막 날 알고 싶으면 해당 plan 관련 actionDates 마지막 날 찾아야 함
     }
 
     public void setFrequencyDetail(Plan planToCalculate) {
@@ -348,6 +349,7 @@ public class Calculator {
             Integer totalDurationDays = result.intValue();
             planToCalculate.setTotalDurationDays(totalDurationDays);
         }
+        // 처음 계산 시 deadline 없다/모른다고 한 경우, 처음 계산 결과에는 '기간' 정보 제공 안 함
     }
 
     public void setTotalNumOfActions(Plan planToCalculate) {
@@ -363,7 +365,7 @@ public class Calculator {
                 double delim = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
 
                 if (delim != 0) {
-                    totalNumOfActions = (int) (Math.ceil(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted())) + 1;
+                    totalNumOfActions = Math.round(planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted()) + 1;
                 } else {
                     totalNumOfActions = planToCalculate.getTotalQuantity() / planToCalculate.getQuantityPerDayPredicted();
                 }
@@ -404,7 +406,7 @@ public class Calculator {
             int delim = totalQuantity % totalNumOfActions;
 
             if (delim != 0) {
-                quantityPerDay = (int) (Math.ceil(totalQuantity / totalNumOfActions)) + 1;
+                quantityPerDay = Math.round(totalQuantity / totalNumOfActions) + 1;
             } else {
                 quantityPerDay = totalQuantity / totalNumOfActions;
             }
