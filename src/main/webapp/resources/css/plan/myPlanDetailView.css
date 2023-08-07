@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 div {
-    border: 1px solid green;
+    /*border: 1px solid green;*/
     box-sizing: border-box;
 }
 
@@ -10,7 +10,7 @@ div {
     width: 768px;
     margin: auto;
     height: auto;
-    border: 1px blue;
+    /*border: 1px blue;*/
     padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 20px;
@@ -31,7 +31,7 @@ div {
 /*}*/
 
 #my-plan-detail-stats {
-    border: 1px yellow;
+    /*border: 1px yellow;*/
     background-color: lightgreen;
 }
 
