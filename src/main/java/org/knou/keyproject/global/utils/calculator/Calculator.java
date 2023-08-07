@@ -389,6 +389,10 @@ public class Calculator {
             }
         }
 
+        if (totalNumOfActions < 1) {
+            totalNumOfActions = 1;
+        }
+
         planToCalculate.setTotalNumOfActions(totalNumOfActions);
     }
 

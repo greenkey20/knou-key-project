@@ -10,11 +10,15 @@ import org.knou.keyproject.domain.member.dto.MemberPostRequestDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.service.MemberService;
+import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
+import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 // 2023.7.24(월) 15h5
 @Slf4j
@@ -26,6 +30,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
     private final PlanMapper planMapper;
+    private final PlanService planService;
 
     @RequestMapping(value = "loginPage.me", method = RequestMethod.GET)
     public String loginPage(HttpServletRequest request) {
@@ -54,9 +59,13 @@ public class MemberController {
         Member loginMember = memberService.loginMember(requestDto);
 
         if (loginMember != null) {
-            Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
+//            Hibernate.initialize(loginMember.getPlanList()); // 영속성 컨텍스트가 없는 상황에서 연관관계 있는 데이터를 읽으려고 하는 바, lazy fetch 불가능하다는 오류 -> 이렇게 initialize해서 데이터 읽어올 수 있도록 함
+
+            // 2023.8.7(월) 15h5 수정
+            Long memberId = loginMember.getMemberId();
+            List<MyPlanDetailResponseDto> planList = planService.findAllActivePlansByMemberMemberId(memberId);
             session.setAttribute("loginUser", memberMapper.toAfterLoginMemberDto(loginMember));
-            session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(loginMember.getPlanList()));
+            session.setAttribute("planList", planList);
             session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!"); // 2023.7.28(금) 23h50 현재 이 alert창 안 뜸
 //            mv.setViewName("redirect:/");
         } else {
@@ -115,6 +124,7 @@ public class MemberController {
 
         if (memberId != null) {
 //            session.setAttribute("alertMsg", "성공적으로 회원 가입이 되었습니다!");
+            session.setAttribute("joinMemberId", memberId);
             mv.setViewName("redirect:/");
         } else {
             mv.addObject("errorMsg", "회원 가입에 실패했습니다").setViewName("common/errorPage");

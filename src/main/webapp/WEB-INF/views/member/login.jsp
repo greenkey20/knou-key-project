@@ -38,6 +38,7 @@
 
             <br>
             <br>
+<%--            <input type="hidden" name="memberId" value="${ joinMemberId }">--%>
             <button type="submit" class="greenBtn" value="login">로그인</button>
         </form>
 

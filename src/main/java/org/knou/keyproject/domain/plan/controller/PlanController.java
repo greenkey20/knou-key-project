@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
+import org.knou.keyproject.domain.actiondate.repository.ActionDateCustomRepository;
+import org.knou.keyproject.domain.actiondate.service.ActionDateService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -34,10 +36,12 @@ import java.util.List;
 @Controller
 //@RequestMapping("/plans")
 public class PlanController {
+    private final ActionDateCustomRepository actionDateRepository;
     private final PlanRepository planRepository;
     private final PlanService planService;
     private final PlanMapper planMapper;
     private final ActionDateMapper actionDateMapper;
+    private final ActionDateService actionDateService;
     private final int SIZE = 5;
     private final int THIS_YEAR = LocalDate.now().getYear();
     private final int THIS_MONTH = LocalDate.now().getMonthValue();
@@ -167,6 +171,7 @@ public class PlanController {
         Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
         log.info("planController getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planService.findAllByMemberMemberIdOrderByPlanIdDesc(memberId, pageable);
+        List<MyPlanDetailResponseDto> myPlanDetailResponseDtos = planService.getMyPlanDetailResponseDtos(memberId);
         List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
 
         if (keyword != null) {
@@ -181,11 +186,12 @@ public class PlanController {
         endBlockPage = totalPages < endBlockPage ? totalPages : endBlockPage;
 
         List<Plan> list = planList.getContent();
+        List<MyPlanListResponseDto> responseDtos = planService.getMyPlanListResponseDtoList(list);
 
         mv.addObject("startBlockPage", startBlockPage)
                 .addObject("endBlockPage", endBlockPage)
                 .addObject("planList", planList)
-                .addObject("list", planMapper.toMyPlanDetailResponseDtos(list))
+                .addObject("list", responseDtos)
                 .addObject("statList", statisticDtos)
                 .setViewName("plan/myPlanListView");
 
@@ -199,7 +205,7 @@ public class PlanController {
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
     @GetMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
-        MyPlanDetailResponseDto myPlanDetailResponseDto = planMapper.toMyPlanDetailResponseDto(planService.findPlanById(planId));
+        MyPlanDetailResponseDto myPlanDetailResponseDto = planService.getMyPlanDetailResponseDto(planId);
         List<ActionDateResponseDto> actionDatesList = myPlanDetailResponseDto.getActionDatesList();
 
         MyPlanStatisticDetailResponseDto statisticDetailResponseDto = planService.getPlanStatisticDetailById(planId);

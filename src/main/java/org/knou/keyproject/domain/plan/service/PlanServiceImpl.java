@@ -2,7 +2,9 @@ package org.knou.keyproject.domain.plan.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
@@ -53,6 +55,7 @@ public class PlanServiceImpl implements PlanService {
     private final Calculator calculator;
     private final PlanStatisticUtils planStatisticUtils;
     private final CustomBeanUtils<Plan> customBeanUtils;
+    private final ActionDateMapper actionDateMapper;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -182,6 +185,110 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return findPlan;
+    }
+
+    @Override
+    public MyPlanDetailResponseDto getMyPlanDetailResponseDto(Long planId) {
+        Plan findPlan = findVerifiedPlan(planId);
+        List<ActionDate> actionDatesList = actionDateRepository.findByPlanPlanId(findPlan.getPlanId());
+
+        MyPlanDetailResponseDto.MyPlanDetailResponseDtoBuilder myPlanDetailResponseDto = MyPlanDetailResponseDto.builder();
+        myPlanDetailResponseDto.planId(findPlan.getPlanId());
+        myPlanDetailResponseDto.isMeasurable(findPlan.getIsMeasurable());
+        myPlanDetailResponseDto.object(findPlan.getObject());
+        myPlanDetailResponseDto.totalQuantity(findPlan.getTotalQuantity());
+        myPlanDetailResponseDto.unit(findPlan.getUnit());
+
+        myPlanDetailResponseDto.hasStartDate(findPlan.getHasStartDate());
+        myPlanDetailResponseDto.startDate(findPlan.getStartDate());
+        myPlanDetailResponseDto.startYear(findPlan.getStartDate().getYear());
+        myPlanDetailResponseDto.startMonth(findPlan.getStartDate().getMonthValue());
+
+        if (findPlan.getHasDeadline()) {
+            myPlanDetailResponseDto.deadlineDate(findPlan.getDeadlineDate());
+            myPlanDetailResponseDto.deadlineYear(findPlan.getDeadlineDate().getYear());
+            myPlanDetailResponseDto.deadlineMonth(findPlan.getDeadlineDate().getMonthValue());
+        } else {
+            ActionDate lastActionDate = actionDatesList.get(actionDatesList.size() - 1);
+            LocalDate deadlineDate = LocalDate.of(Integer.valueOf(lastActionDate.getNumOfYear()), lastActionDate.getNumOfMonth(), Integer.parseInt(lastActionDate.getNumOfDate()));
+            myPlanDetailResponseDto.deadlineDate(deadlineDate);
+            myPlanDetailResponseDto.deadlineYear(deadlineDate.getYear());
+            myPlanDetailResponseDto.deadlineMonth(deadlineDate.getMonthValue());
+        }
+
+        myPlanDetailResponseDto.hasDeadline(findPlan.getHasDeadline());
+
+        myPlanDetailResponseDto.frequencyDetail(findPlan.getFrequencyDetail());
+        myPlanDetailResponseDto.totalDurationDays(findPlan.getTotalDurationDays());
+        myPlanDetailResponseDto.totalNumOfActions(findPlan.getTotalNumOfActions());
+        myPlanDetailResponseDto.quantityPerDay(findPlan.getQuantityPerDay());
+        myPlanDetailResponseDto.actionDatesList(actionDateMapper.entitiesToDtos(actionDatesList));
+        myPlanDetailResponseDto.status(findPlan.getStatus());
+
+        myPlanDetailResponseDto.lastStatusChangedAt(findPlan.getLastStatusChangedAt());
+        myPlanDetailResponseDto.isChild(findPlan.getIsChild());
+        myPlanDetailResponseDto.sizeOfModifiedPlansList(findPlan.getModifiedPlans().size());
+
+        return myPlanDetailResponseDto.build();
+    }
+
+    // 2023.8.7(월) 16h5
+    @Override
+    public List<MyPlanDetailResponseDto> getMyPlanDetailResponseDtos(Long memberId) {
+        List<Plan> myPlans = findMyPlans(memberId);
+
+        List<MyPlanDetailResponseDto> myPlanDetailResponseDtos = new ArrayList<>();
+
+        for (Plan myPlan : myPlans) {
+            Long planId = myPlan.getPlanId();
+            MyPlanDetailResponseDto myPlanDetailResponseDto = getMyPlanDetailResponseDto(planId);
+            myPlanDetailResponseDtos.add(myPlanDetailResponseDto);
+        }
+
+        return myPlanDetailResponseDtos;
+    }
+
+    // 2023.8.7(월) 17h40
+    @Override
+    public List<MyPlanListResponseDto> getMyPlanListResponseDtoList(List<Plan> list) {
+        List<MyPlanListResponseDto> responseDtos = new ArrayList<>();
+
+        for (Plan myPlan : list) {
+            Long planId = myPlan.getPlanId();
+            Plan findPlan = findVerifiedPlan(planId);
+
+            MyPlanListResponseDto.MyPlanListResponseDtoBuilder responseDto = MyPlanListResponseDto.builder();
+            responseDto.planId(planId);
+            responseDto.isChild(findPlan.getIsChild());
+
+            Member findMember = memberService.findVerifiedMember(findPlan.getMember().getMemberId());
+            responseDto.nickname(findMember.getNickname());
+
+            responseDto.object(findPlan.getObject());
+            responseDto.isMeasurable(findPlan.getIsMeasurable());
+            responseDto.status(findPlan.getStatus());
+            responseDto.startDate(findPlan.getStartDate());
+            responseDto.hasDeadline(findPlan.getHasDeadline());
+            responseDto.deadlineDate(findPlan.getDeadlineDate());
+
+            responseDto.totalDurationDays(findPlan.getTotalDurationDays());
+
+            responseDto.totalNumOfActions(findPlan.getTotalNumOfActions());
+            responseDto.totalQuantity(findPlan.getTotalQuantity());
+            responseDto.frequencyDetail(findPlan.getFrequencyDetail());
+            responseDto.quantityPerDay(findPlan.getQuantityPerDay());
+            responseDto.unit(findPlan.getUnit());
+
+            responseDto.sizeOfModifiedPlansList(findPlan.getModifiedPlans().size());
+
+            responseDtos.add(responseDto.build());
+        }
+
+        return responseDtos;
+    }
+
+    private List<Plan> findMyPlans(Long memberId) {
+        return planRepository.findMyPlans(memberId);
     }
 
     // 2023.8.4(금) 22h50 plan 상세보기 요청 controller에 대응하기 위한 메서드 + JSP에서 비즈니스 로직 최대한 빼기 위해 2023.8.5(토) 1H30 추가
@@ -445,8 +552,9 @@ public class PlanServiceImpl implements PlanService {
 
     // 2023.8.7(월) 4h55
     @Override
-    public List<Plan> findAllActivePlansByMemberMemberId(Long memberId) {
-        return planRepository.findAllActivePlansByMemberMemberId(memberId);
+    public List<MyPlanDetailResponseDto> findAllActivePlansByMemberMemberId(Long memberId) {
+        List<Plan> findPlans = planRepository.findAllActivePlansByMemberMemberId(memberId);
+        return planMapper.toMyPlanDetailResponseDtos(findPlans);
     }
 
     private String parseChatGptResponse(String content) {

@@ -11,12 +11,13 @@ import lombok.*;
 public class MemberLoginRequestDto {
     private String email;
     private String password;
+    private Long memberId;
 
-    @Override
-    public String toString() {
-        return "MemberLoginRequestDto{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "MemberLoginRequestDto{" +
+//                "email='" + email + '\'' +
+//                ", password='" + password + '\'' +
+//                '}';
+//    }
 }
