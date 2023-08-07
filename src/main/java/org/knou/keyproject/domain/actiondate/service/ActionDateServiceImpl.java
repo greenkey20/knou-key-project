@@ -7,7 +7,10 @@ import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
 import org.knou.keyproject.domain.plan.entity.Plan;
+import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
+import org.knou.keyproject.domain.plan.service.PlanService;
+import org.knou.keyproject.global.utils.PlanStatisticUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +23,9 @@ import java.time.LocalDate;
 public class ActionDateServiceImpl implements ActionDateService {
     private final PlanRepository planRepository;
     private final ActionDateRepository actionDateRepository;
-    private final ActionDateMapper actionDateMapper;
+//    private final ActionDateMapper actionDateMapper;
+//    private final PlanService planService;
+    private final PlanStatisticUtils planStatisticUtils;
 
     // 2023.7.29(토) 22h35
     @Override
@@ -69,6 +74,18 @@ public class ActionDateServiceImpl implements ActionDateService {
 //        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate);
 //        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getIsDone());
 //        log.info("ActionDateService에서 saveNewActionDate() 되나요? " + savedActionDate.getRealActionDate()); // null이네.. toEntity 하는 것만으로는 저장 안 되었음
+
+
+        // 2023.8.7(월) 10h15 금번 활동 기록으로 complete 상태가 되는지 체크해야 함
+        Long planId = requestDto.getPlanId();
+//        Plan findPlan = planService.findVerifiedPlan(planId); // 2023.8.7(월) 10h30 순환참조 발생
+        Plan findPlan = planRepository.findById(planId).orElse(null);
+        Integer totalQuantity = findPlan.getTotalQuantity();
+        Integer accumulatedRealActionQuantity = planStatisticUtils.getAccumulatedRealActionQuantity(planId);
+        if (accumulatedRealActionQuantity >= totalQuantity) {
+            findPlan.setStatus(PlanStatus.COMPLETE);
+            findPlan.setLastStatusChangedAt(LocalDate.now());
+        }
 
         return savedActionDate;
     }
