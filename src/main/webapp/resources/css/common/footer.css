@@ -14,7 +14,8 @@
     margin: auto;
     height: auto;
     position: relative;
-    background-color: lightseagreen;
+    background-color: seagreen;
+    color: yellowgreen;
 }
 
 .footer .company_info {

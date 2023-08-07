@@ -27,8 +27,8 @@ div {
     width: 768px;
     margin: auto;
     padding-top: 5px;
-    background-color: forestgreen;
-    color: lightgreen;
+    background-color: yellowgreen;
+    color: seagreen;
 }
 
 .header .logo_bg {
@@ -36,24 +36,24 @@ div {
     margin: auto;
     width: 50%;
     height: 100%;
-    background-color: forestgreen;
+    background-color: yellowgreen;
     float: left;
 }
 
 .logo_k {
     font-weight: bold;
     /*font-size: 30px;*/
-    color: lightgreen;
+    color: seagreen;
 }
 
 .logo_k a {
     text-decoration: none;
-    color: lightgreen;
+    color: seagreen;
     font-size: 30px;
 }
 
 .logo_k a:hover {
-    color: greenyellow;
+    color: mediumseagreen;
     font-size: 31px;
     font-weight: bolder;
 }
@@ -87,7 +87,7 @@ div {
 }
 
 .service_area a:hover {
-    color: lightgreen;
+    color: seagreen;
     font-size: 17px;
     font-weight: bolder;
 }
