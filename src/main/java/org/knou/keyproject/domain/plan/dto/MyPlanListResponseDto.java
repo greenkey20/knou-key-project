@@ -34,6 +34,8 @@ public class MyPlanListResponseDto {
     private Integer quantityPerDay;
     private String unit;
 
+    private int sizeOfModifiedPlansList;
+
     // 통계 자료
 
 //    public MyPlanListResponseDto(Plan entity) {

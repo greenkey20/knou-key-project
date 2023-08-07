@@ -48,5 +48,11 @@ public interface PlanService {
 
     List<MyPlanStatisticDetailResponseDto> findStatisticDtosByMember(Long memberId);
 
-    List<Plan> findAllActivePlansByMemberMemberId(Long memberId);
+    List<MyPlanDetailResponseDto> findAllActivePlansByMemberMemberId(Long memberId);
+
+    MyPlanDetailResponseDto getMyPlanDetailResponseDto(Long planId);
+
+    List<MyPlanDetailResponseDto> getMyPlanDetailResponseDtos(Long memberId);
+
+    List<MyPlanListResponseDto> getMyPlanListResponseDtoList(List<Plan> list);
 }

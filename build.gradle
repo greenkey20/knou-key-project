@@ -3,12 +3,12 @@ plugins {
     id 'org.springframework.boot' version '3.1.1'
     id 'io.spring.dependency-management' version '1.1.0'
 //    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // Querydsl 추가
-//    id 'war'
+    id 'war'
 }
-//apply plugin: 'war'
-//
-//bootWar.enabled = false
-//war.enabled = true
+apply plugin: 'war'
+
+bootWar.enabled = false
+war.enabled = true
 // 2023.8.4(금) 20h50 개발 시에는 내장 톰캣 사용하고자 주석 처리함
 
 group = 'org.knou'

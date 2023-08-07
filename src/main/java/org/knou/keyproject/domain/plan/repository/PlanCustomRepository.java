@@ -10,4 +10,5 @@ import java.util.List;
 public interface PlanCustomRepository {
     List<Plan> findAllActivePlansByMemberMemberId(Long memberId);
 
+    List<Plan> findMyPlans(Long memberId);
 }

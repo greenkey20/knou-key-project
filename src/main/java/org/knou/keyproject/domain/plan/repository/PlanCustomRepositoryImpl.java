@@ -28,4 +28,14 @@ public class PlanCustomRepositoryImpl implements PlanCustomRepository {
                 .orderBy(plan.planId.desc())
                 .fetch();
     }
+
+    // 2023.8.7(월) 16h5
+    @Override
+    public List<Plan> findMyPlans(Long memberId) {
+        return jpaQueryFactory
+                .selectFrom(plan)
+                .where(plan.member.memberId.eq(memberId))
+                .orderBy(plan.planId.desc())
+                .fetch();
+    }
 }

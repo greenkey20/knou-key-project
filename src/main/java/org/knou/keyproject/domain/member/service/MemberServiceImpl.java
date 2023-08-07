@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
         if (findMember != null) {
             if (findMember.getPassword().equals(requestDto.getPassword())) {
                 findMember.setLastLoginAt(LocalDateTime.now());
-                findMember = memberRepository.save(findMember);
+                findMember = memberRepository.save(findMember); // 2023.8.7(월) 15h15 나의 생각 = 이 save 필요 없다?
                 return findMember;
             } else {
 //            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED_USER); // 0h50 현재와 같은 SSR 방식에서는 이렇게 예외 처리하면 500에러 화면으로 가는 거구나..

@@ -117,7 +117,7 @@
         <input type="hidden" name="actionDateId" value="${ actionDate.actionDateId }">
 
         <div align="center">
-            <button type="button" class="grayBtn" onclick="location.href='myPlanDetail.pl?planId=${ plan.planId }'">상세보기로 가기</button>
+            <button type="button" class="grayBtn" onclick="location.href='myPlanDetail.pl?planId=${ plan.planId }'">목록으로 가기</button>
             <button type="button" data-toggle="modal" data-target="#deleteForm">삭제</button> <!--id="clickModal" -->
 <%--            <button type="button" onclick="location.href='actionDetailDelete.ad?planID=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">삭제</button>--%>
             <button type="button" class="greenBtn" onclick="location.href='actionDetailUpdatePage.ad?planId=${ plan.planId }&actionDateId=${ actionDate.actionDateId }'">수정</button>

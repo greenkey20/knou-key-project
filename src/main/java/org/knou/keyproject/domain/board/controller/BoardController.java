@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.board.dto.BoardDetailResponseDto;
+import org.knou.keyproject.domain.board.dto.BoardListResponseDto;
 import org.knou.keyproject.domain.board.dto.BoardPostRequestDto;
 import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.board.mapper.BoardMapper;
@@ -94,11 +96,12 @@ public class BoardController {
         endBlockPage = Math.min(totalPages, endBlockPage);
 
         List<Board> list = boardList.getContent();
+        List<BoardListResponseDto> responseDtos = boardService.getBoardListResponseDtosList(list);
 
         model.addAttribute("startBlockPage", startBlockPage);
         model.addAttribute("endBlockPage", endBlockPage);
         model.addAttribute("boardList", boardList);
-        model.addAttribute("list", boardMapper.toBoardListResponseDtos(list));
+        model.addAttribute("list", responseDtos);
 
         return "board/boardListView";
     }
@@ -108,12 +111,13 @@ public class BoardController {
         boardService.increaseReadCount(boardId);
 
         Board findBoard = boardService.findBoardById(boardId);
+        BoardDetailResponseDto boardDto = boardService.getBoardDetailResponseDto(boardId);
 
         Long planId = findBoard.getPlan().getPlanId();
         Plan findPlan = planService.findVerifiedPlan(planId);
         MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(planId);
 
-        model.addAttribute("board", boardMapper.toBoardDetailResponseDto(findBoard));
+        model.addAttribute("board", boardDto);
         model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
         model.addAttribute("statPlan", statisticDto);
 

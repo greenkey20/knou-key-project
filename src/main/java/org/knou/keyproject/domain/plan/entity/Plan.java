@@ -30,7 +30,7 @@ public class Plan extends BaseTimeEntity {
     private Long planId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(columnDefinition = "INTEGER", name = "MEMBER_ID")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)

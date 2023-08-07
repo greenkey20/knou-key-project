@@ -1,5 +1,7 @@
 package org.knou.keyproject.domain.board.service;
 
+import org.knou.keyproject.domain.board.dto.BoardDetailResponseDto;
+import org.knou.keyproject.domain.board.dto.BoardListResponseDto;
 import org.knou.keyproject.domain.board.dto.BoardPostRequestDto;
 import org.knou.keyproject.domain.board.entity.Board;
 import org.springframework.data.domain.Page;
@@ -21,4 +23,8 @@ public interface BoardService {
     void increaseReadCount(Long boardId);
 
     Board updateBoard(Long boardId, BoardPostRequestDto requestDto);
+
+    List<BoardListResponseDto> getBoardListResponseDtosList(List<Board> list);
+
+    BoardDetailResponseDto getBoardDetailResponseDto(Long boardId);
 }
