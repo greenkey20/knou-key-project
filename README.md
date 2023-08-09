@@ -11,7 +11,7 @@
 - 웹사이트: [Alloc](http://ec2-13-209-255-107.ap-northeast-2.compute.amazonaws.com:8080/key-project/)
 - 작업 일지: [Notion](https://greenkey20.notion.site/knou-SW-_-d45c4af16b474e7bab7b867205b4436e)
 
-<img src="Screenshot 2023-08-07 at 15 25 52" src="https://github.com/greenkey20/knou-key-project/assets/87472526/104dc38a-46aa-4110-8940-20b4af7cd9b3">
+<img width="788" alt="Screenshot 2023-08-07 at 15 25 52" src="https://github.com/greenkey20/knou-key-project/assets/87472526/660ab171-6792-49ec-a9ed-1692e13c0b5f">
 
 
 # Technologies
@@ -46,14 +46,14 @@
 
 **2. 독서 계획 계산기**
 
-<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/0a9b4a6b-8dd4-48e0-a68e-6f81de70d404">
-<img src="">
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/bf0c28ca-75ca-4059-880c-c95ff9e8a6af">
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/5e67b49f-019e-421a-9b9d-ba0c36015ebd">
 
 
 **3. 측정이 어려운 일 계획 계산기**
 
-![Screenshot 2023-08-07 at 16 41 05](https://github.com/greenkey20/knou-key-project/assets/87472526/3d5e6f3b-67bb-4906-a971-e50cfc3eba58)
-![Screenshot 2023-08-07 at 16 41 28](https://github.com/greenkey20/knou-key-project/assets/87472526/8c4f53ce-ed96-4fde-ac25-e0902347c0af)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/52a6dff2-6fcc-4675-a6f3-4f7809a766c2">
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/0a9b4a6b-8dd4-48e0-a68e-6f81de70d404">
 
 
 # Example Of Use
@@ -88,10 +88,9 @@
 # Project Structure
 
 ## File
-
-![Screenshot 2023-08-07 at 21 21 55](https://github.com/greenkey20/knou-key-project/assets/87472526/c444ae66-1b23-4c0f-96ed-8cd30f5716a0)
-
-![Screenshot 2023-08-07 at 21 22 47](https://github.com/greenkey20/knou-key-project/assets/87472526/6e4879a7-aef5-48df-af39-1b043b118258)
+<img width="350" src="https://github.com/greenkey20/knou-key-project/assets/87472526/1e8785fb-2cd8-4e20-bce9-99eebbe99edc">
+&nbsp;&nbsp;
+<img width="400" src="https://github.com/greenkey20/knou-key-project/assets/87472526/b2114473-3e7d-47c4-8fdc-3a714d80bff2">
 
 
 ## Database
