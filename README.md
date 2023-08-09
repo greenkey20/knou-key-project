@@ -46,8 +46,8 @@
 
 **2. 독서 계획 계산기**
 
-![Screenshot 2023-08-07 at 16 34 19](https://github.com/greenkey20/knou-key-project/assets/87472526/067ba9d1-6cf5-4744-993f-2d9cbe4762f9)
-![Screenshot 2023-08-07 at 16 34 52](https://github.com/greenkey20/knou-key-project/assets/87472526/9b9dc0c8-e85d-4988-9f0d-948a6faca6b8)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/0a9b4a6b-8dd4-48e0-a68e-6f81de70d404">
+<img src="">
 
 
 **3. 측정이 어려운 일 계획 계산기**
