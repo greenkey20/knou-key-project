@@ -1,4 +1,4 @@
-![Screenshot 2023-08-09 at 01 59 10](https://github.com/greenkey20/knou-key-project/assets/87472526/ba3e157e-6986-4a6b-af5b-4b2d05019b7f)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/5d81a34d-8c07-40af-b531-45e607a08873">
 
 # Introduction
 
@@ -96,12 +96,12 @@
 
 ## Database
 
-![allo_JUL 2023_v1](https://github.com/greenkey20/knou-key-project/assets/87472526/292798a7-2494-4f6e-bd5b-64e0999eded8)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/d8c0e8dc-1d08-465e-a015-969bed5b6f2b">
 
 
 ## Use Case Diagram
 
-![Screenshot 2023-07-06 at 22 03 29](https://github.com/greenkey20/knou-key-project/assets/87472526/6e5321b9-7e5d-4b62-8482-d53d669b17de)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/39cdc1c2-d855-43fa-b0d3-e74ae477b251">
 
 
 # Release History
