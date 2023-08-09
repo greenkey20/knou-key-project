@@ -11,7 +11,7 @@
 - 웹사이트: [Alloc](http://ec2-13-209-255-107.ap-northeast-2.compute.amazonaws.com:8080/key-project/)
 - 작업 일지: [Notion](https://greenkey20.notion.site/knou-SW-_-d45c4af16b474e7bab7b867205b4436e)
 
-<img width="788" alt="Screenshot 2023-08-07 at 15 25 52" src="https://github.com/greenkey20/knou-key-project/assets/87472526/2c740acd-f6a2-478f-8a87-b64fc7376a3c">
+<img src="Screenshot 2023-08-07 at 15 25 52" src="https://github.com/greenkey20/knou-key-project/assets/87472526/104dc38a-46aa-4110-8940-20b4af7cd9b3">
 
 
 # Technologies
@@ -40,8 +40,8 @@
 
 **1. 측정 가능한 일 계획 계산기**
 
-![Screenshot 2023-08-07 at 15 29 29](https://github.com/greenkey20/knou-key-project/assets/87472526/b4e8805d-96e8-4865-a70c-0cc3b82ed7a3)
-![Screenshot 2023-08-07 at 15 29 40](https://github.com/greenkey20/knou-key-project/assets/87472526/a04644c0-6068-4c50-86cf-b61a661d8f02)
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/a19cb64e-fb3d-4e59-8e48-df8a2a65c7ba">
+<img src="https://github.com/greenkey20/knou-key-project/assets/87472526/37d50155-99f1-45db-8001-9909cad1e6af">
 
 
 **2. 독서 계획 계산기**
