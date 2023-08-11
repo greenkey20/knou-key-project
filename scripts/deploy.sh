@@ -37,7 +37,7 @@ echo "> 톰캣 종료" >> $REPOSITORY/$PROJECT_NAME/deploy.log
 $TOMCAT/bin/./shutdown.sh
 
 echo "> 톰캣 시작" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-$TOMCAT/bin/.startup.sh
+$TOMCAT/bin/./startup.sh
 
 ##!/bin/bash
 #BUILD_WAR=$(ls /home/ubuntu/app/knou-key-project/build/libs/key-project.war)
