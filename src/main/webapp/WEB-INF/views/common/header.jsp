@@ -36,7 +36,8 @@
 <div class="header" align="center">
     <div class="logo_area">
         <div class="logo_bg">
-            <p class="logo_k"><a href="mainPage.cm">alloc</a></p> <!--Tomcat war 배포 시에는 key-project-->
+<%--            <p class="logo_k"><a href="/key-project">alloc</a></p> <!--Tomcat war 배포 시에는 /key-project vs IntelliJ 실행 시 mainPage.cm-->--%>
+            <p class="logo_k"><a href="/key-project"><img src="resources/images/logo-no-background.png" class="logoImg" alt="logo"></a></p> <!--Tomcat war 배포 시에는 /key-project-->
 <%--            <p class="logo_e">allo</p>--%>
         </div>
         <div>
