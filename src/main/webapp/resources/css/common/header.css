@@ -40,6 +40,15 @@ div {
     float: left;
 }
 
+.logoImg {
+    width: 200px;
+    height: 45px;
+}
+
+/*.logoImg:hover {*/
+/*    filter: invert(43%) sepia(9%) saturate(2602%) hue-rotate(94deg) brightness(103%) contrast(91%);*/
+/*}*/
+
 .logo_k {
     font-weight: bold;
     /*font-size: 30px;*/
