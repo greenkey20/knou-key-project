@@ -70,10 +70,9 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // 2023.8.11(금) 19h5 S3 연계
-//    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
 //    implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-starter', version: '3.0.0-M1'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
-
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
 }
 
 tasks.named('test') {
