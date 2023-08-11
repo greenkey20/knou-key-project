@@ -30,6 +30,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+#2023.8.11(금) 20h35 추가 - mapperImpl, Querydsl Q클래스 등은 git으로 관리하지 않기 위해서
+**/src/main/generated/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
