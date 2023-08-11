@@ -1,0 +1,43 @@
+spring:
+#  config:
+#    activate:
+#      on-profile: local
+  profiles:
+    include: local
+  sql:
+    init:
+#      schema-locations: classpath*:db/schema.sql
+#      data-locations: classpath*:db/data.sql
+#      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create #update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
+    #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+  #    defer-datasource-initialization: true
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+        boot:
+          context:
+            web:
+              ErrorPageFilter: off
+server:
+  servlet:
+    encoding:
+      force-response: true
+#  port: 8080

@@ -1,0 +1,479 @@
+.
+├── appspec.yml
+├── build
+│   ├── classes
+│   │   └── java
+│   │       ├── main
+│   │       │   └── org
+│   │       │       └── knou
+│   │       │           └── keyproject
+│   │       │               ├── KeyProjectApplication.class
+│   │       │               ├── domain
+│   │       │               │   ├── actiondate
+│   │       │               │   │   ├── controller
+│   │       │               │   │   │   └── ActionDateController.class
+│   │       │               │   │   ├── dto
+│   │       │               │   │   │   ├── ActionDatePostRequestDto$ActionDatePostRequestDtoBuilder.class
+│   │       │               │   │   │   ├── ActionDatePostRequestDto.class
+│   │       │               │   │   │   ├── ActionDateResponseDto$ActionDateResponseDtoBuilder.class
+│   │       │               │   │   │   └── ActionDateResponseDto.class
+│   │       │               │   │   ├── entity
+│   │       │               │   │   │   ├── ActionDate$ActionDateBuilder.class
+│   │       │               │   │   │   ├── ActionDate.class
+│   │       │               │   │   │   ├── DateType.class
+│   │       │               │   │   │   └── QActionDate.class
+│   │       │               │   │   ├── mapper
+│   │       │               │   │   │   ├── ActionDateMapper.class
+│   │       │               │   │   │   └── ActionDateMapperImpl.class
+│   │       │               │   │   ├── repository
+│   │       │               │   │   │   ├── ActionDateCustomRepository.class
+│   │       │               │   │   │   ├── ActionDateCustomRepositoryImpl.class
+│   │       │               │   │   │   └── ActionDateRepository.class
+│   │       │               │   │   └── service
+│   │       │               │   │       ├── ActionDateService.class
+│   │       │               │   │       └── ActionDateServiceImpl.class
+│   │       │               │   ├── board
+│   │       │               │   │   ├── controller
+│   │       │               │   │   │   └── BoardController.class
+│   │       │               │   │   ├── dto
+│   │       │               │   │   │   ├── BoardDetailResponseDto$BoardDetailResponseDtoBuilder.class
+│   │       │               │   │   │   ├── BoardDetailResponseDto.class
+│   │       │               │   │   │   ├── BoardListResponseDto$BoardListResponseDtoBuilder.class
+│   │       │               │   │   │   ├── BoardListResponseDto.class
+│   │       │               │   │   │   ├── BoardPostRequestDto$BoardPostRequestDtoBuilder.class
+│   │       │               │   │   │   └── BoardPostRequestDto.class
+│   │       │               │   │   ├── entity
+│   │       │               │   │   │   ├── Board$BoardBuilder.class
+│   │       │               │   │   │   ├── Board.class
+│   │       │               │   │   │   ├── BoardType.class
+│   │       │               │   │   │   └── QBoard.class
+│   │       │               │   │   ├── mapper
+│   │       │               │   │   │   ├── BoardMapper.class
+│   │       │               │   │   │   └── BoardMapperImpl.class
+│   │       │               │   │   ├── repository
+│   │       │               │   │   │   ├── BoardCustomRepository.class
+│   │       │               │   │   │   └── BoardRepository.class
+│   │       │               │   │   └── service
+│   │       │               │   │       ├── BoardService.class
+│   │       │               │   │       └── BoardServiceImpl.class
+│   │       │               │   ├── chatgpt
+│   │       │               │   │   ├── config
+│   │       │               │   │   │   ├── ChatGptConfig.class
+│   │       │               │   │   │   └── OpenAIRestTemplateConfig.class
+│   │       │               │   │   ├── controller
+│   │       │               │   │   │   └── ChatGptController.class
+│   │       │               │   │   └── dto
+│   │       │               │   │       ├── ChatGptRequestDto$Message.class
+│   │       │               │   │       ├── ChatGptRequestDto.class
+│   │       │               │   │       ├── ChatGptResponseDto$Choice.class
+│   │       │               │   │       ├── ChatGptResponseDto$Usage.class
+│   │       │               │   │       ├── ChatGptResponseDto.class
+│   │       │               │   │       └── QuestionRequestDto.class
+│   │       │               │   ├── main
+│   │       │               │   │   └── MainController.class
+│   │       │               │   ├── member
+│   │       │               │   │   ├── controller
+│   │       │               │   │   │   └── MemberController.class
+│   │       │               │   │   ├── dto
+│   │       │               │   │   │   ├── MemberLoginRequestDto$MemberLoginRequestDtoBuilder.class
+│   │       │               │   │   │   ├── MemberLoginRequestDto.class
+│   │       │               │   │   │   ├── MemberPostRequestDto$MemberPostRequestDtoBuilder.class
+│   │       │               │   │   │   ├── MemberPostRequestDto.class
+│   │       │               │   │   │   ├── MemberResponseDto$AfterLoginMemberDto$AfterLoginMemberDtoBuilder.class
+│   │       │               │   │   │   ├── MemberResponseDto$AfterLoginMemberDto.class
+│   │       │               │   │   │   ├── MemberResponseDto$BoardWriterDto$BoardWriterDtoBuilder.class
+│   │       │               │   │   │   ├── MemberResponseDto$BoardWriterDto.class
+│   │       │               │   │   │   └── MemberResponseDto.class
+│   │       │               │   │   ├── entity
+│   │       │               │   │   │   ├── Gender.class
+│   │       │               │   │   │   ├── Member$MemberBuilder.class
+│   │       │               │   │   │   ├── Member.class
+│   │       │               │   │   │   ├── MemberPlatform.class
+│   │       │               │   │   │   ├── MemberStatus.class
+│   │       │               │   │   │   ├── QMember.class
+│   │       │               │   │   │   └── Role.class
+│   │       │               │   │   ├── mapper
+│   │       │               │   │   │   ├── MemberMapper.class
+│   │       │               │   │   │   └── MemberMapperImpl.class
+│   │       │               │   │   ├── repository
+│   │       │               │   │   │   └── MemberRepository.class
+│   │       │               │   │   └── service
+│   │       │               │   │       ├── MemberService.class
+│   │       │               │   │       └── MemberServiceImpl.class
+│   │       │               │   ├── plan
+│   │       │               │   │   ├── controller
+│   │       │               │   │   │   └── PlanController.class
+│   │       │               │   │   ├── dto
+│   │       │               │   │   │   ├── BookInfoDto$BookInfoDtoBuilder.class
+│   │       │               │   │   │   ├── BookInfoDto.class
+│   │       │               │   │   │   ├── BooksListSearchResponseDto$Item$SubInfo.class
+│   │       │               │   │   │   ├── BooksListSearchResponseDto$Item.class
+│   │       │               │   │   │   ├── BooksListSearchResponseDto.class
+│   │       │               │   │   │   ├── MyPlanDetailResponseDto$MyPlanDetailResponseDtoBuilder.class
+│   │       │               │   │   │   ├── MyPlanDetailResponseDto.class
+│   │       │               │   │   │   ├── MyPlanListResponseDto$MyPlanListResponseDtoBuilder.class
+│   │       │               │   │   │   ├── MyPlanListResponseDto.class
+│   │       │               │   │   │   ├── MyPlanPostRequestDto$MyPlanPostRequestDtoBuilder.class
+│   │       │               │   │   │   ├── MyPlanPostRequestDto.class
+│   │       │               │   │   │   ├── MyPlanStatisticDetailResponseDto$MyPlanStatisticDetailResponseDtoBuilder.class
+│   │       │               │   │   │   ├── MyPlanStatisticDetailResponseDto.class
+│   │       │               │   │   │   ├── NewPlanResponseDto$NewPlanResponseDtoBuilder.class
+│   │       │               │   │   │   ├── NewPlanResponseDto.class
+│   │       │               │   │   │   └── PlanPostRequestDto.class
+│   │       │               │   │   ├── entity
+│   │       │               │   │   │   ├── DeadlineType.class
+│   │       │               │   │   │   ├── FrequencyType.class
+│   │       │               │   │   │   ├── Plan$PlanBuilder.class
+│   │       │               │   │   │   ├── Plan.class
+│   │       │               │   │   │   ├── PlanNotMeasurable.class
+│   │       │               │   │   │   ├── PlanStatus.class
+│   │       │               │   │   │   └── QPlan.class
+│   │       │               │   │   ├── mapper
+│   │       │               │   │   │   ├── PlanMapper.class
+│   │       │               │   │   │   └── PlanMapperImpl.class
+│   │       │               │   │   ├── repository
+│   │       │               │   │   │   ├── PlanCustomRepository.class
+│   │       │               │   │   │   ├── PlanCustomRepositoryImpl.class
+│   │       │               │   │   │   └── PlanRepository.class
+│   │       │               │   │   └── service
+│   │       │               │   │       ├── PlanService.class
+│   │       │               │   │       └── PlanServiceImpl.class
+│   │       │               │   ├── scrap
+│   │       │               │   │   └── entity
+│   │       │               │   │       ├── Category$CategoryBuilder.class
+│   │       │               │   │       ├── Category.class
+│   │       │               │   │       ├── QCategory.class
+│   │       │               │   │       ├── QScrap.class
+│   │       │               │   │       ├── Scrap$ScrapBuilder.class
+│   │       │               │   │       └── Scrap.class
+│   │       │               │   └── web
+│   │       │               │       └── controller
+│   │       │               │           └── WebController.class
+│   │       │               ├── global
+│   │       │               │   ├── audit
+│   │       │               │   │   ├── BaseTimeEntity.class
+│   │       │               │   │   └── QBaseTimeEntity.class
+│   │       │               │   ├── configuration
+│   │       │               │   │   ├── JpaAuditingConfiguration.class
+│   │       │               │   │   └── QuerydslConfig.class
+│   │       │               │   ├── exception
+│   │       │               │   │   ├── BusinessLogicException.class
+│   │       │               │   │   └── ExceptionCode.class
+│   │       │               │   └── utils
+│   │       │               │       ├── Calendar.class
+│   │       │               │       ├── CustomBeanUtils.class
+│   │       │               │       ├── GsonUtils$LocalDateAdapter.class
+│   │       │               │       ├── GsonUtils$LocalDateTimeAdapter.class
+│   │       │               │       ├── GsonUtils$LocalTimeAdapter.class
+│   │       │               │       ├── GsonUtils.class
+│   │       │               │       ├── PlanStatisticUtils.class
+│   │       │               │       ├── PrintLineUtils.class
+│   │       │               │       └── calculator
+│   │       │               │           ├── Calculator$1.class
+│   │       │               │           ├── Calculator.class
+│   │       │               │           └── CalculatorUtils.class
+│   │       │               └── ideation
+│   │       │                   ├── Main.class
+│   │       │                   └── RequestApp.class
+│   │       └── test
+│   ├── generated
+│   │   └── sources
+│   │       └── headers
+│   │           └── java
+│   │               ├── main
+│   │               └── test
+│   ├── libs
+│   │   └── key-project.war
+│   ├── resolvedMainClassName
+│   ├── resources
+│   │   └── main
+│   │       ├── application-local.yml
+│   │       ├── application.yml
+│   │       └── db
+│   │           └── data.sql
+│   └── tmp
+│       ├── compileJava
+│       │   └── previous-compilation-data.bin
+│       ├── compileTestJava
+│       │   └── previous-compilation-data.bin
+│       └── war
+│           └── MANIFEST.MF
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── key-project.txt
+├── scripts
+│   └── deploy.sh
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── generated
+    │   │   └── org
+    │   │       └── knou
+    │   │           └── keyproject
+    │   │               ├── domain
+    │   │               │   ├── actiondate
+    │   │               │   │   ├── entity
+    │   │               │   │   │   └── QActionDate.java
+    │   │               │   │   └── mapper
+    │   │               │   │       └── ActionDateMapperImpl.java
+    │   │               │   ├── board
+    │   │               │   │   ├── entity
+    │   │               │   │   │   └── QBoard.java
+    │   │               │   │   └── mapper
+    │   │               │   │       └── BoardMapperImpl.java
+    │   │               │   ├── member
+    │   │               │   │   ├── entity
+    │   │               │   │   │   └── QMember.java
+    │   │               │   │   └── mapper
+    │   │               │   │       └── MemberMapperImpl.java
+    │   │               │   ├── plan
+    │   │               │   │   ├── entity
+    │   │               │   │   │   └── QPlan.java
+    │   │               │   │   └── mapper
+    │   │               │   │       └── PlanMapperImpl.java
+    │   │               │   └── scrap
+    │   │               │       └── entity
+    │   │               │           ├── QCategory.java
+    │   │               │           └── QScrap.java
+    │   │               └── global
+    │   │                   └── audit
+    │   │                       └── QBaseTimeEntity.java
+    │   ├── java
+    │   │   └── org
+    │   │       └── knou
+    │   │           └── keyproject
+    │   │               ├── KeyProjectApplication.java
+    │   │               ├── domain
+    │   │               │   ├── actiondate
+    │   │               │   │   ├── controller
+    │   │               │   │   │   └── ActionDateController.java
+    │   │               │   │   ├── dto
+    │   │               │   │   │   ├── ActionDatePostRequestDto.java
+    │   │               │   │   │   └── ActionDateResponseDto.java
+    │   │               │   │   ├── entity
+    │   │               │   │   │   ├── Action.java
+    │   │               │   │   │   ├── ActionDate.java
+    │   │               │   │   │   └── DateType.java
+    │   │               │   │   ├── mapper
+    │   │               │   │   │   └── ActionDateMapper.java
+    │   │               │   │   ├── repository
+    │   │               │   │   │   ├── ActionDateCustomRepository.java
+    │   │               │   │   │   ├── ActionDateCustomRepositoryImpl.java
+    │   │               │   │   │   └── ActionDateRepository.java
+    │   │               │   │   └── service
+    │   │               │   │       ├── ActionDateService.java
+    │   │               │   │       └── ActionDateServiceImpl.java
+    │   │               │   ├── board
+    │   │               │   │   ├── controller
+    │   │               │   │   │   └── BoardController.java
+    │   │               │   │   ├── dto
+    │   │               │   │   │   ├── BoardDetailResponseDto.java
+    │   │               │   │   │   ├── BoardListResponseDto.java
+    │   │               │   │   │   └── BoardPostRequestDto.java
+    │   │               │   │   ├── entity
+    │   │               │   │   │   ├── Board.java
+    │   │               │   │   │   └── BoardType.java
+    │   │               │   │   ├── mapper
+    │   │               │   │   │   └── BoardMapper.java
+    │   │               │   │   ├── repository
+    │   │               │   │   │   ├── BoardCustomRepository.java
+    │   │               │   │   │   ├── BoardCustomRepositoryImpl.java
+    │   │               │   │   │   └── BoardRepository.java
+    │   │               │   │   └── service
+    │   │               │   │       ├── BoardService.java
+    │   │               │   │       └── BoardServiceImpl.java
+    │   │               │   ├── chatgpt
+    │   │               │   │   ├── config
+    │   │               │   │   │   ├── ChatGptConfig.java
+    │   │               │   │   │   └── OpenAIRestTemplateConfig.java
+    │   │               │   │   ├── controller
+    │   │               │   │   │   └── ChatGptController.java
+    │   │               │   │   ├── dto
+    │   │               │   │   │   ├── ChatGptRequestDto.java
+    │   │               │   │   │   ├── ChatGptResponseDto.java
+    │   │               │   │   │   └── QuestionRequestDto.java
+    │   │               │   │   └── service
+    │   │               │   │       └── ChatGptService.java
+    │   │               │   ├── main
+    │   │               │   │   └── MainController.java
+    │   │               │   ├── member
+    │   │               │   │   ├── controller
+    │   │               │   │   │   └── MemberController.java
+    │   │               │   │   ├── dto
+    │   │               │   │   │   ├── MemberLoginRequestDto.java
+    │   │               │   │   │   ├── MemberPostRequestDto.java
+    │   │               │   │   │   └── MemberResponseDto.java
+    │   │               │   │   ├── entity
+    │   │               │   │   │   ├── Gender.java
+    │   │               │   │   │   ├── Member.java
+    │   │               │   │   │   ├── MemberPlatform.java
+    │   │               │   │   │   ├── MemberStatus.java
+    │   │               │   │   │   └── Role.java
+    │   │               │   │   ├── mapper
+    │   │               │   │   │   └── MemberMapper.java
+    │   │               │   │   ├── repository
+    │   │               │   │   │   └── MemberRepository.java
+    │   │               │   │   └── service
+    │   │               │   │       ├── MemberService.java
+    │   │               │   │       └── MemberServiceImpl.java
+    │   │               │   ├── plan
+    │   │               │   │   ├── controller
+    │   │               │   │   │   └── PlanController.java
+    │   │               │   │   ├── dto
+    │   │               │   │   │   ├── BookInfoDto.java
+    │   │               │   │   │   ├── BooksListSearchResponseDto.java
+    │   │               │   │   │   ├── MyPlanDetailResponseDto.java
+    │   │               │   │   │   ├── MyPlanListResponseDto.java
+    │   │               │   │   │   ├── MyPlanPostRequestDto.java
+    │   │               │   │   │   ├── MyPlanStatisticDetailResponseDto.java
+    │   │               │   │   │   ├── NewPlanResponseDto.java
+    │   │               │   │   │   └── PlanPostRequestDto.java
+    │   │               │   │   ├── entity
+    │   │               │   │   │   ├── DeadlineType.java
+    │   │               │   │   │   ├── FrequencyType.java
+    │   │               │   │   │   ├── Plan.java
+    │   │               │   │   │   ├── PlanNotMeasurable.java
+    │   │               │   │   │   └── PlanStatus.java
+    │   │               │   │   ├── mapper
+    │   │               │   │   │   └── PlanMapper.java
+    │   │               │   │   ├── repository
+    │   │               │   │   │   ├── PlanCustomRepository.java
+    │   │               │   │   │   ├── PlanCustomRepositoryImpl.java
+    │   │               │   │   │   └── PlanRepository.java
+    │   │               │   │   └── service
+    │   │               │   │       ├── PlanService.java
+    │   │               │   │       └── PlanServiceImpl.java
+    │   │               │   ├── scrap
+    │   │               │   │   └── entity
+    │   │               │   │       ├── Category.java
+    │   │               │   │       └── Scrap.java
+    │   │               │   └── web
+    │   │               │       └── controller
+    │   │               │           └── WebController.java
+    │   │               ├── global
+    │   │               │   ├── audit
+    │   │               │   │   └── BaseTimeEntity.java
+    │   │               │   ├── configuration
+    │   │               │   │   ├── JasyptConfig.java
+    │   │               │   │   ├── JpaAuditingConfiguration.java
+    │   │               │   │   ├── JspConfig.java
+    │   │               │   │   └── QuerydslConfig.java
+    │   │               │   ├── exception
+    │   │               │   │   ├── BusinessLogicException.java
+    │   │               │   │   └── ExceptionCode.java
+    │   │               │   └── utils
+    │   │               │       ├── Calendar.java
+    │   │               │       ├── CustomBeanUtils.java
+    │   │               │       ├── GsonUtils.java
+    │   │               │       ├── PlanStatisticUtils.java
+    │   │               │       ├── PrintLineUtils.java
+    │   │               │       └── calculator
+    │   │               │           ├── Calculator.java
+    │   │               │           └── CalculatorUtils.java
+    │   │               └── ideation
+    │   │                   ├── Main.java
+    │   │                   └── RequestApp.java
+    │   ├── resources
+    │   │   ├── application-local.yml
+    │   │   ├── application.yml
+    │   │   └── db
+    │   │       └── data.sql
+    │   └── webapp
+    │       ├── WEB-INF
+    │       │   └── views
+    │       │       ├── actiondate
+    │       │       │   ├── actionDetailRecordForm.jsp
+    │       │       │   ├── actionDetailUpdateForm.jsp
+    │       │       │   └── actionDetailView.jsp
+    │       │       ├── board
+    │       │       │   ├── boardDetailView.jsp
+    │       │       │   ├── boardEnrollForm.jsp
+    │       │       │   ├── boardListView.jsp
+    │       │       │   └── boardUpdatePage.jsp
+    │       │       ├── common
+    │       │       │   ├── errorPage.jsp
+    │       │       │   ├── footer.jsp
+    │       │       │   ├── header.jsp
+    │       │       │   ├── page.jsp
+    │       │       │   └── testPlanList.jsp
+    │       │       ├── index.jsp
+    │       │       ├── indexDraft.jsp
+    │       │       ├── main
+    │       │       │   └── main.jsp
+    │       │       ├── member
+    │       │       │   ├── findIdPw.jsp
+    │       │       │   ├── login.jsp
+    │       │       │   ├── loginDraft.jsp
+    │       │       │   ├── memberEnrollForm.jsp
+    │       │       │   └── myPage.jsp
+    │       │       └── plan
+    │       │           ├── calculatorNewEnrollForm.jsp
+    │       │           ├── calculatorNewEnrollFormForBook.jsp
+    │       │           ├── calculatorNewEnrollFormWithChatGpt.jsp
+    │       │           ├── myPlanDetailView.jsp
+    │       │           ├── myPlanListView.jsp
+    │       │           ├── newPlanByChatGptResultView.jsp
+    │       │           └── newPlanResultView.jsp
+    │       └── resources
+    │           ├── css
+    │           │   ├── actiondate
+    │           │   │   ├── actionDetailRecordForm.css
+    │           │   │   ├── actionDetailUpdateForm.css
+    │           │   │   └── actionDetailView.css
+    │           │   ├── board
+    │           │   │   ├── boardDetailView.css
+    │           │   │   ├── boardEnrollForm.css
+    │           │   │   ├── boardListView.css
+    │           │   │   └── boardUpdatePage.css
+    │           │   ├── common
+    │           │   │   ├── footer.css
+    │           │   │   ├── header.css
+    │           │   │   ├── main.css
+    │           │   │   └── style.css
+    │           │   ├── member
+    │           │   │   ├── login.css
+    │           │   │   └── memberEnrollForm.css
+    │           │   └── plan
+    │           │       ├── calculatorNewEnrollForm.css
+    │           │       ├── calculatorNewEnrollFormForBook.css
+    │           │       ├── calculatorNewEnrollFormWithChatGpt.css
+    │           │       ├── myPlanDetailView.css
+    │           │       ├── myPlanListView.css
+    │           │       ├── newPlanByChatGptResultView.css
+    │           │       └── newPlanResultView.css
+    │           └── js
+    │               ├── board
+    │               │   └── boardListView.js
+    │               ├── member
+    │               │   └── memberEnrollForm.js
+    │               ├── plan
+    │               │   ├── calculatorNewEnrollForm.js
+    │               │   ├── calculatorNewEnrollFormForBook.js
+    │               │   ├── calculatorNewEnrollFormWithChatGpt.js
+    │               │   ├── myPlanDetailView.js
+    │               │   ├── myPlanListView.js
+    │               │   ├── newPlanByChatGptResultView.js
+    │               │   └── newPlanResultView.js
+    │               └── script.js
+    └── test
+        └── java
+            └── org
+                └── knou
+                    └── keyproject
+                        ├── KeyProjectApplicationTests.java
+                        ├── common
+                        │   └── JasyptTest.java
+                        ├── domain
+                        │   └── plan
+                        │       └── slicetest
+                        │           ├── PlanControllerTest.java
+                        │           └── PlanRepositoryTest.java
+                        └── web
+                            └── IndexControllerTest.java
+
+175 directories, 301 files
