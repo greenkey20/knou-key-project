@@ -8,27 +8,27 @@ TODAY=${date "+%Y%m%d"}
 
 echo "> 현재 시간: $(date)" >> $REPOSITORY/$PROJECT_NAME/deploy.log
 
-cd $REPOSITORY/$PROJECT_NAME
+#cd $REPOSITORY/$PROJECT_NAME
 
-echo "> git pull origin devBack" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-git pull origin devBack
-
-echo "> application.yml 파일 추가" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-cd $REPOSITORY/$PROJECT_NAME/src/main
-mkdir "resources"
-touch "application-local.yml"
-
-echo "> gradle build" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-./gradlew build
-
-echo "> 새로운 war 파일의 이름 변경" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-cp $REPOSITORY/$PROJECT_NAME/build/libs/$WAR_NAME-0.0.1-SNAPSHOT-plain.war $REPOSITORY/$PROJECT_NAME/build/libs/$WAR_NAME.war
-
-echo "> 기존 war 백업" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-mv $TOMCAT/webapps/$WAR_NAME.war ~/backup/$WAR_NAME_${TODAY}.war
-
-echo "> 기존 war 폴더 삭제" >> $REPOSITORY/$PROJECT_NAME/deploy.log
-rm -rf $TOMCAT/webapps/$WAR_NAME
+#echo "> git pull origin devBack" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#git pull origin devBack
+#
+#echo "> application.yml 파일 추가" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#cd $REPOSITORY/$PROJECT_NAME/src/main
+#mkdir "resources"
+#touch "application-local.yml"
+#
+#echo "> gradle build" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#./gradlew build
+#
+#echo "> 새로운 war 파일의 이름 변경" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#cp $REPOSITORY/$PROJECT_NAME/build/libs/$WAR_NAME-0.0.1-SNAPSHOT-plain.war $REPOSITORY/$PROJECT_NAME/build/libs/$WAR_NAME.war
+#
+#echo "> 기존 war 백업" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#mv $TOMCAT/webapps/$WAR_NAME.war ~/backup/$WAR_NAME_${TODAY}.war
+#
+#echo "> 기존 war 폴더 삭제" >> $REPOSITORY/$PROJECT_NAME/deploy.log
+#rm -rf $TOMCAT/webapps/$WAR_NAME
 
 echo "> 새로운 war 파일을 배포 위치로 복사" >> $REPOSITORY/$PROJECT_NAME/deploy.log
 cp $REPOSITORY/$PROJECT_NAME/build/libs/$WAR_NAME.war $TOMCAT/webapps
