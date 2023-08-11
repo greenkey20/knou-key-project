@@ -39,7 +39,7 @@ jobs:
       - name: Make application-local yml file
         run: touch ./src/main/resources/application-local.yml
       - name: Write contents into application-local yml file
-        run: echo ${{ secrets.APPLICATION_LOCAL }} > ./src/main/resources/application-local.yml
+        run: echo "${{ secrets.APPLICATION_LOCAL }}" > ./src/main/resources/application-local.yml
       - name: Print contents of application-local yml file
         run: cat ./src/main/resources/application-local.yml
       - uses: actions/upload-artifact@v3
