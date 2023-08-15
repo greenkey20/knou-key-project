@@ -73,6 +73,9 @@ dependencies {
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
 //    implementation group: 'io.awspring.cloud', name: 'spring-cloud-aws-starter', version: '3.0.0-M1'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+
+    // 2023.8.16(수) 3h session 저장소 = Spring Security 챕터를 진행한 경우에만(https://jojoldu.tistory.com/539)
+//    implementation('org.springframework.session:spring-session-jdbc')
 }
 
 tasks.named('test') {

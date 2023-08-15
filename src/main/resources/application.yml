@@ -26,6 +26,8 @@ spring:
       suffix: .jsp
   thymeleaf:
     cache: false
+#  session:
+#    store-type: jdbc
 logging:
   level:
     org:
