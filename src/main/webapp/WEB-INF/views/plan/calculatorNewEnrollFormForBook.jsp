@@ -40,12 +40,13 @@
                 </table>
                 <br>
 
+                <div id="book-info-src-area" align="right"></div>
                 <div id="select-book-btn-area" align="center"></div>
             </div>
         </div>
         <br>
 
-        <table>
+        <table class="table-bordered">
             <colgroup>
                 <col style="width: 30%">
                 <col style="width: 70%">

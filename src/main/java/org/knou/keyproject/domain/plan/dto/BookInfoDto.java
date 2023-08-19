@@ -18,6 +18,9 @@ public class BookInfoDto {
     private String publisher; // 출판사명/
     private Integer numOfPages; // 페이지 수/
 
+    // 2023.8.20(일) 3h 알라딘 API 추가 정보 받기 위해 추가
+    private String link; // 상품 상세 정보 페이지 URL
+
     @Override
     public String toString() {
         return "BookInfoDto{" +

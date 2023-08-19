@@ -45,15 +45,21 @@ function searchBookTitle() {
                         + "<td>" + item.publisher + ", " + item.pubDate + "</td>"
                         + "</tr>";
                     tbody += "<tr>"
-                        + "<td><span class='smallerLetters'>ISBN : " + item.isbn13 + "</span></td>"
+                        + "<td>"
+                        + "<span class='smallerLetters'>ISBN : " + item.isbn13 + "</span>"
+                        + "<span class='smallerLetters bookSrc'><a href='" + item.link + "' target='_blank'> → 자세히 보기</a></span>"
+                        + "</td>"
                         + "</tr>";
                 });
             }
 
             $("#book-list").html(tbody);
 
-            let divbody = "<button type='button' id='select-book-btn' onclick='confirmBook();'>선택</button>";
-            $("#select-book-btn-area").html(divbody);
+            let srcDivBody = "도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)<br>";
+            $("#book-info-src-area").html(srcDivBody);
+
+            let btnDivBody = "<button type='button' id='select-book-btn' onclick='confirmBook();'>선택</button>";
+            $("#select-book-btn-area").html(btnDivBody);
         },
         error: function () {
             console.log("키워드로 책 검색 AJAX 실패");
