@@ -67,6 +67,9 @@ public class PlanServiceImpl implements PlanService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
+    @Value("${aladin.api.key}")
+    private String bookApiKey;
+
     @Override
     @Transactional
     public Plan saveNewPlan(PlanPostRequestDto requestDto) {
@@ -340,7 +343,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<BookInfoDto> searchBookTitle(String bookSearchKeyword) {
         // 알라딘 도서 검색 open API 호출 -> json data 결과 얻기 -> json data 결과 얻어 item에 해당하는 값들을 가져옴
-        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbgreenkey201608001&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=20&start=1&SearchTarget=Book&output=js&Version=20131101";
+        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + bookApiKey + "&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=20&start=1&SearchTarget=Book&output=js&Version=20131101";
         /* 2023.8.7(월) 페이지네이션에 대한 나의 생각
         1. 해당 keyword 검색 결과 총 개수가 몇 개인지 파악
         2. 나의 페이지네이션 변수들에 맞게 잘라서, 1페이지씩의 분량을 만듦
@@ -367,6 +370,7 @@ public class PlanServiceImpl implements PlanService {
                         .isbn13(item.getIsbn13())
                         .cover(item.getCover())
                         .publisher(item.getPublisher())
+                        .link(item.getLink())
                         .numOfPages(numOfPages)
                         .build();
 
@@ -562,7 +566,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     private Integer getNumOfPages(String isbn) {
-        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001&itemIdType=ISBN&ItemId=" + isbn + "&output=js&Version=20131101";
+        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN&ItemId=" + isbn + "&output=js&Version=20131101";
         RestTemplate restTemplate = new RestTemplate();
         BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
 

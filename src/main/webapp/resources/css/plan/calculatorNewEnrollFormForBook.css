@@ -38,8 +38,16 @@ div {
     background-color: rgb(182, 238, 86);
 }
 
+.table-bordered {
+    border: 1px solid darkgreen;
+}
+
 .smallerLetters {
     font-size: small;
+}
+
+.bookSrc {
+    font-style: italic;
 }
 
 .greenBtn {
