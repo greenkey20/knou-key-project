@@ -6,7 +6,7 @@ function enterKey() {
 }
 
 // 2023.8.1(화) 0h40
-function searchBookTitle() {
+function searchBookTitle(currentPage) {
     let $keyword = $("#book-search-input").val();
     // $("#books-table").show();
     console.log("keyword 변수의 값 = " + $keyword);
@@ -15,7 +15,8 @@ function searchBookTitle() {
         url: "bookTitleSearch.pl",
         dataType: 'json',
         data: {
-            bookSearchKeyword: $keyword
+            bookSearchKeyword: $keyword,
+            cpage: currentPage
         },
         success: function (resultMap) {
             console.log(resultMap);
@@ -67,18 +68,18 @@ function searchBookTitle() {
             if ($pageInfo.currentPage == 1) {
                 pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>이전 페이지</a></li>";
             } else {
-                pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?bookSearchKeyword=" + $keyword + "&cpage=" + ($pageInfo.currentPage - 1) + "'>이전 페이지</a></li>";
+                pagingBar += "<li class='page-item'><a class='page-link' href='javascript:void(0)' onclick='searchBookTitle(" + (currentPage - 1) + ");'>이전 페이지</a></li>";
             }
 
-            console.log("왜 '다음 페이지' 버튼 안 생기지? bookInfoDtos 길이 = " + $bookInfoDtos.length + ", boardLimit = " + $pageInfo.boardLimit);
+            // console.log("왜 '다음 페이지' 버튼 안 생기지? bookInfoDtos 길이 = " + $bookInfoDtos.length + ", boardLimit = " + $pageInfo.boardLimit);
             if ($bookInfoDtos.length === $pageInfo.boardLimit) { // '현재 조회된 결과 갯수 == boardLimit'인 경우에도 마지막 페이지일 수는 있긴 함
-                console.log("if문 안에는 들어오나?"); // 2023.8.20(일) 7h 현재 들어옴
-                pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?bookSearchKeyword=" + $keyword + "&cpage=" + ($pageInfo.currentPage + 1) + "'>다음 페이지</a></li></ul>";
+                // console.log("if문 안에는 들어오나?"); // 2023.8.20(일) 7h 현재 들어옴
+                pagingBar += "<li class='page-item'><a class='page-link' href='javascript:void(0);' onclick='searchBookTitle(" + (currentPage + 1) + ");'>다음 페이지</a></li></ul>";
             } else { // 현재 조회된 결과 갯수가 boardLimit보다 작다면, 이건 해당 키워드 검색 결과의 마지막 페이지임
-                console.log("또는 else문 안에는 들어오나?")
-                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>다음 페이지지️</a></li></ul>";
+                // console.log("또는 else문 안에는 들어오나?")
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>다음 페이지️</a></li></ul>";
             }
-            console.log("'다음 페이지' 버튼 만드는 코드를 그냥 넘어가나?")
+            // console.log("'다음 페이지' 버튼 만드는 코드를 그냥 넘어가나?")
             // 2023.8.20(일) 7h20 현재 '다음 페이지' 버튼 누르면 JSON 결과 데이터만 출력되는데.. 뭔가 순환/재귀 호출인 것 같은데.. 어떻게 이 success 처리 내용이 '다음 페이지'에서도 적용되게 할 수 있을까?
 
             /*
