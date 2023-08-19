@@ -30,17 +30,24 @@
             <!--2023.8.1(화) 0h5 구현 접근 방법 변경-->
             <div class="searchBookArea">
                 <input type="text" id="book-search-input" name="bookSearchKeyword" placeholder="제목이나 저자명을 입력해 주세요">
-                <button type="button" onclick="searchBookTitle();">검색</button>
+                <button type="button" onclick="searchBookTitle(1);">검색</button>
             </div>
             <div id="auto-complete">
                 <table class="table" id="books-table">
                     <tbody id="book-list">
-
+                        <!--Ajax 통신 결과 책 검색 목록 표 body 여기에 만듦-->
                     </tbody>
                 </table>
                 <br>
 
+                <div id="search-book-paging" align="center">
+                    <!--Ajax 통신 결과 페이징 바 여기에 만듦-->
+                </div>
+                <br>
+
                 <div id="book-info-src-area" align="right"></div>
+                <br>
+
                 <div id="select-book-btn-area" align="center"></div>
             </div>
         </div>

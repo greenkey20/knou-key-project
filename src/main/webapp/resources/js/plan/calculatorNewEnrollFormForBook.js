@@ -6,7 +6,7 @@ function enterKey() {
 }
 
 // 2023.8.1(화) 0h40
-function searchBookTitle() {
+function searchBookTitle(currentPage) {
     let $keyword = $("#book-search-input").val();
     // $("#books-table").show();
     console.log("keyword 변수의 값 = " + $keyword);
@@ -15,18 +15,25 @@ function searchBookTitle() {
         url: "bookTitleSearch.pl",
         dataType: 'json',
         data: {
-            bookSearchKeyword: $keyword
+            bookSearchKeyword: $keyword,
+            cpage: currentPage
         },
-        success: function (result) {
-            console.log(result);
+        success: function (resultMap) {
+            console.log(resultMap);
+
+            let $bookInfoDtos = resultMap.bookInfoDtos;
+            console.log($bookInfoDtos)
+
+            let $pageInfo = resultMap.pageInfo;
+            console.log($pageInfo);
 
             // 2023.7.31(월) 22h5 도전!
             let tbody = "";
 
-            if (!result.length) { // 검색 결과가 없는 경우
+            if (!$bookInfoDtos.length) { // 검색 결과가 없는 경우
                 tbody = "<tr><td colspan='2'>검색 결과가 없습니다</td></tr>";
             } else {
-                $.each(result, function (index, item) {
+                $.each($bookInfoDtos, function (index, item) {
                     console.log("책 목록 표 만들 때 index = " + index)
 
                     tbody += "<tr>"
@@ -55,7 +62,48 @@ function searchBookTitle() {
 
             $("#book-list").html(tbody);
 
-            let srcDivBody = "도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)<br>";
+            // 페이징 바
+            let pagingBar = "<ul class='pagination justify-content-center'>";
+
+            if ($pageInfo.currentPage == 1) {
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>이전 페이지</a></li>";
+            } else {
+                pagingBar += "<li class='page-item'><a class='page-link' href='javascript:void(0)' onclick='searchBookTitle(" + (currentPage - 1) + ");'>이전 페이지</a></li>";
+            }
+
+            // console.log("왜 '다음 페이지' 버튼 안 생기지? bookInfoDtos 길이 = " + $bookInfoDtos.length + ", boardLimit = " + $pageInfo.boardLimit);
+            if ($bookInfoDtos.length === $pageInfo.boardLimit) { // '현재 조회된 결과 갯수 == boardLimit'인 경우에도 마지막 페이지일 수는 있긴 함
+                // console.log("if문 안에는 들어오나?"); // 2023.8.20(일) 7h 현재 들어옴
+                pagingBar += "<li class='page-item'><a class='page-link' href='javascript:void(0);' onclick='searchBookTitle(" + (currentPage + 1) + ");'>다음 페이지</a></li></ul>";
+            } else { // 현재 조회된 결과 갯수가 boardLimit보다 작다면, 이건 해당 키워드 검색 결과의 마지막 페이지임
+                // console.log("또는 else문 안에는 들어오나?")
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>다음 페이지️</a></li></ul>";
+            }
+            // console.log("'다음 페이지' 버튼 만드는 코드를 그냥 넘어가나?")
+            // 2023.8.20(일) 7h20 현재 '다음 페이지' 버튼 누르면 JSON 결과 데이터만 출력되는데.. 뭔가 순환/재귀 호출인 것 같은데.. 어떻게 이 success 처리 내용이 '다음 페이지'에서도 적용되게 할 수 있을까?
+
+            /*
+            for (let i = $pageInfo.startPage; i <= $pageInfo.endPage; i++) {
+                if (i != $pageInfo.currentPage) {
+                    pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + i + "'>" + i + "</a></li>";
+                } else {
+                    pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>" + i + "</a></li>";
+                }
+            }
+
+            if ($pageInfo.currentPage == $pageInfo.maxPage) {
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>➡️</a></li>"
+                    + "<li class='page-item disabled'><a class='page-link' href='#'>끝</a></li>";
+            } else {
+                pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + ($pageInfo.currentPage + 1) + "'>➡️️</a></li>"
+                    + "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + $pageInfo.maxPage + "'>마지막</a></li>";
+            }
+             */
+
+            $("#search-book-paging").html(pagingBar);
+
+
+            let srcDivBody = "도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)";
             $("#book-info-src-area").html(srcDivBody);
 
             let btnDivBody = "<button type='button' id='select-book-btn' onclick='confirmBook();'>선택</button>";

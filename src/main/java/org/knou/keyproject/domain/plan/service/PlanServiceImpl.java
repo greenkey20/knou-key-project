@@ -21,6 +21,8 @@ import org.knou.keyproject.global.utils.Calendar;
 import org.knou.keyproject.global.utils.CustomBeanUtils;
 import org.knou.keyproject.global.utils.PlanStatisticUtils;
 import org.knou.keyproject.global.utils.calculator.Calculator;
+import org.knou.keyproject.global.utils.paging.PageInfo;
+import org.knou.keyproject.global.utils.paging.Pagination;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -35,7 +37,9 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 // 2023.7.23(일) 22h
@@ -69,6 +73,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Value("${aladin.api.key}")
     private String bookApiKey;
+
+    private final int PAGE_LIMIT = 5; // 1페이지당 보여질 페이징 바 수
+    private final int BOARD_LIMIT = 15; // 1페이지당 보여질 게시판 리스트/게시글 수
 
     @Override
     @Transactional
@@ -341,9 +348,9 @@ public class PlanServiceImpl implements PlanService {
 //    public static String listRequestUrl;
 
     @Override
-    public List<BookInfoDto> searchBookTitle(String bookSearchKeyword) {
+    public Map<String, Object> searchBookTitle(String bookSearchKeyword, int currentPage) {
         // 알라딘 도서 검색 open API 호출 -> json data 결과 얻기 -> json data 결과 얻어 item에 해당하는 값들을 가져옴
-        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + bookApiKey + "&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=20&start=1&SearchTarget=Book&output=js&Version=20131101";
+        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + bookApiKey + "&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=" + BOARD_LIMIT + "&start=" + currentPage + "&SearchTarget=Book&output=js&Version=20131101"; // &MaxResults=20&start=1
         /* 2023.8.7(월) 페이지네이션에 대한 나의 생각
         1. 해당 keyword 검색 결과 총 개수가 몇 개인지 파악
         2. 나의 페이지네이션 변수들에 맞게 잘라서, 1페이지씩의 분량을 만듦
@@ -353,33 +360,64 @@ public class PlanServiceImpl implements PlanService {
         RestTemplate restTemplate = new RestTemplate();
         BooksListSearchResponseDto responseDto = restTemplate.getForObject(listRequestUrl, BooksListSearchResponseDto.class, bookSearchKeyword);
 
-        List<BooksListSearchResponseDto.Item> items = responseDto.getItem();
+        List<BooksListSearchResponseDto.Item> items = responseDto.getItem(); // currentPage부터 시작하는 15개 결과 받음
+
+        Map<String, Object> results = new HashMap<>();
+
+        PageInfo pageInfo = Pagination.getPageInfo(items.size(), currentPage, PAGE_LIMIT, BOARD_LIMIT);
+        results.put("pageInfo", pageInfo);
 
         List<BookInfoDto> bookInfoDtos = new ArrayList<>();
 
-        for (BooksListSearchResponseDto.Item item : items) {
-            String isbn = item.getIsbn13();
-            if (isbn.length() == 13) {
-                Integer numOfPages = getNumOfPages(isbn);
+        if (items.size() == 0) { // 조회 결과가 없는 경우
+            results.put("bookInfoDtos", bookInfoDtos);
+        } else {
+            for (BooksListSearchResponseDto.Item item : items) {
+                String isbn = item.getIsbn13();
+                if (isbn.length() == 13) {
+                    Integer numOfPages = getNumOfPages(isbn);
 
-                BookInfoDto bookInfoDto = BookInfoDto.builder()
-                        .title(item.getTitle())
-                        .author(item.getAuthor())
-                        .pubDate(item.getPubDate())
-                        .description(item.getDescription())
-                        .isbn13(item.getIsbn13())
-                        .cover(item.getCover())
-                        .publisher(item.getPublisher())
-                        .link(item.getLink())
-                        .numOfPages(numOfPages)
-                        .build();
+                    BookInfoDto bookInfoDto = BookInfoDto.builder()
+                            .title(item.getTitle())
+                            .author(item.getAuthor())
+                            .pubDate(item.getPubDate())
+                            .description(item.getDescription())
+                            .isbn13(item.getIsbn13())
+                            .cover(item.getCover())
+                            .publisher(item.getPublisher())
+                            .link(item.getLink())
+                            .numOfPages(numOfPages)
+                            .build();
 
 //                log.info("이번에 담기는 item = " + bookInfoDto);
-                bookInfoDtos.add(bookInfoDto);
+                    bookInfoDtos.add(bookInfoDto);
+                }
             }
+
+            results.put("bookInfoDtos", bookInfoDtos);
         }
 
-        return bookInfoDtos;
+        return results;
+    }
+
+    // 2023.8.20(일) 4h20 -> 6h API 구조 다시 보니 필요 없음 <- API 요청 시 시작 페이지와 maxResults를 지정하는데, 이걸 각각 currentPage와 boardLimit과 맞추면 될 듯
+    private Map<String, Object> pageBookSearchResult(List<BooksListSearchResponseDto.Item> items, int currentPage) {
+        PageInfo pageInfo = Pagination.getPageInfo(items.size(), currentPage, PAGE_LIMIT, BOARD_LIMIT);
+        int endRow = pageInfo.getCurrentPage() * pageInfo.getBoardLimit();
+        int startRow = endRow - pageInfo.getBoardLimit() + 1;
+
+        List<BooksListSearchResponseDto.Item> thisPageItems = new ArrayList<>();
+
+        for (int i = startRow; i <= endRow; i++) {
+            BooksListSearchResponseDto.Item item = items.get(i);
+            thisPageItems.add(item);
+        }
+
+        Map<String, Object> results = new HashMap<>();
+        results.put("thisPageItems", thisPageItems);
+        results.put("pageInfo", pageInfo);
+
+        return results;
     }
 
     // 2023.8.2(수) 2h5
