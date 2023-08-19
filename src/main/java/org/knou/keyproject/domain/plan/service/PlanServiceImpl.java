@@ -362,43 +362,45 @@ public class PlanServiceImpl implements PlanService {
 
         List<BooksListSearchResponseDto.Item> items = responseDto.getItem(); // currentPage부터 시작하는 15개 결과 받음
 
-        // 전체 조회 결과 + currentPage 정보를 넘겨 paging 처리 결과를 반환받음
-        Map<String, Object> pagingResults = pageBookSearchResult(items, currentPage);
-        List<BooksListSearchResponseDto.Item> thisPageItems = (List<BooksListSearchResponseDto.Item>) pagingResults.get("thisPageItems");
-        PageInfo pageInfo = (PageInfo) pagingResults.get("pageInfo");
+        Map<String, Object> results = new HashMap<>();
+
+        PageInfo pageInfo = Pagination.getPageInfo(items.size(), currentPage, PAGE_LIMIT, BOARD_LIMIT);
+        results.put("pageInfo", pageInfo);
 
         List<BookInfoDto> bookInfoDtos = new ArrayList<>();
 
-        for (BooksListSearchResponseDto.Item item : thisPageItems) {
-            String isbn = item.getIsbn13();
-            if (isbn.length() == 13) {
-                Integer numOfPages = getNumOfPages(isbn);
+        if (items.size() == 0) { // 조회 결과가 없는 경우
+            results.put("bookInfoDtos", bookInfoDtos);
+        } else {
+            for (BooksListSearchResponseDto.Item item : items) {
+                String isbn = item.getIsbn13();
+                if (isbn.length() == 13) {
+                    Integer numOfPages = getNumOfPages(isbn);
 
-                BookInfoDto bookInfoDto = BookInfoDto.builder()
-                        .title(item.getTitle())
-                        .author(item.getAuthor())
-                        .pubDate(item.getPubDate())
-                        .description(item.getDescription())
-                        .isbn13(item.getIsbn13())
-                        .cover(item.getCover())
-                        .publisher(item.getPublisher())
-                        .link(item.getLink())
-                        .numOfPages(numOfPages)
-                        .build();
+                    BookInfoDto bookInfoDto = BookInfoDto.builder()
+                            .title(item.getTitle())
+                            .author(item.getAuthor())
+                            .pubDate(item.getPubDate())
+                            .description(item.getDescription())
+                            .isbn13(item.getIsbn13())
+                            .cover(item.getCover())
+                            .publisher(item.getPublisher())
+                            .link(item.getLink())
+                            .numOfPages(numOfPages)
+                            .build();
 
 //                log.info("이번에 담기는 item = " + bookInfoDto);
-                bookInfoDtos.add(bookInfoDto);
+                    bookInfoDtos.add(bookInfoDto);
+                }
             }
-        }
 
-        Map<String, Object> results = new HashMap<>();
-        results.put("bookInfoDtos", bookInfoDtos);
-        results.put("pageInfo", pageInfo);
+            results.put("bookInfoDtos", bookInfoDtos);
+        }
 
         return results;
     }
 
-    // 2023.8.20(일) 4h20
+    // 2023.8.20(일) 4h20 -> 6h API 구조 다시 보니 필요 없음 <- API 요청 시 시작 페이지와 maxResults를 지정하는데, 이걸 각각 currentPage와 pageLimit과 맞추면 될 듯
     private Map<String, Object> pageBookSearchResult(List<BooksListSearchResponseDto.Item> items, int currentPage) {
         PageInfo pageInfo = Pagination.getPageInfo(items.size(), currentPage, PAGE_LIMIT, BOARD_LIMIT);
         int endRow = pageInfo.getCurrentPage() * pageInfo.getBoardLimit();

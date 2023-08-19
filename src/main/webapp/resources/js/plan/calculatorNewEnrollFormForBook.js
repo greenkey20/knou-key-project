@@ -17,16 +17,22 @@ function searchBookTitle() {
         data: {
             bookSearchKeyword: $keyword
         },
-        success: function (result) {
-            console.log(result);
+        success: function (resultMap) {
+            console.log(resultMap);
+
+            let $bookInfoDtos = resultMap.bookInfoDtos;
+            console.log($bookInfoDtos)
+
+            let $pageInfo = resultMap.pageInfo;
+            console.log($pageInfo);
 
             // 2023.7.31(월) 22h5 도전!
             let tbody = "";
 
-            if (!result.length) { // 검색 결과가 없는 경우
+            if (!$bookInfoDtos.length) { // 검색 결과가 없는 경우
                 tbody = "<tr><td colspan='2'>검색 결과가 없습니다</td></tr>";
             } else {
-                $.each(result, function (index, item) {
+                $.each($bookInfoDtos, function (index, item) {
                     console.log("책 목록 표 만들 때 index = " + index)
 
                     tbody += "<tr>"
@@ -55,7 +61,38 @@ function searchBookTitle() {
 
             $("#book-list").html(tbody);
 
-            let srcDivBody = "도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)<br>";
+            // 페이징 바
+            let pagingBar = "<ul class='pagination justify-content-center'>";
+            console.log()
+
+            if ($pageInfo.currentPage == 1) {
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>처음</a></li>" // bookTitleSearch.pl?cpage=1
+                    + "<li class='page-item disabled'><a class='page-link' href='#'>⬅️</a></li>";
+            } else {
+                pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl'>처음</a></li>" // bookTitleSearch.pl?cpage=1 = 1페이지로 가는 버튼
+                    + "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + ($pageInfo.currentPage - 1) + "'>⬅️</a></li>"; // 이전 페이지로 가는 버튼
+            }
+
+            for (let i = $pageInfo.startPage; i <= $pageInfo.endPage; i++) {
+                if (i != $pageInfo.currentPage) {
+                    pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + i + "'>" + i + "</a></li>";
+                } else {
+                    pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>" + i + "</a></li>";
+                }
+            }
+
+            if ($pageInfo.currentPage == $pageInfo.maxPage) {
+                pagingBar += "<li class='page-item disabled'><a class='page-link' href='#'>➡️</a></li>"
+                    + "<li class='page-item disabled'><a class='page-link' href='#'>끝</a></li>";
+            } else {
+                pagingBar += "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + ($pageInfo.currentPage + 1) + "'>➡️️</a></li>"
+                    + "<li class='page-item'><a class='page-link' href='bookTitleSearch.pl?cpage='" + $pageInfo.maxPage + "'>마지막</a></li>";
+            }
+
+            $("#search-book-paging").html(pagingBar);
+
+
+            let srcDivBody = "도서 DB 제공 : 알라딘 인터넷서점(www.aladin.co.kr)";
             $("#book-info-src-area").html(srcDivBody);
 
             let btnDivBody = "<button type='button' id='select-book-btn' onclick='confirmBook();'>선택</button>";

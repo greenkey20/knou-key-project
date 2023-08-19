@@ -16,6 +16,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.domain.plan.service.PlanService;
+import org.knou.keyproject.global.utils.paging.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -245,11 +248,20 @@ public class PlanController {
     // 2023.7.31(월) 18h45
     @ResponseBody
     @RequestMapping("bookTitleSearch.pl")
-    public String ajaxSearchBookTitle(String bookSearchKeyword, Model m) {
+    public Map<String, Object> ajaxSearchBookTitle(String bookSearchKeyword,
+                                      @RequestParam(value = "cpage", defaultValue = "1", required = false) int currentPage,
+                                      Model m) {
         log.info("컨트롤러 메서드 searchBookTitle()에 들어오는 검색 키워드 = " + bookSearchKeyword);
-        List<BookInfoDto> responseDtos = planService.searchBookTitle(bookSearchKeyword);
+        Map<String, Object> searchResults = planService.searchBookTitle(bookSearchKeyword, currentPage);
+        List<BookInfoDto> bookInfoDtos = (List<BookInfoDto>) searchResults.get("bookInfoDtos");
+        PageInfo pageInfo = (PageInfo) searchResults.get("pageInfo");
 //        m.addAttribute("bookSearchResults", responseDtos);
-        return new Gson().toJson(responseDtos);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("bookInfoDtos", bookInfoDtos);
+        resultMap.put("pageInfo", pageInfo);
+
+        return resultMap;
     }
 
     // 2023.8.5(토) 3h30

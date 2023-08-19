@@ -35,12 +35,19 @@
             <div id="auto-complete">
                 <table class="table" id="books-table">
                     <tbody id="book-list">
-
+                        <!--Ajax 통신 결과 책 검색 목록 표 body 여기에 만듦-->
                     </tbody>
                 </table>
                 <br>
 
+                <div id="search-book-paging" align="center">
+                    <!--Ajax 통신 결과 페이징 바 여기에 만듦-->
+                </div>
+                <br>
+
                 <div id="book-info-src-area" align="right"></div>
+                <br>
+
                 <div id="select-book-btn-area" align="center"></div>
             </div>
         </div>
