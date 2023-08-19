@@ -249,8 +249,8 @@ public class PlanController {
     @ResponseBody
     @RequestMapping("bookTitleSearch.pl")
     public Map<String, Object> ajaxSearchBookTitle(String bookSearchKeyword,
-                                      @RequestParam(value = "cpage", defaultValue = "1", required = false) int currentPage,
-                                      Model m) {
+                                                   @RequestParam(value = "cpage", defaultValue = "1", required = false) int currentPage,
+                                                   Model m) {
         log.info("컨트롤러 메서드 searchBookTitle()에 들어오는 검색 키워드 = " + bookSearchKeyword);
         Map<String, Object> searchResults = planService.searchBookTitle(bookSearchKeyword, currentPage);
         List<BookInfoDto> bookInfoDtos = (List<BookInfoDto>) searchResults.get("bookInfoDtos");

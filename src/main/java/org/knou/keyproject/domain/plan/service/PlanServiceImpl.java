@@ -350,7 +350,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public Map<String, Object> searchBookTitle(String bookSearchKeyword, int currentPage) {
         // 알라딘 도서 검색 open API 호출 -> json data 결과 얻기 -> json data 결과 얻어 item에 해당하는 값들을 가져옴
-        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + bookApiKey + "&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=15&start=" + currentPage + "&SearchTarget=Book&output=js&Version=20131101"; // &MaxResults=20&start=1
+        String listRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + bookApiKey + "&Query=" + bookSearchKeyword + "&QueryType=Keyword&MaxResults=" + BOARD_LIMIT + "&start=" + currentPage + "&SearchTarget=Book&output=js&Version=20131101"; // &MaxResults=20&start=1
         /* 2023.8.7(월) 페이지네이션에 대한 나의 생각
         1. 해당 keyword 검색 결과 총 개수가 몇 개인지 파악
         2. 나의 페이지네이션 변수들에 맞게 잘라서, 1페이지씩의 분량을 만듦
@@ -400,7 +400,7 @@ public class PlanServiceImpl implements PlanService {
         return results;
     }
 
-    // 2023.8.20(일) 4h20 -> 6h API 구조 다시 보니 필요 없음 <- API 요청 시 시작 페이지와 maxResults를 지정하는데, 이걸 각각 currentPage와 pageLimit과 맞추면 될 듯
+    // 2023.8.20(일) 4h20 -> 6h API 구조 다시 보니 필요 없음 <- API 요청 시 시작 페이지와 maxResults를 지정하는데, 이걸 각각 currentPage와 boardLimit과 맞추면 될 듯
     private Map<String, Object> pageBookSearchResult(List<BooksListSearchResponseDto.Item> items, int currentPage) {
         PageInfo pageInfo = Pagination.getPageInfo(items.size(), currentPage, PAGE_LIMIT, BOARD_LIMIT);
         int endRow = pageInfo.getCurrentPage() * pageInfo.getBoardLimit();
