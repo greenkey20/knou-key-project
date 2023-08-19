@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PlanService {
     Plan saveNewPlan(PlanPostRequestDto requestDto);
@@ -28,7 +29,7 @@ public interface PlanService {
     // 2023.8.4(금) 22h50 plan 상세보기 요청 controller에 대응하기 위한 메서드
     MyPlanStatisticDetailResponseDto getPlanStatisticDetailById(Long planId);
 
-    List<BookInfoDto> searchBookTitle(String bookSearchKeyword);
+    Map<String, Object> searchBookTitle(String bookSearchKeyword, int currentPage);
 
     String getChatGptResponse(PlanPostRequestDto requestDto);
 
