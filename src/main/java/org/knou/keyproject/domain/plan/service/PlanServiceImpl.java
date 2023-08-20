@@ -2,7 +2,6 @@ package org.knou.keyproject.domain.plan.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.knou.keyproject.domain.actiondate.dto.ActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
@@ -91,10 +90,40 @@ public class PlanServiceImpl implements PlanService {
         log.info("계산 결과 활동일 중 첫번째 것 = " + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.29(토) 4h25 actionDatesList()가 비었다고 한다..
 //        System.out.println("이거 안 찍히나?" + calculatedPlan.getActionDatesList().get(0).getDateType().toString()); // 2023.7.28(금) 3h15 이거 안 찍히나?ACTION 찍히는데
 
+        // 2023.8.21(월) 0h50
+        List<ActionDate> actionDatesList = setOrdersAndContents(calculatedPlan);
+
         // 2023.7.29(토) 4h20
-        actionDateRepository.saveAll(calculatedPlan.getActionDatesList());
+        actionDateRepository.saveAll(actionDatesList);
 
         return planRepository.save(calculatedPlan);
+    }
+
+    @Override
+    @Transactional
+    public List<ActionDate> setOrdersAndContents(Plan calculatedPlan) {
+        List<ActionDate> actionDatesList = calculatedPlan.getActionDatesList(); // 시작일~종료일까지 순차적으로 생성한 바, actionDateId 오름차순으로 정렬되어있다고 볼 수 있음
+        int quantityPerDay = calculatedPlan.getQuantityPerDay();
+
+        for (int i = 0; i < actionDatesList.size(); i++) {
+            ActionDate thisActionDate = actionDatesList.get(i);
+
+            int order = i + 1;
+            int startUnit = quantityPerDay * i + 1;
+            int endUnit;
+
+            if (i < actionDatesList.size() - 1) {
+                endUnit = order * quantityPerDay;
+            } else {
+                endUnit = startUnit + thisActionDate.getPlanActionQuantity() - 1;
+            }
+
+            thisActionDate.setOrders(order);
+            thisActionDate.setStartUnit(startUnit);
+            thisActionDate.setEndUnit(endUnit);
+        }
+
+        return actionDatesList;
     }
 
     // 2023.7.24(월) 17h40 -> 22h40 startDate 입력에 따른 계산 결과 반영
@@ -152,6 +181,10 @@ public class PlanServiceImpl implements PlanService {
 
             findPlan.setDeadlineDate(LocalDate.of(year, month, date));
         }
+
+        // 2023.8.21(월) 1h20 수행 내용(from~to단위) 정보 포함하기 위해 추가
+        List<ActionDate> actionDatesList = setOrdersAndContents(findPlan);
+        actionDateRepository.saveAll(actionDatesList); // 2023.8.21(월) 1h25 나의 궁금증 = 이것도 필요 없으려나? JPA 어렵다
 
         // 2023.7.29(토) 0h15 jpa update를 어떻게 하는 건지 갑자기 정확히 알지/이해 못하는 것 같아서 googling -> https://study-easy-coding.tistory.com/143
         // setter로 값 변경하면 변경 감지해서 수정 쿼리 날려 db에 반영 = dirty checking

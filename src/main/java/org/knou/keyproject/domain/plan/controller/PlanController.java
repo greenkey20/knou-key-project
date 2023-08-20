@@ -167,7 +167,7 @@ public class PlanController {
     }
 
     @GetMapping("myPlanList.pl")
-    public ModelAndView getMyPlanList(@PageableDefault(size = 2, sort = "planId", direction = Sort.Direction.DESC) Pageable pageable,
+    public ModelAndView getMyPlanList(@PageableDefault(size = 3, sort = "planId", direction = Sort.Direction.DESC) Pageable pageable,
                                       @RequestParam(required = false, defaultValue = "") String keyword,
                                       HttpSession session,
                                       ModelAndView mv) {
