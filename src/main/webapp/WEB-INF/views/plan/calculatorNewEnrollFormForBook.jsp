@@ -30,6 +30,7 @@
             <!--2023.8.1(화) 0h5 구현 접근 방법 변경-->
             <div class="searchBookArea">
                 <input type="text" id="book-search-input" name="bookSearchKeyword" placeholder="제목이나 저자명을 입력해 주세요">
+                <input type="hidden">
                 <button type="button" onclick="searchBookTitle(1);">검색</button>
             </div>
             <div id="auto-complete">
