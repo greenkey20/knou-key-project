@@ -12,7 +12,9 @@ div {
 /* 전체 영역 */
 .outer {
     /*border: 1px solid green;*/
-    width: 768px;
+    /*width: 768px;*/
+    /*max-width: 768px;*/
+    width: 100%;
     margin: auto;
     height: auto;
     padding-top: 30px;
