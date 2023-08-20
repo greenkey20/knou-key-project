@@ -20,7 +20,7 @@ import java.util.Map;
 public class CalculatorUtils {
     // 2023.7.29(토) 0h45 ActionDate 객체들이 만들어져서 db에 저장될 때 planId가 null인 것 보고, 이 부분에 추가해봄
     // -> 그런데 이렇게 FK를 수동으로 넣는 게 이상한 것 같은데.. 애초에 이렇게 ActionDate의 생성자를 사용하지 말았어야 하나..
-    private static ActionDate changeActionDateIntoActionDateData(Plan planToCalculate, LocalDate date, Integer quantityPerDay, int order) {
+    private static ActionDate changeActionDateIntoActionDateData(Plan planToCalculate, LocalDate date, Integer quantityPerDay) {
         return ActionDate.builder()
                 .numOfYear(String.valueOf(date.getYear()))
                 .numOfMonth(date.getMonthValue())
@@ -32,9 +32,9 @@ public class CalculatorUtils {
                 .planActionQuantity(quantityPerDay)
                 .isDone(false)
                 .plan(planToCalculate)
-                .orders(order)
-                .startUnit(planToCalculate.getQuantityPerDay() * (order - 1) + 1)
-                .endUnit(order * planToCalculate.getQuantityPerDay())
+//                .orders(order)
+//                .startUnit(planToCalculate.getQuantityPerDay() * (order - 1) + 1)
+//                .endUnit(order * planToCalculate.getQuantityPerDay())
                 .build();
     }
 
@@ -93,13 +93,13 @@ public class CalculatorUtils {
         return interval;
     }
 
-    public static boolean checkIfLastActionDate(Plan planToCalculate, List<ActionDate> actionDates, LocalDate date, int order) {
+    public static boolean checkIfLastActionDate(Plan planToCalculate, List<ActionDate> actionDates, LocalDate date) {
         int leftUnit = planToCalculate.getTotalQuantity() - actionDates.size() * planToCalculate.getQuantityPerDay();
         if (leftUnit < planToCalculate.getQuantityPerDay()) {
-            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, leftUnit, order));
+            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, leftUnit));
             return true;
         } else {
-            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, planToCalculate.getQuantityPerDay(), order));
+            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, planToCalculate.getQuantityPerDay()));
         }
         return false;
     }
@@ -110,9 +110,9 @@ public class CalculatorUtils {
         int order = 1;
 
         for (LocalDate date = planToCalculate.getStartDate(); date.isBefore(planToCalculate.getDeadlineDate()); date = date.plusDays(interval)) {
-            if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
+            if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
 
-            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date, order);
+            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date);
 
             order++;
         }
@@ -126,15 +126,15 @@ public class CalculatorUtils {
         LocalDate date = planToCalculate.getStartDate();
 
         int accumulatedUnit = 0;
-        int order = 1;
+//        int order = 1;
         while (accumulatedUnit <= planToCalculate.getTotalQuantity()) {
-            if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
+            if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
 
-            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date, order);
+            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date);
 
             accumulatedUnit = actionDates.size() * planToCalculate.getQuantityPerDay();
             date = date.plusDays(interval);
-            order++;
+//            order++;
         }
 
 //        if (actionDates.get(actionDates.size() - 1).getPlanActionQuantity() < 0) {
@@ -145,7 +145,7 @@ public class CalculatorUtils {
         return actionDates;
     }
 
-    public static void getActionDatesWithinInterval(Plan planToCalculate, List<ActionDate> actionDates, int interval, int times, LocalDate date, int order) {
+    public static void getActionDatesWithinInterval(Plan planToCalculate, List<ActionDate> actionDates, int interval, int times, LocalDate date) {
         LocalDate nextDate = date;
         int plusDay = interval / times;
         for (int i = 1; i < times; i++) {
@@ -156,7 +156,7 @@ public class CalculatorUtils {
                 if (nextDate.isAfter(planToCalculate.getDeadlineDate())) break;
             }
 
-            if (checkIfLastActionDate(planToCalculate, actionDates, nextDate, order)) break;
+            if (checkIfLastActionDate(planToCalculate, actionDates, nextDate)) break;
         }
     }
 
