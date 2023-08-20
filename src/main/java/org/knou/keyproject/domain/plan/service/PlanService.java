@@ -56,4 +56,6 @@ public interface PlanService {
     List<MyPlanDetailResponseDto> getMyPlanDetailResponseDtos(Long memberId);
 
     List<MyPlanListResponseDto> getMyPlanListResponseDtoList(List<Plan> list);
+
+    List<MainPageResponseDto> findMainPageInfoByMember(Long memberId);
 }

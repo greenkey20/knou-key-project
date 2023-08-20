@@ -297,4 +297,7 @@ public interface PlanMapper {
 
     // 2023.7.30(일) 21h5
     List<MyPlanDetailResponseDto> toMyPlanDetailResponseDtos(List<Plan> entities);
+
+    // 2023.8.20(일) 21h10
+    MainPageResponseDto toMainPageResponseDto(MyPlanDetailResponseDto thisPlan, MyPlanStatisticDetailResponseDto thisStat);
 }
