@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="resources/css/common/errorPage.css">
 </head>
 <body>
-
-<jsp:include page="header.jsp"/>
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
 <br>
 <div align="center">
@@ -22,7 +21,7 @@
 </div>
 <br>
 
-<jsp:include page="footer.jsp"/>
+<jsp:include page="/WEB-INF/views/common/footer.jsp"/>
 
 </body>
 </html>
