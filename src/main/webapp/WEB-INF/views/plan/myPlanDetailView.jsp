@@ -83,12 +83,12 @@
                 남았어요<br>
                 - 매 회 활동에 평균적으로 ${ statPlan.averageTimeTakenForRealAction }분이 소요되었어요
             </c:when>
-            <c:otherwise>
+            <c:when test="${ plan.status.toString() eq 'GIVEUP'}">
                 - ${ plan.lastStatusChangedAt }자 중도 포기한 활동이에요<br>
                 - 총 ${ statPlan.accumulatedNumOfActions }회
                 <c:if test="${ plan.isMeasurable }">${ statPlan.accumulatedRealActionQuantity }${ plan.unit }</c:if>
                 수행했었어요
-            </c:otherwise>
+            </c:when>
         </c:choose>
         <br>
         <br>
@@ -209,7 +209,7 @@
                 <td>No</td>
                 <td>날짜</td>
                 <td>수행 여부</td>
-                <td>수행 분량</td>
+                <td>수행 내용</td>
                 <td>활동 점수</td>
                 <td>기록</td>
             </tr>
