@@ -8,6 +8,7 @@ import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.service.MemberService;
+import org.knou.keyproject.domain.plan.dto.MainPageResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanStatisticDetailResponseDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -50,11 +51,13 @@ public class MainController {
 //                session.setAttribute("planList", planMapper.toMyPlanDetailResponseDtos(loginMember.getPlanList()));
 
                 // 2023.8.7(월) 5h
-                List<MyPlanDetailResponseDto> planList = planService.findAllActivePlansByMemberMemberId(memberId);
-                List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
+//                List<MyPlanDetailResponseDto> planList = planService.findAllActivePlansByMemberMemberId(memberId);
+//                List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
+                List<MainPageResponseDto> mainPageResponseDtos = planService.findMainPageInfoByMember(memberId);
+                log.info("main컨트롤러 mainPage()에서 반환 자료 = " + mainPageResponseDtos);
 
-                session.setAttribute("planList", planList);
-                session.setAttribute("statList", statisticDtos);
+                session.setAttribute("planList", mainPageResponseDtos);
+//                session.setAttribute("statList", statisticDtos);
             }
         }
 
