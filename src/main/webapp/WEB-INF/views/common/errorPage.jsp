@@ -4,7 +4,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>errorPage</title>
+    <title>에러 페이지</title>
+    <link rel="stylesheet" href="resources/css/common/errorPage.css">
 </head>
 <body>
 
@@ -15,6 +16,9 @@
     <img src="https://cdn2.iconfinder.com/data/icons/oops-404-error/64/208_balloon-bubble-chat-conversation-sorry-speech-256.png">
     <br><br>
     <h4>${ errorMsg }</h4> <!--style="font-weight:bold;"-->
+    <br><br><br>
+    <button type="button" onclick="history.back();">이전 페이지로 이동</button>
+    <button type="button" class="grayBtn" onclick="location.href='/key-project'">홈페이지로 이동</button>
 </div>
 <br>
 
