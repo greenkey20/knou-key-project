@@ -64,8 +64,12 @@ public class ActionDate extends BaseTimeEntity {
 
     // 2023.8.20(일) 8h40 수행일별 수행 내용 추가/표시를 위해 추가할 것
     private Integer orders; // actionDateId 활용해서 유도 가능?
-    private Integer startUnit;
-    private Integer endUnit;
+    private Integer planStartUnit;
+    private Integer planEndUnit;
+
+    // 2023.8.21(월) 2H40 추가
+    private Integer realStartUnit;
+    private Integer realEndUnit;
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
