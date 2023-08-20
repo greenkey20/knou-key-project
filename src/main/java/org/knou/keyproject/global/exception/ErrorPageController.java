@@ -17,7 +17,7 @@ public class ErrorPageController {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final MessageSourceUtil messageSource;
 
-    @GetMapping("/common/error/{code}")
+    @GetMapping("/common/errorPage/{code}")
     public ModelAndView error(ModelAndView mv, @PathVariable(required = false) final String code) {
         LOGGER.info(">> ErrorPageController > 에러 발생!");
 
