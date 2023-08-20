@@ -33,4 +33,9 @@ public class ActionDateResponseDto {
     private Integer timeTakenForRealAction;
     private Integer reviewScore;
     private LocalDate realActionDate;
+
+    // 2023.8.21(월) 2h5 추가
+    private Integer orders;
+    private Integer startUnit;
+    private Integer endUnit;
 }

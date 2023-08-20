@@ -176,6 +176,14 @@
                         <td>
                             <!--내용이 1단위인 경우에는 'startUnit + unit' 표시-->
                             <!--내용이 2단위 이상인 경우에는 'startUnit ~ endUnit unit' 표시-->
+                            <c:choose>
+                                <c:when test="${ day.startUnit ne day.endUnit}">
+                                    ${ day.startUnit } ~ ${ day.endUnit } ${ savedPlan.unit }
+                                </c:when>
+                                <c:otherwise>
+                                    ${ day.startUnit } ${ savedPlan.unit }
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </c:if>
