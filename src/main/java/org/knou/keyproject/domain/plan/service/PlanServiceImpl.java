@@ -119,8 +119,8 @@ public class PlanServiceImpl implements PlanService {
             }
 
             thisActionDate.setOrders(order);
-            thisActionDate.setStartUnit(startUnit);
-            thisActionDate.setEndUnit(endUnit);
+            thisActionDate.setPlanStartUnit(startUnit);
+            thisActionDate.setPlanEndUnit(endUnit);
         }
 
         return actionDatesList;
