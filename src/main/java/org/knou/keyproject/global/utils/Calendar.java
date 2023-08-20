@@ -68,7 +68,7 @@ public class Calendar {
 
                     if (thisFormat.equals(actionDateFormat)) {
                         thisDate.setSchedule("action");
-                        log.info("달력 날짜의 schedule로써 action 찍힙니다");
+//                        log.info("달력 날짜의 schedule로써 action 찍힙니다");
 
                         // 실행한 날짜에 초록색 배경색을 칠하는 방법
                         // idea1)

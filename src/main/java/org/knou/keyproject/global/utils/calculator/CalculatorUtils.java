@@ -20,7 +20,7 @@ import java.util.Map;
 public class CalculatorUtils {
     // 2023.7.29(토) 0h45 ActionDate 객체들이 만들어져서 db에 저장될 때 planId가 null인 것 보고, 이 부분에 추가해봄
     // -> 그런데 이렇게 FK를 수동으로 넣는 게 이상한 것 같은데.. 애초에 이렇게 ActionDate의 생성자를 사용하지 말았어야 하나..
-    private static ActionDate changeActionDateIntoActionDateData(Plan planToCalculate, LocalDate date, Integer quantityPerDay) {
+    private static ActionDate changeActionDateIntoActionDateData(Plan planToCalculate, LocalDate date, Integer quantityPerDay, int order) {
         return ActionDate.builder()
                 .numOfYear(String.valueOf(date.getYear()))
                 .numOfMonth(date.getMonthValue())
@@ -32,9 +32,9 @@ public class CalculatorUtils {
                 .planActionQuantity(quantityPerDay)
                 .isDone(false)
                 .plan(planToCalculate)
-//                .order()
-//                .startUnit()
-//                .endUnit()
+                .orders(order)
+                .startUnit(planToCalculate.getQuantityPerDay() * (order - 1) + 1)
+                .endUnit(order * planToCalculate.getQuantityPerDay())
                 .build();
     }
 
@@ -42,6 +42,7 @@ public class CalculatorUtils {
         return frequencyDetail.substring(0, frequencyDetail.length() - 4);
     }
 
+    // 2023.8.20(일) 23h20 이 메서드에도 불구하고 가끔 마지막 actionDate의 계획 활동량이 0인 경우가 있는데, 왜 그런 걸까?
     public static void verifyLastElementPositive(List<ActionDate> actionDates) {
         if (actionDates.get(actionDates.size() - 1).getPlanActionQuantity() <= 0) {
             actionDates.remove(actionDates.size() - 1);
@@ -92,13 +93,13 @@ public class CalculatorUtils {
         return interval;
     }
 
-    public static boolean checkIfLastActionDate(Plan planToCalculate, List<ActionDate> actionDates, LocalDate date) {
+    public static boolean checkIfLastActionDate(Plan planToCalculate, List<ActionDate> actionDates, LocalDate date, int order) {
         int leftUnit = planToCalculate.getTotalQuantity() - actionDates.size() * planToCalculate.getQuantityPerDay();
         if (leftUnit < planToCalculate.getQuantityPerDay()) {
-            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, leftUnit));
+            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, leftUnit, order));
             return true;
         } else {
-            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, planToCalculate.getQuantityPerDay()));
+            actionDates.add(changeActionDateIntoActionDateData(planToCalculate, date, planToCalculate.getQuantityPerDay(), order));
         }
         return false;
     }
@@ -106,10 +107,14 @@ public class CalculatorUtils {
     // 2023.7.26(수) 17h refactoring = extract as a function
     // 빈도 조건에 맞는 활동일 찾기
     public static List<ActionDate> getActionDatesWithDeadlineAndIntervalAndTimes(Plan planToCalculate, List<ActionDate> actionDates, int interval, int times) {
-        for (LocalDate date = planToCalculate.getStartDate(); date.isBefore(planToCalculate.getDeadlineDate()); date = date.plusDays(interval)) {
-            if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+        int order = 1;
 
-            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date);
+        for (LocalDate date = planToCalculate.getStartDate(); date.isBefore(planToCalculate.getDeadlineDate()); date = date.plusDays(interval)) {
+            if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
+
+            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date, order);
+
+            order++;
         }
 
         verifyLastElementPositive(actionDates);
@@ -121,13 +126,15 @@ public class CalculatorUtils {
         LocalDate date = planToCalculate.getStartDate();
 
         int accumulatedUnit = 0;
+        int order = 1;
         while (accumulatedUnit <= planToCalculate.getTotalQuantity()) {
-            if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+            if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
 
-            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date);
+            getActionDatesWithinInterval(planToCalculate, actionDates, interval, times, date, order);
 
             accumulatedUnit = actionDates.size() * planToCalculate.getQuantityPerDay();
             date = date.plusDays(interval);
+            order++;
         }
 
 //        if (actionDates.get(actionDates.size() - 1).getPlanActionQuantity() < 0) {
@@ -138,7 +145,7 @@ public class CalculatorUtils {
         return actionDates;
     }
 
-    public static void getActionDatesWithinInterval(Plan planToCalculate, List<ActionDate> actionDates, int interval, int times, LocalDate date) {
+    public static void getActionDatesWithinInterval(Plan planToCalculate, List<ActionDate> actionDates, int interval, int times, LocalDate date, int order) {
         LocalDate nextDate = date;
         int plusDay = interval / times;
         for (int i = 1; i < times; i++) {
@@ -149,7 +156,7 @@ public class CalculatorUtils {
                 if (nextDate.isAfter(planToCalculate.getDeadlineDate())) break;
             }
 
-            if (checkIfLastActionDate(planToCalculate, actionDates, nextDate)) break;
+            if (checkIfLastActionDate(planToCalculate, actionDates, nextDate, order)) break;
         }
     }
 
