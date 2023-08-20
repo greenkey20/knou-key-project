@@ -470,14 +470,19 @@ public class Calculator {
         List<Integer> daysList = getActionWeekdays(daysStr);
 //        log.info("getActionDaysWithFrequencyTypeDATE에서 daysList = " + daysList);
 
+
+        int order = 1;
+
         for (LocalDate date = planToCalculate.getStartDate(); date.isBefore(planToCalculate.getDeadlineDate()); date = date.plusDays(1)) {
             // 순회 중인 날이 해당 요일이면 활동일 리스트에 담음
             int dayOfDate = date.getDayOfWeek().getValue();
 //            log.info("순회 중인 date의 요일 번호 = " + dayOfDate);
 
             if (daysList.contains(dayOfDate)) {
-                if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+                if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
             }
+
+            order++;
         }
 
 //        log.info("순회 마치고 actionDays 리스트 = " + getActionDatesList());
@@ -493,15 +498,17 @@ public class Calculator {
         LocalDate date = planToCalculate.getStartDate();
 
         int accumulatedUnit = 0;
+        int order = 1;
         while (accumulatedUnit <= planToCalculate.getTotalQuantity()) {
             int dayOfDate = date.getDayOfWeek().getValue();
 
             if (daysList.contains(dayOfDate)) {
-                if (checkIfLastActionDate(planToCalculate, actionDates, date)) break;
+                if (checkIfLastActionDate(planToCalculate, actionDates, date, order)) break;
             }
 
             accumulatedUnit = actionDates.size() * planToCalculate.getQuantityPerDay();
             date = date.plusDays(1);
+            order++;
         }
 
         verifyLastElementPositive(actionDates);

@@ -63,9 +63,9 @@ public class ActionDate extends BaseTimeEntity {
     private LocalDate realActionDate; // 실제 수행일, 사용자가 기록한 날짜
 
     // 2023.8.20(일) 8h40 수행일별 수행 내용 추가/표시를 위해 추가할 것
-//    private Integer order; // actionDateId 활용해서 유도 가능?
-//    private Integer startUnit;
-//    private Integer endUnit;
+    private Integer orders; // actionDateId 활용해서 유도 가능?
+    private Integer startUnit;
+    private Integer endUnit;
 
     // 2023.7.26(수) 0h
     @ManyToOne(fetch = FetchType.LAZY)
