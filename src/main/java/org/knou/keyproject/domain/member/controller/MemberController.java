@@ -69,7 +69,7 @@ public class MemberController {
             session.setAttribute("alertMsg", loginMember.getNickname() + " 님, 어서 오세요!\n오늘 하루도 건강하고 즐겁게 보내보아요!"); // 2023.7.28(금) 23h50 현재 이 alert창 안 뜸
 //            mv.setViewName("redirect:/");
         } else {
-            mv.addObject("errorMsg", "로그인 실패").setViewName("common/errorPage");
+            mv.addObject("errorMsg", "로그인에 실패했습니다").setViewName("common/errorPage");
             return mv;
         }
 
