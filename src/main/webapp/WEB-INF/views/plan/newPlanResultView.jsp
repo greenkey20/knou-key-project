@@ -151,6 +151,7 @@
                     <td>No</td>
                     <td>활동 수행 예정일</td>
                     <td>수행 예정 분량</td>
+                    <td>수행 내용</td>
                 </tr>
             </thead>
             <tbody>
@@ -172,6 +173,10 @@
                             </c:choose>
                         </td>
                         <td> ${ day.planActionQuantity } ${ savedPlan.unit } </td>
+                        <td>
+                            <!--내용이 1단위인 경우에는 'startUnit + unit' 표시-->
+                            <!--내용이 2단위 이상인 경우에는 'startUnit ~ endUnit unit' 표시-->
+                        </td>
                     </tr>
                 </c:if>
                 </c:forEach>
