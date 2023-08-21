@@ -210,6 +210,7 @@ public class PlanController {
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
         MyPlanDetailResponseDto myPlanDetailResponseDto = planService.getMyPlanDetailResponseDto(planId);
         List<ActionDateResponseDto> actionDatesList = myPlanDetailResponseDto.getActionDatesList();
+        log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 actionDatesList의 크기 = " + actionDatesList.size());
 
         MyPlanStatisticDetailResponseDto statisticDetailResponseDto = planService.getPlanStatisticDetailById(planId);
 

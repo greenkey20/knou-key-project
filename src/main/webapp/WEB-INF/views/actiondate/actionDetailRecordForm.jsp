@@ -13,7 +13,7 @@
 
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<%--<script src="resources/js/actiondate/actionDetailRecordForm.js"></script>--%>
+<script src="resources/js/actiondate/actionDetailRecordForm.js"></script>
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td class="info">
-                        오늘 수행 분량을 기재해 주세요<span class="required">*</span><br>
+                        오늘 수행 내용을 기재해 주세요<span class="required">*</span><br>
                         <c:if test="${ plan.isMeasurable }">
                             <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
                         </c:if>
@@ -63,7 +63,10 @@
                     <td>
                         <c:choose>
                             <c:when test="${ plan.isMeasurable }">
-                                <input type="number" name="realActionQuantity" value="${ actionDate.planActionQuantity }" min="1" required> ${ plan.unit }
+                                <input type="number" name="realStartUnit" value="${ actionDate.planStartUnit }" min="1" oninput="getRealActionQuantity()" required> ~ <input type="number" name="realEndUnit" value="${ actionDate.planEndUnit }" min="1" oninput="getRealActionQuantity()" required>
+                                <div id="valid-end-unit"></div>
+                                (총 <span id="real-action-quantity-area">${ actionDate.planActionQuantity }</span> ${ plan.unit })
+                                <input type="hidden" name="realActionQuantity" value="${ actionDate.planActionQuantity }" min="1">
                             </c:when>
                             <c:otherwise>
                                 -
@@ -89,7 +92,7 @@
                 </tr>
                 <tr>
                     <td class="info">메모</td>
-                    <td><textarea name="memo" placeholder="오늘 활동에서 기억하고 싶은 내용을 기록해 보아요"></textarea></td>
+                    <td><textarea class="contentTextArea" name="memo" placeholder="오늘 활동에서 기억하고 싶은 내용을 기록해 보아요"></textarea></td>
                 </tr>
             </table>
             <br>

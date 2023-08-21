@@ -38,4 +38,8 @@ public class ActionDateResponseDto {
     private Integer orders;
     private Integer planStartUnit;
     private Integer planEndUnit;
+
+    // 2023.8.21(월) 11h25 추가
+    private Integer realStartUnit;
+    private Integer realEndUnit;
 }

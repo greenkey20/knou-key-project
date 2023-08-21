@@ -19,6 +19,9 @@ public class ActionDatePostRequestDto {
     private LocalDate realActionDate;
 
     private Integer realActionQuantity;
+    // 2023.8.21(월) 2H40 추가
+    private Integer realStartUnit;
+    private Integer realEndUnit;
 
     private Integer timeTakenForRealAction; // null일 수 있음
     private Integer reviewScore; // null일 수 있음

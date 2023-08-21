@@ -13,7 +13,7 @@
 
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<%--<script src="resources/js/actiondate/actionDetailRecordForm.js"></script>--%>
+<script src="resources/js/actiondate/actionDetailUpdateForm.js"></script>
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
@@ -54,7 +54,7 @@
                 </tr>
                 <tr>
                     <td class="info">
-                        오늘 수행 분량을 기재해 주세요<span class="required">*</span><br>
+                        오늘 수행 내용을 기재해 주세요<span class="required">*</span><br>
                         <c:if test="${ plan.isMeasurable }">
                             <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
                         </c:if>
@@ -62,7 +62,10 @@
                     <td>
                         <c:choose>
                             <c:when test="${ plan.isMeasurable }">
-                                <input type="number" name="realActionQuantity" value="${ actionDate.realActionQuantity }" min="1" required> ${ plan.unit }
+                                <input type="number" name="realStartUnit" value="${ actionDate.realStartUnit }" min="1" oninput="getRealActionQuantity()" required> ~ <input type="number" name="realEndUnit" value="${ actionDate.realEndUnit }" min="1" oninput="getRealActionQuantity()" required>
+                                <div id="valid-end-unit"></div>
+                                (총 <span id="real-action-quantity-area">${ actionDate.realActionQuantity }</span> ${ plan.unit })
+                                <input type="hidden" name="realActionQuantity" value="${ actionDate.realActionQuantity }" min="1">
                             </c:when>
                             <c:otherwise>
                                 -
@@ -128,7 +131,7 @@
                 </tr>
                 <tr>
                     <td class="info">메모</td>
-                    <td><textarea name="memo">${ actionDate.memo }</textarea></td>
+                    <td><textarea class="contentTextArea" name="memo">${ actionDate.memo }</textarea></td>
                 </tr>
             </table>
             <br>
@@ -148,7 +151,8 @@
             <input type="hidden" name="actionDateId" value="${ actionDate.actionDateId }">
 
             <div align="center">
-                <button type="button" onclick="location.href='myPlanDetail.pl?planId=${ plan.planId }'">상세보기로 가기</button>
+                <button type="button" onclick="window.history.back()">뒤로 가기</button>
+<%--                <button type="button" class="grayBtn" onclick="location.href='myPlanDetail.pl?planId=${ plan.planId }'">상세보기로 가기</button>--%>
                 <button type="submit" class="greenBtn">저장</button> <!--onclick="location.href='actionDateUpdate.ad?actionDateId='"-->
             </div>
         </form>

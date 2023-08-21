@@ -63,11 +63,13 @@ public class ActionDateServiceImpl implements ActionDateService {
 //                .isDone(true)
 //                .build();
 
-        actionDateToSave.setMemo(requestDto.getMemo());
+        actionDateToSave.setMemo(replaceNewLineWithBr(requestDto.getMemo()));
         actionDateToSave.setRealActionQuantity(requestDto.getRealActionQuantity());
         actionDateToSave.setTimeTakenForRealAction(requestDto.getTimeTakenForRealAction());
         actionDateToSave.setReviewScore(requestDto.getReviewScore());
         actionDateToSave.setRealActionDate(LocalDate.of(requestDto.getRealActionDate().getYear(), requestDto.getRealActionDate().getMonthValue(), requestDto.getRealActionDate().getDayOfMonth()));
+        actionDateToSave.setRealStartUnit(requestDto.getRealStartUnit());
+        actionDateToSave.setRealEndUnit(requestDto.getRealEndUnit());
         actionDateToSave.setIsDone(true);
 
         ActionDate savedActionDate = actionDateRepository.save(actionDateToSave);
@@ -88,6 +90,11 @@ public class ActionDateServiceImpl implements ActionDateService {
         }
 
         return savedActionDate;
+    }
+
+    // 2023.8.21(월) 11h40 메모 내용 parsing
+    private String replaceNewLineWithBr(String memo) {
+        return memo.replaceAll("\r\n", "<br>");
     }
 
     // 2023.7.31(월) 6h45

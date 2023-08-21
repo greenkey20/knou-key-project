@@ -246,7 +246,23 @@
                     <c:choose>
                         <c:when test="${ not day.isDone }">
                             <td class="check">-</td>
-                            <td>-</td>
+                            <td class="smallerLetters">
+                                <c:choose>
+                                    <c:when test="${ plan.isMeasurable }">
+                                        <c:choose>
+                                            <c:when test="${ day.planStartUnit ne day.planEndUnit }">
+                                                ${ day.planStartUnit } ~ ${ day.planEndUnit } ${ savedPlan.unit }
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${ day.planStartUnit } ${ savedPlan.unit }
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <br>
+                                        (총 ${ day.planActionQuantity }${ plan.unit })
+                                    </c:when>
+                                    <c:otherwise>-</c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>-</td>
                             <td>
                                 <c:choose>
@@ -263,7 +279,18 @@
                             <td class="check">✅</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${ plan.isMeasurable }">${ day.realActionQuantity }</c:when>
+                                    <c:when test="${ plan.isMeasurable }">
+                                        <c:choose>
+                                            <c:when test="${ day.planStartUnit ne day.planEndUnit }">
+                                                ${ day.realStartUnit } ~ ${ day.realEndUnit } ${ savedPlan.unit }
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${ day.realStartUnit } ${ savedPlan.unit }
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <br>
+                                        (총 ${ day.realActionQuantity }${ plan.unit })
+                                    </c:when>
                                     <c:otherwise>-</c:otherwise>
                                 </c:choose>
                             </td>
