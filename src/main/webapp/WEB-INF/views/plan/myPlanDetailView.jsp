@@ -340,10 +340,15 @@
                     </thead>
                     <tbody>
                     <c:forEach var="line" items="${ tableOfContents }">
-                        <tr>
-                            <td>${ line }</td>
-                            <td><input type="checkbox"></td>
-                        </tr>
+                        <c:if test="${ not empty line }">
+                            <tr>
+                                <td>${ line.bookChapterString }</td>
+                                <td>
+                                    <input type="checkbox">
+                                    <input hidden name="bookChapterId">
+                                </td>
+                            </tr>
+                        </c:if>
                     </c:forEach>
                     </tbody>
                 </table>

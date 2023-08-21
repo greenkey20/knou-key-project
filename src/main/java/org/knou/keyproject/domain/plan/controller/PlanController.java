@@ -10,6 +10,8 @@ import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateCustomRepository;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
+import org.knou.keyproject.domain.bookchapter.dto.BookChapterResponseDto;
+import org.knou.keyproject.domain.bookchapter.serivce.BookChapterService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -28,10 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -46,6 +45,8 @@ public class PlanController {
     private final PlanMapper planMapper;
     private final ActionDateMapper actionDateMapper;
     private final ActionDateService actionDateService;
+    private final BookChapterService bookChapterService;
+
     private final int SIZE = 5;
     private final int THIS_YEAR = LocalDate.now().getYear();
     private final int THIS_MONTH = LocalDate.now().getMonthValue();
@@ -211,13 +212,6 @@ public class PlanController {
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
         MyPlanDetailResponseDto myPlanDetailResponseDto = planService.getMyPlanDetailResponseDto(planId);
 
-        String[] linesOfTableOfContents = null;
-        if (myPlanDetailResponseDto.getIsbn13() != null) {
-            String tableOfContents = myPlanDetailResponseDto.getTableOfContents();
-            linesOfTableOfContents = tableOfContents.split("<BR>");
-            log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 목차 파싱 결과 = " + Arrays.toString(linesOfTableOfContents));
-        }
-
         List<ActionDateResponseDto> actionDatesList = myPlanDetailResponseDto.getActionDatesList();
         log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 actionDatesList의 크기 = " + actionDatesList.size());
 
@@ -226,11 +220,18 @@ public class PlanController {
         // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
         List<List<ActionDate>> calendars = planService.getActionDatesCalendars(planId); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
 
+
+
+        List<BookChapterResponseDto> bookChapterResponseDtoList = new ArrayList<>();
+        if (myPlanDetailResponseDto.getIsbn13() != null) {
+            bookChapterResponseDtoList = bookChapterService.getTableOfContents(planId, myPlanDetailResponseDto.getIsbn13());
+        }
+
         m.addAttribute("plan", myPlanDetailResponseDto);
         m.addAttribute("actionDatesList", actionDatesList);
         m.addAttribute("statPlan", statisticDetailResponseDto);
         m.addAttribute("calendars", calendars);
-        m.addAttribute("tableOfContents", linesOfTableOfContents);
+        m.addAttribute("tableOfContents", bookChapterResponseDtoList);
         return "plan/myPlanDetailView";
     }
 
