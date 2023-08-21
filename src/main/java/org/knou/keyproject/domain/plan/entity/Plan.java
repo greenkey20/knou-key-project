@@ -40,7 +40,7 @@ public class Plan extends BaseTimeEntity {
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     private List<Board> boardList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "plan"/*, cascade = CascadeType.ALL*/)
     private List<BookChapter> bookChapterList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
