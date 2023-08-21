@@ -62,4 +62,8 @@ public interface PlanService {
     List<MyPlanListResponseDto> getMyPlanListResponseDtoList(List<Plan> list);
 
     List<MainPageResponseDto> findMainPageInfoByMember(Long memberId);
+
+    MyPlanListResponseDto getPlanAboutBoard(Long boardId);
+
+    MyPlanStatisticDetailResponseDto getPlanStatisticDetailAboutBoard(Long boardId);
 }
