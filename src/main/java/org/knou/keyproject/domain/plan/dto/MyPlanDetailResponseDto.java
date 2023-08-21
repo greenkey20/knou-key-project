@@ -50,4 +50,9 @@ public class MyPlanDetailResponseDto {
 
     private Boolean isChild;
     private int sizeOfModifiedPlansList;
+
+    // 2023.8.21(월) 14h55
+    private Boolean isBook;
+    private String isbn13;
+    private String tableOfContents;
 }

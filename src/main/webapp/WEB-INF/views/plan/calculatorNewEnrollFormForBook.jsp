@@ -68,7 +68,9 @@
                 <td><span class="question">목표 분량</span></td>
                 <td><span id="num-of-page-span"></span> 페이지</td>
                 <input type="hidden" name="totalQuantity" id="num-of-page-input">
+                <input type="hidden" name="isbn13">
                 <input type="hidden" name="unit" value="페이지">
+                <input type="hidden" name="isBook" value="true">
             </tr>
         </table>
         <br>

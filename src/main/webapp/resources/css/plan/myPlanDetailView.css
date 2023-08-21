@@ -73,3 +73,12 @@ div {
     background-color: gray;
     color: white;
 }
+
+#toc-content {
+    display: none;
+}
+
+#toc-toggle {
+    cursor: pointer;
+    color: green;
+}

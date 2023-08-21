@@ -96,9 +96,9 @@
                                                 <span style="color: lightgreen; background-color: green"> 새로 계산된 내역으로 이어서 하고 있어요 </span>
                                             </c:if>
                                         </c:when>
-                                        <c:otherwise>
+                                        <c:when test="${ p.status eq 'GIVEUP' }">
                                             포기했어요 ㅠㅠ
-                                        </c:otherwise>
+                                        </c:when>
                                     </c:choose>
                                 </td>
                             </tr>

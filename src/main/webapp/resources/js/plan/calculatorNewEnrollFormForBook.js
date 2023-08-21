@@ -37,25 +37,21 @@ function searchBookTitle(currentPage) {
                     console.log("책 목록 표 만들 때 index = " + index)
 
                     tbody += "<tr>"
-                        + "<td rowspan='4'><img src='" + item.cover + "'></td>"
+                        + "<td rowspan='3'><img src='" + item.cover + "'></td>"
                         + "<td class='question'>"
                         + "<input type='radio' id='selectBook' name='selectBook' value='" + item.title + "'> " + item.title
                         + "<span class='smallerLetters'> | </span>"
                         + "<span class='smallerLetters'>" + item.numOfPages + "</span>"
-                        + "<span class='smallerLetters'>페이지</span>"
+                        + "<span class='smallerLetters'>페이지 (ISBN: </span>"
+                        + "<span class='smallerLetters'>" + item.isbn13 + "</span>"
+                        + "<span class='smallerLetters'>)</span>"
                         + "</td>"
                         + "</tr>";
                     tbody += "<tr>"
                         + "<td>" + item.author + "</td>"
                         + "</tr>";
                     tbody += "<tr>"
-                        + "<td>" + item.publisher + ", " + item.pubDate + "</td>"
-                        + "</tr>";
-                    tbody += "<tr>"
-                        + "<td>"
-                        + "<span class='smallerLetters'>ISBN : " + item.isbn13 + "</span>"
-                        + "<span class='smallerLetters bookSrc'><a href='" + item.link + "' target='_blank'> → 자세히 보기</a></span>"
-                        + "</td>"
+                        + "<td>" + item.publisher + ", " + item.pubDate + "<span class='smallerLetters bookSrc'><a href='" + item.link + "' target='_blank'> → 자세히 보기</a></span></td>"
                         + "</tr>";
                 });
             }
@@ -137,14 +133,15 @@ function confirmBook() {
     let $title = $("input[name='selectBook']:checked").val(); // .parent().children().eq(0).text()
     // let $numOfPages = $("#num-of-pages-digits").text();
     let $numOfPages = $("input[name='selectBook']:checked").siblings().eq(1).text();
-    console.log()
-    console.log("title = " + $title + ", numOfPages = " + $numOfPages)
+    let $isbn13 = $("input[name='selectBook']:checked").siblings().eq(3).text();
+    console.log("title = " + $title + ", numOfPages = " + $numOfPages + ", isbn13 = " + $isbn13);
 
     $("#object-div").text($title);
     $("#num-of-page-span").text($numOfPages);
 
     $("input[name=object]").val($title);
     $("input[name=totalQuantity]").val($numOfPages);
+    $("input[name=isbn13]").val($isbn13);
 
     // $("#books-table").hide();
 }
