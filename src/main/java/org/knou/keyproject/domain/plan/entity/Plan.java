@@ -10,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.board.entity.Board;
+import org.knou.keyproject.domain.bookchapter.entity.BookChapter;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
@@ -23,8 +24,8 @@ import java.util.List;
 @Builder
 @Getter
 //@Setter // 2023.7.24(월) 22h 계산기 구현하며 고민하다가 추가 + 2023.8.6(일) 0h45 BeanUtils 사용하려고 추가
-@AllArgsConstructor
 @NoArgsConstructor/*(access = AccessLevel.PROTECTED)*/
+@AllArgsConstructor
 @Entity
 public class Plan extends BaseTimeEntity {
     @Id
@@ -38,6 +39,9 @@ public class Plan extends BaseTimeEntity {
 //    @JsonManagedReference
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     private List<Board> boardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    private List<BookChapter> bookChapterList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
 //    private List<Scrap> scrapList = new ArrayList<>();

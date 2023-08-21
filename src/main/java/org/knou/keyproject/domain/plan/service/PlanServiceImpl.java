@@ -60,9 +60,7 @@ public class PlanServiceImpl implements PlanService {
     private final Calendar calendar;
     private final Calculator calculator;
     private final PlanStatisticUtils planStatisticUtils;
-    private final CustomBeanUtils<Plan> customBeanUtils;
     private final ActionDateMapper actionDateMapper;
-//    private final BoardService boardService;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -282,8 +280,8 @@ public class PlanServiceImpl implements PlanService {
 //            myPlanDetailResponseDto.isBook(findPlan.getIsBook());
             myPlanDetailResponseDto.isbn13(isbn13);
 
-            String tableOfContents = getTableOfContents(isbn13);
-            myPlanDetailResponseDto.tableOfContents(tableOfContents);
+//            String tableOfContents = bookChapterService.getTableOfContents(isbn13);
+//            myPlanDetailResponseDto.tableOfContents(tableOfContents);
         }
 
         return myPlanDetailResponseDto.build();
@@ -738,21 +736,6 @@ public class PlanServiceImpl implements PlanService {
 
         if (!responseDto.getItem().isEmpty()) {
             return responseDto.getItem().get(0).getSubInfo().getItemPage();
-        } else {
-            return null;
-        }
-    }
-
-    private String getTableOfContents(String isbn) {
-        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN13&ItemId=" + isbn + "&output=js&Version=20131101&OptResult=Toc";
-        //http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001 &itemIdType=ISBN13 &output=js &Version=20131101 &ItemId=9791189909284 &Version=20131101 &OptResult=Toc
-        RestTemplate restTemplate = new RestTemplate();
-        BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
-
-        if (!responseDto.getItem().isEmpty()) {
-            String tableOfContents = responseDto.getItem().get(0).getSubInfo().getToc();
-            log.info("책 검색 목차 = " + tableOfContents);
-            return tableOfContents;
         } else {
             return null;
         }
