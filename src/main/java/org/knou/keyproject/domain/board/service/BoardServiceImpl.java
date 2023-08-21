@@ -1,6 +1,5 @@
 package org.knou.keyproject.domain.board.service;
 
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.board.dto.BoardDetailResponseDto;

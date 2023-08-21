@@ -1,14 +1,16 @@
 package org.knou.keyproject.domain.plan.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.member.entity.Member;
-import org.knou.keyproject.domain.scrap.entity.Scrap;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -33,11 +35,12 @@ public class Plan extends BaseTimeEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
+//    @JsonManagedReference
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-    private List<Board> actionList = new ArrayList<>();
+    private List<Board> boardList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-    private List<Scrap> scrapList = new ArrayList<>();
+//    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+//    private List<Scrap> scrapList = new ArrayList<>();
 
     @Column(nullable = false)
     private Boolean isMeasurable; // true = 측정 가능한 일 vs false = 측정 어려운 일

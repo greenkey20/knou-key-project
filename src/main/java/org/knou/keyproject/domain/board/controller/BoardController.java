@@ -13,6 +13,7 @@ import org.knou.keyproject.domain.board.service.BoardService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.service.MemberService;
+import org.knou.keyproject.domain.plan.dto.MyPlanListResponseDto;
 import org.knou.keyproject.domain.plan.dto.MyPlanStatisticDetailResponseDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
@@ -124,16 +125,15 @@ public class BoardController {
         return "board/boardDetailView";
     }
 
+    // 2023.8.21(월) 17h35 LazyInitializationException: could not initialize proxy [org.knou.keyproject.domain.plan.entity.Plan#3] - no Session 처리
     @GetMapping("boardUpdatePage.bd")
     public String boardUpdatePage(@RequestParam(name = "boardId") @Positive Long boardId, Model model) {
-        Board findBoard = boardService.findVerifiedBoard(boardId);
+        BoardDetailResponseDto boardDetailResponseDto = boardService.getBoardDetailResponseDto(boardId);
+        MyPlanListResponseDto myPlanListResponseDto = planService.getPlanAboutBoard(boardId);
+        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailAboutBoard(boardId);
 
-        Long planId = findBoard.getPlan().getPlanId();
-        Plan findPlan = planService.findVerifiedPlan(planId);
-        MyPlanStatisticDetailResponseDto statisticDto = planService.getPlanStatisticDetailById(planId);
-
-        model.addAttribute("board", boardMapper.toBoardDetailResponseDto(findBoard));
-        model.addAttribute("plan", planMapper.toMyPlanListResponseDto(findPlan));
+        model.addAttribute("board", boardDetailResponseDto);
+        model.addAttribute("plan", myPlanListResponseDto);
         model.addAttribute("statPlan", statisticDto);
 
         return "board/boardUpdatePage";

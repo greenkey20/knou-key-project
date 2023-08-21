@@ -6,6 +6,8 @@ import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
+import org.knou.keyproject.domain.board.entity.Board;
+import org.knou.keyproject.domain.board.repository.BoardRepository;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseDto;
 import org.knou.keyproject.domain.member.entity.Member;
@@ -48,6 +50,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class PlanServiceImpl implements PlanService {
+    private final BoardRepository boardRepository;
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
     private final PlanMapper planMapper;
@@ -59,6 +62,7 @@ public class PlanServiceImpl implements PlanService {
     private final PlanStatisticUtils planStatisticUtils;
     private final CustomBeanUtils<Plan> customBeanUtils;
     private final ActionDateMapper actionDateMapper;
+//    private final BoardService boardService;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -661,6 +665,23 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return mainPageResponseDtos;
+    }
+
+    // 2023.8.21(월) 17h40 추가
+    @Override
+    public MyPlanListResponseDto getPlanAboutBoard(Long boardId) {
+        Board findBoard = boardRepository.findById(boardId).orElse(null);
+        Plan findPlan = findBoard.getPlan();
+
+        return planMapper.toMyPlanListResponseDto(findPlan);
+    }
+
+    // 2023.8.21(월) 17h40 추가
+    @Override
+    public MyPlanStatisticDetailResponseDto getPlanStatisticDetailAboutBoard(Long boardId) {
+        Board findBoard = boardRepository.findById(boardId).orElse(null);
+        Long planId = findBoard.getPlan().getPlanId();
+        return getPlanStatisticDetailById(planId);
     }
 
     private List<MyPlanStatisticDetailResponseDto> findAllActiveStatisticDtosByMember(List<MyPlanDetailResponseDto> planList) {
