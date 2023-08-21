@@ -344,8 +344,15 @@
                             <tr>
                                 <td>${ line.bookChapterString }</td>
                                 <td>
-                                    <input type="checkbox">
-                                    <input hidden name="bookChapterId">
+                                    <c:choose>
+                                        <c:when test="${ line.isDone eq true }">
+                                            <input class="chapter-check" type="checkbox" name="isDone" checked onclick="check(this);" value="${ line.bookChapterId }">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input class="chapter-check" type="checkbox" name="isDone" onclick="check(this);" value="${ line.bookChapterId }">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <input hidden name="bookChapterId" value="${ line.bookChapterId }">
                                 </td>
                             </tr>
                         </c:if>
@@ -357,6 +364,35 @@
     </c:if>
     <br>
     <br>
+
+    <script>
+        function check(box) {
+            if (box.checked == true) {
+                console.log("체크박스 체크했음");
+                let $bookChId = box.value;
+                console.log("선택된 체크박스의 chId = " + $bookChId);
+
+                $.ajax({
+                    url: "bookChapterIsDone.bc",
+                    // dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        bookChapterId: $bookChId
+                    },
+                    success: function (result) {
+                        console.log("bookChIsDone Ajax 통신 성공!");
+                        console.log(result);
+
+                    },
+                    error: function () {
+                        console.log("bookChIsDone Ajax 통신 실패")
+                    }
+                });
+            } else {
+                console.log("체크박스 해제했음")
+            }
+        }
+    </script>
 
     <!--plan 상태에 따라 버튼 보여주기-->
     <div align="center">

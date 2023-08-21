@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +38,20 @@ public class BookChapterServiceImpl implements BookChapterService {
         List<BookChapter> bookChapterList = bookChapterRepository.findAllByPlanPlanIdOrderByBookChapterIdAsc(planId);
 
         return bookChapterMapper.toBookChapterResponseDtoList(bookChapterList);
+    }
+
+    @Override
+    @Transactional
+    public String updateIsDone(Long bookChapterId) {
+        BookChapter findBookChapter = findVerifiedBookChapter(bookChapterId);
+
+        findBookChapter.changeIsDone(true);
+
+        return "updateIsDone";
+    }
+
+    private BookChapter findVerifiedBookChapter(Long bookChapterId) {
+        return bookChapterRepository.findById(bookChapterId).orElse(null);
     }
 
     @Transactional
