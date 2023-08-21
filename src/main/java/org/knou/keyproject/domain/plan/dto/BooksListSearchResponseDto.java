@@ -53,6 +53,7 @@ public class BooksListSearchResponseDto {
         @AllArgsConstructor
         public static class SubInfo {
             private Integer itemPage; // 상품의 쪽수/
+            private String toc; // 목차 2023.8.21(월) 14h10 추가
         }
     }
 }

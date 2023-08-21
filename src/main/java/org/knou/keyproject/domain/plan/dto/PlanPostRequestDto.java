@@ -57,6 +57,10 @@ public class PlanPostRequestDto {
 
     private Integer quantityPerDayPredicted;
 
+    // 2023.8.21(월) 14h50
+    private Boolean isBook;
+    private String isbn13;
+
 //    public PlanPostRequestDto(MemberRepository memberRepository) {
 //        this.memberRepository = memberRepository;
 //    }
@@ -156,6 +160,7 @@ public class PlanPostRequestDto {
         return "PlanPostRequestDto{" +
                 "memberId=" + memberId +
                 ", isMeasurableNum=" + isMeasurableNum +
+                ", chatGptResponse='" + chatGptResponse + '\'' +
                 ", object='" + object + '\'' +
                 ", totalQuantity=" + totalQuantity +
                 ", unit='" + unit + '\'' +
@@ -175,6 +180,7 @@ public class PlanPostRequestDto {
                 ", deadlinePeriodNum=" + deadlinePeriodNum +
                 ", deadlinePeriodUnit='" + deadlinePeriodUnit + '\'' +
                 ", quantityPerDayPredicted=" + quantityPerDayPredicted +
+                ", isBook=" + isBook +
                 '}';
     }
 }

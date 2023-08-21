@@ -13,7 +13,7 @@
 <!--2023.7.28(금) 5h15 파일 생성 + 작업 시작-->
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<%--<script src="resources/js/plan/myPlanDetailView.js"></script>--%>
+<script src="resources/js/plan/myPlanDetailView.js"></script>
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
@@ -194,7 +194,7 @@
         <h4> 일정 목록 </h4>
 <%--        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다<br>--%>
 <%--        * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~--%>
-        <table class="actionDatesListTable" border="black" align="center">
+        <table class="actionDatesListTable" border="darkgreen" align="center">
             <colgroup>
                 <col style="width: 10%">
                 <col style="width: 30%">
@@ -323,6 +323,35 @@
         </table>
         <br>
     </div>
+    <br>
+
+    <!--2023.8.21(월) 15h25-->
+    <!--처음 계획 계산 시 도서 검색한 경우, 목차 정보 보여줌-->
+    <c:if test="${ not empty plan.isbn13 }">
+        <div class="checkTableOfContents">
+            * 도서 목차 [<span id="toc-toggle" onclick="openCloseToc()">보기</span>] (학습/독서 완료한 챕터는 체크해 보세요)
+            <div id="toc-content" align="left">
+                <table border="darkgreen" align="center">
+                    <thead>
+                    <tr>
+                        <td>목차</td>
+                        <td>체크</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="line" items="${ tableOfContents }">
+                        <tr>
+                            <td>${ line }</td>
+                            <td><input type="checkbox"></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </c:if>
+    <br>
+    <br>
 
     <!--plan 상태에 따라 버튼 보여주기-->
     <div align="center">

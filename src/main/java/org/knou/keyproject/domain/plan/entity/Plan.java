@@ -117,6 +117,11 @@ public class Plan extends BaseTimeEntity {
     // 2023.8.6(일) 0h40
     private Boolean isChild;
 
+    // 2023.8.21(월) 14h45
+    private Boolean isBook;
+    private String isbn13;
+    private String tableOfContents;
+
     // 2023.7.26(수) 14h
     // 누적 수행/기록량, 횟수
 

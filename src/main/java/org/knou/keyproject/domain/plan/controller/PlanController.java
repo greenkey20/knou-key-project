@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +210,14 @@ public class PlanController {
     @GetMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
         MyPlanDetailResponseDto myPlanDetailResponseDto = planService.getMyPlanDetailResponseDto(planId);
+
+        String[] linesOfTableOfContents = null;
+        if (myPlanDetailResponseDto.getIsbn13() != null) {
+            String tableOfContents = myPlanDetailResponseDto.getTableOfContents();
+            linesOfTableOfContents = tableOfContents.split("<BR>");
+            log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 목차 파싱 결과 = " + Arrays.toString(linesOfTableOfContents));
+        }
+
         List<ActionDateResponseDto> actionDatesList = myPlanDetailResponseDto.getActionDatesList();
         log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 actionDatesList의 크기 = " + actionDatesList.size());
 
@@ -221,6 +230,7 @@ public class PlanController {
         m.addAttribute("actionDatesList", actionDatesList);
         m.addAttribute("statPlan", statisticDetailResponseDto);
         m.addAttribute("calendars", calendars);
+        m.addAttribute("tableOfContents", linesOfTableOfContents);
         return "plan/myPlanDetailView";
     }
 

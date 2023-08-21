@@ -272,8 +272,19 @@ public class PlanServiceImpl implements PlanService {
         myPlanDetailResponseDto.isChild(findPlan.getIsChild());
         myPlanDetailResponseDto.sizeOfModifiedPlansList(findPlan.getModifiedPlans().size());
 
+        // 2023.8.21(월) 14h55
+        if (findPlan.getIsBook()) {
+            String isbn13 = findPlan.getIsbn13();
+//            myPlanDetailResponseDto.isBook(findPlan.getIsBook());
+            myPlanDetailResponseDto.isbn13(isbn13);
+
+            String tableOfContents = getTableOfContents(isbn13);
+            myPlanDetailResponseDto.tableOfContents(tableOfContents);
+        }
+
         return myPlanDetailResponseDto.build();
     }
+
 
     // 2023.8.7(월) 16h5
     @Override
@@ -407,7 +418,8 @@ public class PlanServiceImpl implements PlanService {
         } else {
             for (BooksListSearchResponseDto.Item item : items) {
                 String isbn = item.getIsbn13();
-                if (isbn.length() == 13) {
+                if (isbn.length() == 13) { // 2023.8.21(월) 14h5 나의 생각 = isbn13자리가 아닌/없는 책의 응답 처리는 어떻게 하는 것이 좋을까?
+//                    Map<String, Object> additionalBookInfo = getAdditionalBookInfo(isbn);
                     Integer numOfPages = getNumOfPages(isbn);
 
                     BookInfoDto bookInfoDto = BookInfoDto.builder()
@@ -420,6 +432,7 @@ public class PlanServiceImpl implements PlanService {
                             .publisher(item.getPublisher())
                             .link(item.getLink())
                             .numOfPages(numOfPages)
+//                            .tableOfContents((String) additionalBookInfo.get("tableOfContents"))
                             .build();
 
 //                log.info("이번에 담기는 item = " + bookInfoDto);
@@ -673,13 +686,52 @@ public class PlanServiceImpl implements PlanService {
         return content.replaceAll("\n", "<br>");
     }
 
+    // 2023.8.21(월) 14h 변경
+    /*
+    private Map<String, Object> getAdditionalBookInfo(String isbn) {
+        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN13&ItemId=" + isbn + "&output=js&Version=20131101&OptResult=Toc";
+        //http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001 &itemIdType=ISBN13 &output=js &Version=20131101 &ItemId=9791189909284 &Version=20131101 &OptResult=Toc
+        RestTemplate restTemplate = new RestTemplate();
+        BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
+
+        Map<String, Object> results = new HashMap<>();
+
+        if (!responseDto.getItem().isEmpty()) {
+            Integer numOfPages = getNumOfPages(responseDto);
+            String tableOfContents = getTableOfContents(responseDto);
+
+            results.put("numOfPages", numOfPages);
+            results.put("tableOfContents", tableOfContents);
+
+            return results;
+        } else {
+            return null;
+        }
+    }
+     */
+
     private Integer getNumOfPages(String isbn) {
-        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN&ItemId=" + isbn + "&output=js&Version=20131101";
+        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN13&ItemId=" + isbn + "&output=js&Version=20131101";
         RestTemplate restTemplate = new RestTemplate();
         BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
 
         if (!responseDto.getItem().isEmpty()) {
             return responseDto.getItem().get(0).getSubInfo().getItemPage();
+        } else {
+            return null;
+        }
+    }
+
+    private String getTableOfContents(String isbn) {
+        String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN13&ItemId=" + isbn + "&output=js&Version=20131101&OptResult=Toc";
+        //http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001 &itemIdType=ISBN13 &output=js &Version=20131101 &ItemId=9791189909284 &Version=20131101 &OptResult=Toc
+        RestTemplate restTemplate = new RestTemplate();
+        BooksListSearchResponseDto responseDto = restTemplate.getForObject(itemRequestUrl, BooksListSearchResponseDto.class);
+
+        if (!responseDto.getItem().isEmpty()) {
+            String tableOfContents = responseDto.getItem().get(0).getSubInfo().getToc();
+            log.info("책 검색 목차 = " + tableOfContents);
+            return tableOfContents;
         } else {
             return null;
         }
