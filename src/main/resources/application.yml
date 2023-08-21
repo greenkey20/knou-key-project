@@ -5,10 +5,10 @@ spring:
   profiles:
     include: local
   sql:
-#    init:
+    init:
 #      schema-locations: classpath*:db/schema.sql
-#      data-locations: classpath*:db/data.sql
-#      mode: always
+      data-locations: classpath*:db/data.sql
+      mode: always
   jpa:
     hibernate:
       ddl-auto: create #validate
@@ -19,7 +19,7 @@ spring:
     database: mysql
     #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
-#    defer-datasource-initialization: true
+    defer-datasource-initialization: true
   mvc:
     view:
       prefix: /WEB-INF/views/
