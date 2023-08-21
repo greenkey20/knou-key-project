@@ -96,10 +96,10 @@ public class MemberController {
             if (statusBeforeLogin.equals("in calculation")) {
                 mv.setViewName("redirect:myNewPlanInsertAfterLogin.pl");
             } else {
-                mv.setViewName("redirect:/");
+                mv.setViewName("redirect:/mainPage.cm");
             }
         } else {
-            mv.setViewName("redirect:/");
+            mv.setViewName("redirect:/mainPage.cm");
         }
 
         return mv;
@@ -125,7 +125,7 @@ public class MemberController {
         if (memberId != null) {
 //            session.setAttribute("alertMsg", "성공적으로 회원 가입이 되었습니다!");
             session.setAttribute("joinMemberId", memberId);
-            mv.setViewName("redirect:/");
+            mv.setViewName("redirect:/mainPage.cm");
         } else {
             mv.addObject("errorMsg", "회원 가입에 실패했습니다").setViewName("common/error");
         }
@@ -149,7 +149,7 @@ public class MemberController {
     @RequestMapping("logout.me")
     public String logoutMember(HttpSession session) {
         session.invalidate();
-        return "redirect:/";
+        return "redirect:/mainPage.cm";
     }
 
     @RequestMapping("myPage.me")
