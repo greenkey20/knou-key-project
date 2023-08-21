@@ -12,7 +12,7 @@ import java.util.List;
 public interface ActionDateMapper {
     ActionDateResponseDto toActionDateResponseDto(ActionDate entity);
 
-    List<ActionDateResponseDto> entitiesToDtos(List<ActionDate> entites);
+    List<ActionDateResponseDto> entitiesToDtos(List<ActionDate> entities);
 
     // 2023.7.31(월) 2h10
     ActionDate toEntity(ActionDatePostRequestDto requestDto);

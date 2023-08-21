@@ -48,18 +48,26 @@
                 </td>
             </tr>
             <tr>
-                <td class="info">오늘 수행 분량</td>
+                <td class="info">오늘 수행 내용</td>
                 <td>
                     <c:choose>
                         <c:when test="${ plan.isMeasurable }">
-                            ${ actionDate.realActionQuantity }${ plan.unit }
-                            <span class="smallerLetters">(목표 분량: ${ actionDate.planActionQuantity }${ plan.unit })</span>
+                            <c:choose>
+                                <c:when test="${ actionDate.planStartUnit ne actionDate.planEndUnit }">
+                                    ${ actionDate.planStartUnit } ~ ${ actionDate.planEndUnit } ${ plan.unit }
+                                </c:when>
+                                <c:otherwise>
+                                    ${ actionDate.planStartUnit } ${ plan.unit }
+                                </c:otherwise>
+                            </c:choose>
+                             (총 ${ actionDate.realActionQuantity }${ plan.unit })
+                            <br>
+                            <span class="smallerLetters">[목표 분량: ${ actionDate.planActionQuantity }${ plan.unit }]</span>
                         </c:when>
                         <c:otherwise>
                             -
                         </c:otherwise>
                     </c:choose>
-
                 </td>
             </tr>
             <tr>
