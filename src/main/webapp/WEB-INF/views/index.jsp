@@ -26,17 +26,15 @@
             <div id="my-plans-summary">
                 <br>
                 <table>
-                    <c:forEach var="p" items="${ planList }" varStatus="status"> <!--statList도 순회해야 함-->
-                        <c:if test="${ p.status.toString() eq 'ACTIVE' }">
-                            <tr>
-                                <td class="mainCheck">✔️</td>
-                                <td>
-                                    <span class="boldFont">${ p.object }️</span>
-                                    <span class="boldFont">${ statList[status.index].accumulatedNumOfActions }회</span>/총 ${ p.totalDurationDays }회 |
-                                    <span class="boldFont">${ statList[status.index].ratioOfRealActionQuantityTillToday }% 분량</span>
-                                    (<span class="boldFont">${ statList[status.index].accumulatedRealActionQuantity }${ p.unit }</span>/총 ${ p.totalQuantity }${ p.unit }) 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
-                            </tr>
-                        </c:if>
+                    <c:forEach var="p" items="${ planList }">
+                        <tr>
+                            <td class="mainCheck">✔️</td>
+                            <td>
+                                <span class="boldFont">[${ p.object }️] </span>
+                                <span class="boldFont">${ p.accumulatedNumOfActions }회</span>/총 ${ p.totalNumOfActions }회 |
+                                <span class="boldFont">${ p.ratioOfRealActionQuantityTillToday }% 분량</span>
+                                (<span class="boldFont">${ p.accumulatedRealActionQuantity }${ p.unit }</span>/총 ${ p.totalQuantity }${ p.unit }) 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
+                        </tr>
                     </c:forEach>
                 </table>
                 <br>
