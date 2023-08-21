@@ -53,11 +53,11 @@
                     <c:choose>
                         <c:when test="${ plan.isMeasurable }">
                             <c:choose>
-                                <c:when test="${ actionDate.planStartUnit ne actionDate.planEndUnit }">
-                                    ${ actionDate.planStartUnit } ~ ${ actionDate.planEndUnit } ${ plan.unit }
+                                <c:when test="${ actionDate.realStartUnit ne actionDate.realEndUnit }">
+                                    ${ actionDate.realStartUnit } ~ ${ actionDate.realEndUnit } ${ plan.unit }
                                 </c:when>
                                 <c:otherwise>
-                                    ${ actionDate.planStartUnit } ${ plan.unit }
+                                    ${ actionDate.realStartUnit } ${ plan.unit }
                                 </c:otherwise>
                             </c:choose>
                              (총 ${ actionDate.realActionQuantity }${ plan.unit })
