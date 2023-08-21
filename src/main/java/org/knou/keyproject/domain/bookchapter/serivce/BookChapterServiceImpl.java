@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @PropertySource(value = "classpath:application-local.yml")
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 @Service
 public class BookChapterServiceImpl implements BookChapterService {
     private final BookChapterRepository bookChapterRepository;
@@ -41,7 +41,8 @@ public class BookChapterServiceImpl implements BookChapterService {
         return bookChapterMapper.toBookChapterResponseDtoList(bookChapterList);
     }
 
-    private void saveBookChapter(Long planId, String isbn) {
+    @Transactional
+    public void saveBookChapter(Long planId, String isbn) {
         String itemRequestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=" + bookApiKey + "&itemIdType=ISBN13&ItemId=" + isbn + "&output=js&Version=20131101&OptResult=Toc";
         //http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbgreenkey201608001 &itemIdType=ISBN13 &output=js &Version=20131101 &ItemId=9791189909284 &Version=20131101 &OptResult=Toc
         RestTemplate restTemplate = new RestTemplate();
@@ -55,7 +56,7 @@ public class BookChapterServiceImpl implements BookChapterService {
             log.info("검색 책 목차 파싱 결과 = " + Arrays.toString(bookChapterStrings));
 
             for (String bookChapterString : bookChapterStrings) {
-                if (bookChapterString != null || bookChapterString != "") {
+                if (bookChapterString != null || bookChapterString != "" || bookChapterString.length() == 0) {
                     Plan findPlan = planService.findVerifiedPlan(planId);
 
                     BookChapter bookChapter = BookChapter.builder()

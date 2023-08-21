@@ -220,8 +220,6 @@ public class PlanController {
         // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
         List<List<ActionDate>> calendars = planService.getActionDatesCalendars(planId); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
 
-
-
         List<BookChapterResponseDto> bookChapterResponseDtoList = new ArrayList<>();
         if (myPlanDetailResponseDto.getIsbn13() != null) {
             bookChapterResponseDtoList = bookChapterService.getTableOfContents(planId, myPlanDetailResponseDto.getIsbn13());
