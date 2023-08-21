@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface BookChapterService {
     List<BookChapterResponseDto> getTableOfContents(Long planId, String isbn13);
+
+    String updateIsDone(Long bookChapterId);
 }

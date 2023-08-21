@@ -29,4 +29,8 @@ public class BookChapter extends BaseTimeEntity {
 
     private Boolean isDone;
     private String isbn13;
+
+    public void changeIsDone(Boolean isDone) {
+        this.isDone = isDone;
+    }
 }
