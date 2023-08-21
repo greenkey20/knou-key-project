@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.knou.keyproject.global.utils.StringParsingUtils.replaceNewLineWithBr;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -37,7 +39,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board boardToSave = Board.builder()
                 .title(requestDto.getTitle())
-                .content(requestDto.getContent())
+                .content(replaceNewLineWithBr(requestDto.getContent()))
                 .boardType(getBoardTypeFromString(requestDto.getBoardType()))
                 .member(findMember)
                 .plan(findPlan)

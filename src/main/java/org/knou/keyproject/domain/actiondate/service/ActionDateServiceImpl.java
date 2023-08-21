@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import static org.knou.keyproject.global.utils.StringParsingUtils.replaceNewLineWithBr;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -90,11 +92,6 @@ public class ActionDateServiceImpl implements ActionDateService {
         }
 
         return savedActionDate;
-    }
-
-    // 2023.8.21(월) 11h40 메모 내용 parsing
-    private String replaceNewLineWithBr(String memo) {
-        return memo.replaceAll("\r\n", "<br>");
     }
 
     // 2023.7.31(월) 6h45
