@@ -371,6 +371,7 @@ public class Calculator {
                 }
             }
         } else { // 측정 어려운 활동의 경우, 계산기에서 deadlineType이 deadlinePeriod로만 가능하게 되어있음
+            /*
             String deadlinePeriodUnit = planToCalculate.getDeadlinePeriodUnit();
             Integer deadlinePeriodNum = planToCalculate.getDeadlinePeriodNum();
             // 2023.8.5(토) 16h20 로직 수정
@@ -387,10 +388,14 @@ public class Calculator {
                     totalNumOfActions = delim * 30;
                     break;
             }
-        }
 
-        if (totalNumOfActions < 1) {
-            totalNumOfActions = 1;
+            if (totalNumOfActions < 1) {
+                totalNumOfActions = 1;
+            }
+             */
+
+            // 2023.8.22(화) 7h40 수정
+            totalNumOfActions = (int) (totalDurationDays * frequencyFactor);
         }
 
         planToCalculate.setTotalNumOfActions(totalNumOfActions);
