@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 // 2023.8.5(토) 16h55 어제 PlanServiceImpl에 만든 plan 통계 관련 메서드들을 여기로 옮겨서, planService 외의 곳에서도 사용할 수 있도록 하고자 함
