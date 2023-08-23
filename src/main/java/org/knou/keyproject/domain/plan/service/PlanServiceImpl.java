@@ -19,7 +19,6 @@ import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
 import org.knou.keyproject.global.utils.Calendar;
-import org.knou.keyproject.global.utils.CustomBeanUtils;
 import org.knou.keyproject.global.utils.PlanStatisticUtils;
 import org.knou.keyproject.global.utils.calculator.Calculator;
 import org.knou.keyproject.global.utils.paging.PageInfo;
@@ -531,6 +530,7 @@ public class PlanServiceImpl implements PlanService {
 //        planToResume.setActionDatesList(resultList);
 
         // 기존/부모/수정 전 plan의 내용을 그대로 가지고 가도록 이렇게 대입 -> 2023.8.5(토) 17h15 나의 생각 = 이게 의도한대로 가능한지는 테스트 필요 -> 2023.8.6(일) 0h45 저장이 안 되는 것 같아서 '객체 복사' 검색해옴
+        // 2023.8.23(수) 15h 수정(그동안 추가된 필드들 추가)
         Plan resumedPlan = Plan.builder()
                 .member(planToResume.getMember())
                 .isMeasurable(planToResume.getIsMeasurable())
@@ -548,6 +548,7 @@ public class PlanServiceImpl implements PlanService {
                 .deadlinePeriodNum(planToResume.getDeadlinePeriodNum())
                 .deadlinePeriodUnit(planToResume.getDeadlinePeriodUnit())
                 .quantityPerDayPredicted(planToResume.getQuantityPerDayPredicted())
+                .chatGptResponse(planToResume.getChatGptResponse())
                 .parentPlan(planToResume)
                 .status(PlanStatus.ACTIVE)
                 .lastStatusChangedAt(planToResume.getLastStatusChangedAt())
@@ -556,6 +557,9 @@ public class PlanServiceImpl implements PlanService {
                 .quantityPerDay(planToResume.getQuantityPerDay())
                 .frequencyFactor(planToResume.getFrequencyFactor())
                 .isChild(true)
+                .isBook(planToResume.getIsBook())
+                .isbn13(planToResume.getIsbn13())
+                .tableOfContents(planToResume.getTableOfContents())
                 .build();
 //        resumedPlan = customBeanUtils.copyNonNullProperties(planToResume, resumedPlan);
 
