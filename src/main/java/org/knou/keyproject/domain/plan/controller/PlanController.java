@@ -1,6 +1,5 @@
 package org.knou.keyproject.domain.plan.controller;
 
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,9 @@ import org.knou.keyproject.domain.actiondate.repository.ActionDateCustomReposito
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
 import org.knou.keyproject.domain.bookchapter.dto.BookChapterResponseDto;
 import org.knou.keyproject.domain.bookchapter.serivce.BookChapterService;
+import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseLineDto;
+import org.knou.keyproject.domain.chatgpt.service.ChatGptResponseLineService;
+import org.knou.keyproject.domain.chatgpt.service.ChatGptService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -30,7 +32,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // 2023.7.22(토) 15h55
 @Slf4j
@@ -46,6 +51,7 @@ public class PlanController {
     private final ActionDateMapper actionDateMapper;
     private final ActionDateService actionDateService;
     private final BookChapterService bookChapterService;
+    private final ChatGptResponseLineService chatGptResponseLineService;
 
     private final int SIZE = 5;
     private final int THIS_YEAR = LocalDate.now().getYear();
@@ -225,11 +231,19 @@ public class PlanController {
             bookChapterResponseDtoList = bookChapterService.getTableOfContents(planId, myPlanDetailResponseDto.getIsbn13());
         }
 
+        // 2023.8.23(수) 16h45 추가 = ChatGPT 답변을 '나의 일정 상세 보기' 화면 하단에 추가하고자 함
+        List<ChatGptResponseLineDto> chatGptResponseLineDtoList = new ArrayList<>();
+        if (!myPlanDetailResponseDto.getIsMeasurable()) {
+            chatGptResponseLineDtoList = chatGptResponseLineService.getChatGptResponseLines(planId);
+        }
+        log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 chatGptResponseLines 받은 것의 크기 = " + chatGptResponseLineDtoList.size());
+
         m.addAttribute("plan", myPlanDetailResponseDto);
         m.addAttribute("actionDatesList", actionDatesList);
         m.addAttribute("statPlan", statisticDetailResponseDto);
         m.addAttribute("calendars", calendars);
         m.addAttribute("tableOfContents", bookChapterResponseDtoList);
+        m.addAttribute("chatGptResponseLines", chatGptResponseLineDtoList);
         return "plan/myPlanDetailView";
     }
 

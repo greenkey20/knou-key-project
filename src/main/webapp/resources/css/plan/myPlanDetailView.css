@@ -82,3 +82,12 @@ div {
     cursor: pointer;
     color: green;
 }
+
+#chatgpt-content {
+    display: none;
+}
+
+#chatgpt-toggle {
+    cursor: pointer;
+    color: green;
+}

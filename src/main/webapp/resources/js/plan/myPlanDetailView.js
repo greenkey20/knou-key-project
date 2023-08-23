@@ -8,6 +8,15 @@ function openCloseToc() {
     }
 }
 
+function openCloseChatGptLines() {
+    if ($("#chatgpt-content").css('display') == 'block') {
+        $("#chatgpt-content").css('display', 'none');
+        $("#chatgpt-toggle").html('보기');
+    } else {
+        $("#chatgpt-content").css('display', 'block');
+        $("#chatgpt-toggle").html('숨기기');
+    }
+}
 
 // $(function () {
 //     console.log("---- start ----");
