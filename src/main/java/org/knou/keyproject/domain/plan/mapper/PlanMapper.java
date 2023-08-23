@@ -110,6 +110,9 @@ public interface PlanMapper {
 
         plan.status(PlanStatus.RESULT);
 
+        // 2023.8.23(수) 22h20 추가
+        plan.isChild(false);
+
         // 2023.8.21(월) 14h55
         if (planPostRequestDto.getIsBook() != null) {
             plan.isbn13(planPostRequestDto.getIsbn13());

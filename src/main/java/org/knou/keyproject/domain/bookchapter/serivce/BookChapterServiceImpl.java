@@ -35,7 +35,13 @@ public class BookChapterServiceImpl implements BookChapterService {
 
     @Override
     public List<BookChapterResponseDto> getTableOfContents(Long planId, String isbn) {
-        saveBookChapter(planId, isbn);
+        // 2023.8.23(수) 21h35 이용자가 해당 계획 상세 내역을 처음으로 조회할 때만 API에서 받아오고, 그 후에는 DB에 저장된 내역 있는지 확인함 vs 이전에는 계획 상세 조회할 때마다 API에서 목차 받아옴
+        Long numOfBookChaptersByPlanId = bookChapterRepository.findCountByPlanId(planId);
+
+        // DB에 해당 planId 관련 목차 정보가 없을 때만 saveBookChapter() 메서드 호출
+        if (numOfBookChaptersByPlanId == 0) {
+            saveBookChapter(planId, isbn);
+        }
 
         List<BookChapter> bookChapterList = bookChapterRepository.findAllByPlanPlanIdOrderByBookChapterIdAsc(planId);
 

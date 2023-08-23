@@ -182,7 +182,7 @@ public class PlanController {
         Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
         log.info("planController getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planService.findAllByMemberMemberIdOrderByPlanIdDesc(memberId, pageable);
-        List<MyPlanDetailResponseDto> myPlanDetailResponseDtos = planService.getMyPlanDetailResponseDtos(memberId);
+//        List<MyPlanDetailResponseDto> myPlanDetailResponseDtos = planService.getMyPlanDetailResponseDtos(memberId);
         List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
 
         if (keyword != null) {
@@ -223,18 +223,32 @@ public class PlanController {
 
         MyPlanStatisticDetailResponseDto statisticDetailResponseDto = planService.getPlanStatisticDetailById(planId);
 
+        // 2023.8.23(수) 22h 아래 이것저것 추가하며 나의 생각 = controller에 너무 많은 기능/판단이 들어가 있나?
         // 현재 조회 대상 plan의 총 활동기간 달력 만들어옴
-        List<List<ActionDate>> calendars = planService.getActionDatesCalendars(planId); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
+        List<List<ActionDate>> calendars = new ArrayList<>();
+        if (actionDatesList.size() > 0) {
+            calendars = planService.getActionDatesCalendars(planId); // 2023.7.31(월) 4h 나의 생각 = lazy fetch로 되어있어서 findPlan에 actionDates 리스트가 제대로 들어있지 않았다..? 그래서 2023. 7월 이외의 달력이 안 만들어졌다?
+        } else {
+            calendars = null;
+        }
 
         List<BookChapterResponseDto> bookChapterResponseDtoList = new ArrayList<>();
-        if (myPlanDetailResponseDto.getIsbn13() != null) {
-            bookChapterResponseDtoList = bookChapterService.getTableOfContents(planId, myPlanDetailResponseDto.getIsbn13());
+        if (myPlanDetailResponseDto.getIsbn13() != null) { // 도서인 경우
+            if (myPlanDetailResponseDto.getIsChild()) { // 일시 정지 후 새로 생성된 plan인 경우
+                bookChapterResponseDtoList = bookChapterService.getTableOfContents(myPlanDetailResponseDto.getParentPlanId(), myPlanDetailResponseDto.getIsbn13()); // 부모 plan의 목차 정보 가지고 감
+            } else {
+                bookChapterResponseDtoList = bookChapterService.getTableOfContents(planId, myPlanDetailResponseDto.getIsbn13());
+            }
         }
 
         // 2023.8.23(수) 16h45 추가 = ChatGPT 답변을 '나의 일정 상세 보기' 화면 하단에 추가하고자 함
         List<ChatGptResponseLineDto> chatGptResponseLineDtoList = new ArrayList<>();
-        if (!myPlanDetailResponseDto.getIsMeasurable()) {
-            chatGptResponseLineDtoList = chatGptResponseLineService.getChatGptResponseLines(planId);
+        if (!myPlanDetailResponseDto.getIsMeasurable()) { // 측정하기 어려운 일인 경우
+            if (myPlanDetailResponseDto.getIsChild()) { // 일시 정지 후 새로 생성된 plan인 경우
+                chatGptResponseLineDtoList = chatGptResponseLineService.getChatGptResponseLines(myPlanDetailResponseDto.getParentPlanId());
+            } else {
+                chatGptResponseLineDtoList = chatGptResponseLineService.getChatGptResponseLines(planId);
+            }
         }
         log.info("plan 컨트롤러 getMyPlanDetail() 메서드에서 chatGptResponseLines 받은 것의 크기 = " + chatGptResponseLineDtoList.size());
 
