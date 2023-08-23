@@ -14,6 +14,7 @@ import org.knou.keyproject.domain.plan.dto.MyPlanDetailResponseDto;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.service.PlanService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -156,5 +157,12 @@ public class MemberController {
     public String myPage(HttpServletRequest request) {
 //        request.getSession().getAttribute("loginUser")
         return "member/myPage";
+    }
+
+    // 2023.8.24(목) 1h35 틀만 추가해둠
+    @GetMapping("updateMemberInfo.me")
+    public String updateMemberInfo(Model model) {
+
+        return "member/updateMemberInfoForm";
     }
 }

@@ -23,6 +23,7 @@ public class MemberResponseDto {
         private String nickname;
         private String profileImageUrl;
         private MemberStatus status;
+        private String email;
     }
 
     @Getter

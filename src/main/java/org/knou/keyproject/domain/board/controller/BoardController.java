@@ -107,6 +107,14 @@ public class BoardController {
         return "board/boardListView";
     }
 
+    // 2023.8.24(목) 1h25 틀만 추가해 둠
+    @GetMapping("myBoardList.bd")
+    public String getMyBoardList(Model model) {
+
+
+        return "board/myBoardListView";
+    }
+
     @GetMapping("boardDetail.bd")
     public String getBoardDetail(@RequestParam(name = "boardId") @Positive Long boardId, Model model) {
         boardService.increaseReadCount(boardId);
