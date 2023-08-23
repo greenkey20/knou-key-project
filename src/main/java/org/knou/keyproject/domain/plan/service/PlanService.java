@@ -66,4 +66,6 @@ public interface PlanService {
     MyPlanListResponseDto getPlanAboutBoard(Long boardId);
 
     MyPlanStatisticDetailResponseDto getPlanStatisticDetailAboutBoard(Long boardId);
+
+    List<MainPageResponseDto> findPlanListInfoByMember(Long memberId);
 }

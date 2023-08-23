@@ -13,7 +13,6 @@ import org.knou.keyproject.domain.bookchapter.dto.BookChapterResponseDto;
 import org.knou.keyproject.domain.bookchapter.serivce.BookChapterService;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseLineDto;
 import org.knou.keyproject.domain.chatgpt.service.ChatGptResponseLineService;
-import org.knou.keyproject.domain.chatgpt.service.ChatGptService;
 import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.dto.*;
 import org.knou.keyproject.domain.plan.entity.Plan;
@@ -183,7 +182,7 @@ public class PlanController {
         log.info("planController getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = " + memberId); // 2023.7.28(금) 16h50 plan controller getMyPlanList()에서 특정 회원의 나의 일정 목록 불러올 때 memberId = 1 이렇게 찍히는데, 왜 null 회원의 일정도 나오지? 회원2 가입시키고 해봐야겠다
         Page<Plan> planList = planService.findAllByMemberMemberIdOrderByPlanIdDesc(memberId, pageable);
 //        List<MyPlanDetailResponseDto> myPlanDetailResponseDtos = planService.getMyPlanDetailResponseDtos(memberId);
-        List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
+//        List<MyPlanStatisticDetailResponseDto> statisticDtos = planService.findStatisticDtosByMember(memberId);
 
         if (keyword != null) {
             planList = planRepository.findByMemberMemberIdAndObjectContaining(memberId, keyword, pageable);
@@ -196,14 +195,18 @@ public class PlanController {
         int endBlockPage = startBlockPage + pageBlock - 1;
         endBlockPage = totalPages < endBlockPage ? totalPages : endBlockPage;
 
-        List<Plan> list = planList.getContent();
-        List<MyPlanListResponseDto> responseDtos = planService.getMyPlanListResponseDtoList(list);
+//        List<Plan> list = planList.getContent();
+//        List<MyPlanListResponseDto> responseDtos = planService.getMyPlanListResponseDtoList(list);
+
+        // 2023.8.23(수) 23h40 plan이랑 statDto랑 별개로 jsp로 보내면 jsp에서 각각 동시에 순회해야 하는데, plan의 index에 의한 statDto 참조 순회 잘 안 되는 것 같아 수정
+        List<MainPageResponseDto> mainPageResponseDtos = planService.findPlanListInfoByMember(memberId);
 
         mv.addObject("startBlockPage", startBlockPage)
                 .addObject("endBlockPage", endBlockPage)
                 .addObject("planList", planList)
-                .addObject("list", responseDtos)
-                .addObject("statList", statisticDtos)
+//                .addObject("list", responseDtos)
+//                .addObject("statList", statisticDtos)
+                .addObject("planDetail", mainPageResponseDtos)
                 .setViewName("plan/myPlanListView");
 
 //        Long memberId = ((Member) request.getSession().getAttribute("loginUser")).getMemberId();

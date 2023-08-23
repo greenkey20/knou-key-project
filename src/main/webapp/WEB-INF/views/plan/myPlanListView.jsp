@@ -22,7 +22,7 @@
 
     <!--2023.7.28(금) 17h 추가-->
     <c:choose>
-        <c:when test="${ empty list }">
+        <c:when test="${ empty planDetail }">
             일정이 없습니다
             <br>
             <br>
@@ -45,7 +45,7 @@
             <!--테이블 영역 시작-->
             <div>
 
-                <c:forEach var="p" items="${ list }" varStatus="status"> <!--statList도 순회해야 함 + 두 lists 모두 planId desc으로 정렬되어있음-->
+                <c:forEach var="p" items="${ planDetail }" varStatus="status"> <!--statList도 순회해야 함 + 두 lists 모두 planId desc으로 정렬되어있음 -> 2023.8.24(목) 0h planList와 statList를 합친 planDetail dto로 받아옴-->
                     <div class="object">
                         <h4>${ p.object }</h4>
                     </div>
@@ -69,10 +69,10 @@
                                             <c:choose>
                                                 <c:when test="${ p.isMeasurable }">
                                                     <c:choose>
-                                                        <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal lt 0 }">
+                                                        <c:when test="${ p.quantityDifferenceBetweenPlanAndReal lt 0 }">
                                                             ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 앞서 있어요 👍</span>
                                                         </c:when>
-                                                        <c:when test="${ statList[status.index].quantityDifferenceBetweenPlanAndReal gt 0 }">
+                                                        <c:when test="${ p.quantityDifferenceBetweenPlanAndReal gt 0 }">
                                                             ⭐️ 수행 중 <span class="smallerLetters">→ 계획보다 뒤처져 있어요 🌱</span>
                                                         </c:when>
                                                         <c:when test="${ today < p.startDate }">
@@ -131,12 +131,12 @@
                             <tr>
                                 <td class="title">진행률</td>
                                 <td>
-                                    ${ statList[status.index].accumulatedNumOfActions }회 진행,
+                                    ${ p.accumulatedNumOfActions }회 진행,
                                     <c:if test="${ p.isMeasurable }">
                                         <br>
-                                        현재 ${ statList[status.index].accumulatedRealActionQuantity } ${ p.unit }
+                                        현재 ${ p.accumulatedRealActionQuantity } ${ p.unit }
                                         <span class="smallerLetters">(/전체 ${ p.totalQuantity } ${ p.unit }) </span>
-                                        전체 분량의 ${ statList[status.index].ratioOfRealActionQuantityTillToday }% 완료
+                                        전체 분량의 ${ p.ratioOfRealActionQuantityTillToday }% 완료
                                     </c:if>
                                 </td>
                             </tr>
