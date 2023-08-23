@@ -174,7 +174,7 @@ public class PlanController {
     }
 
     @GetMapping("myPlanList.pl")
-    public ModelAndView getMyPlanList(@PageableDefault(size = 3, sort = "planId", direction = Sort.Direction.DESC) Pageable pageable,
+    public ModelAndView getMyPlanList(@PageableDefault(size = 5, sort = "planId", direction = Sort.Direction.DESC) Pageable pageable,
                                       @RequestParam(required = false, defaultValue = "") String keyword,
                                       HttpSession session,
                                       ModelAndView mv) {
@@ -214,6 +214,14 @@ public class PlanController {
 
 //        mv.addObject("list", list).setViewName("plan/myPlanListView");
         return mv;
+    }
+
+    // 2023.8.24(목) 0h45 추가
+    @GetMapping("myTodayPlanList.pl")
+    public String getMyTodayPlanList(Model model) {
+
+
+        return "plan/myTodayPlanListView";
     }
 
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
