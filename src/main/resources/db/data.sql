@@ -135,7 +135,7 @@ INSERT INTO `plan` (`deadline_date`,`deadline_period_num`,`frequency_factor`,`ha
 VALUES ('2023-08-16',NULL,0.5714285714285714,false,false,true,NULL,true,'2023-08-21',15,15,'2023-08-14',NULL,3,40,'2023-08-21 13:34:56.698740','2023-08-21 13:35:51.501812',1,NULL,5,NULL,NULL,NULL,NULL,'주 4회','TIMES','9791160266030','무민 가족과 크리스마스 대소동','COMPLETE',NULL,'페이지');
 
 /*
-Date: 2023-08-22 09:52 -> 2023.8.23(수) 15h40 프로그램 구동 시킬 때 이 6번 plan만 db에 저장이 안 되는데(관련 에러나 로그는 없음), 왜인지 모르겠다
+Date: 2023-08-22 09:52 -> 2023.8.23(수) 15h40 프로그램 구동 시킬 때 이 6번 plan만 db에 저장이 안 되는데(관련 에러나 로그는 없음), 왜인지 모르겠다석 -> 여기 날짜 앞에 썼던 샾 기호 주석 때문이었다
 INSERT INTO `plan` (`deadline_date`,`deadline_period_num`,`frequency_factor`,`has_deadline`,`has_start_date`,`is_book`,`is_child`,`is_measurable`,`last_status_changed_at`,
                     `quantity_per_day`,`quantity_per_day_predicted`,`start_date`,`total_duration_days`,`total_num_of_actions`,`total_quantity`,`created_at`,`last_modified_at`,
                     `member_id`,`parent_plan_id`,`plan_id`,`chat_gpt_response`,
