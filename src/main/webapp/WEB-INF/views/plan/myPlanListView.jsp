@@ -83,7 +83,16 @@
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </c:when>
-                                                <c:otherwise>⭐️ 수행 중</c:otherwise>
+                                                <c:otherwise>
+                                                    <c:choose>
+                                                        <c:when test="${ today < p.startDate }">
+                                                            아직 시작일이 되지 않았어요
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            ⭐️ 수행 중
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:otherwise>
                                             </c:choose>
                                         </c:when>
                                         <c:when test="${ p.status eq 'COMPLETE' }">
