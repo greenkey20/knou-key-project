@@ -11,6 +11,7 @@ import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.entity.DateType;
 import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.bookchapter.entity.BookChapter;
+import org.knou.keyproject.domain.chatgpt.entity.ChatGptResponseLine;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.global.audit.BaseTimeEntity;
 
@@ -42,6 +43,10 @@ public class Plan extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "plan"/*, cascade = CascadeType.ALL*/)
     private List<BookChapter> bookChapterList = new ArrayList<>();
+
+    // 2023.8.23(수) 17h10
+    @OneToMany(mappedBy = "plan")
+    private List<ChatGptResponseLine> chatGptResponseLineList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
 //    private List<Scrap> scrapList = new ArrayList<>();

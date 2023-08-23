@@ -10,6 +10,8 @@ import org.knou.keyproject.domain.board.entity.Board;
 import org.knou.keyproject.domain.board.repository.BoardRepository;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptRequestDto;
 import org.knou.keyproject.domain.chatgpt.dto.ChatGptResponseDto;
+import org.knou.keyproject.domain.chatgpt.entity.ChatGptResponseLine;
+import org.knou.keyproject.domain.chatgpt.repository.ChatGptResponseLineRepository;
 import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.member.service.MemberService;
@@ -36,11 +38,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.knou.keyproject.global.utils.StringParsingUtils.replaceNewLineWithBr;
+import static org.knou.keyproject.global.utils.StringParsingUtils.splitIntoLinesByBr;
 
 // 2023.7.23(일) 22h
 @Slf4j
@@ -60,6 +62,7 @@ public class PlanServiceImpl implements PlanService {
     private final Calculator calculator;
     private final PlanStatisticUtils planStatisticUtils;
     private final ActionDateMapper actionDateMapper;
+    private final ChatGptResponseLineRepository chatGptResponseLineRepository;
 
     // 2023.8.2(수) 1h50 ChatGpt 호출 관련 추가
     @Qualifier("openaiRestTemplate")
@@ -187,11 +190,29 @@ public class PlanServiceImpl implements PlanService {
         List<ActionDate> actionDatesList = setOrdersAndContents(findPlan);
         actionDateRepository.saveAll(actionDatesList); // 2023.8.21(월) 1h25 나의 궁금증 = 이것도 필요 없으려나? JPA 어렵다
 
+        // 2023.8.23(수) 16h50 추가 = 사용자가 ChatGPT 질의 결과를 '나의 일정'에 저장하기로 결심했다면, 그 때 ChatGPT response 문자열을 line별 파싱해서 별도의 테이블에 저장한다
+        if (!findPlan.getIsMeasurable()) {
+            String[] responseLines = splitIntoLinesByBr(findPlan.getChatGptResponse());
+            log.info("ChatGPT 답변 파싱 결과 = " + Arrays.toString(responseLines));
+
+            for (String responseLine : responseLines) {
+                if (responseLine != null || responseLine != "" || responseLine.length() == 0) {
+                    ChatGptResponseLine chatGptResponseLine = ChatGptResponseLine.builder()
+                            .chatGptResponseLineString(responseLine)
+                            .plan(findPlan)
+                            .isDone(false)
+                            .build();
+
+                    chatGptResponseLineRepository.save(chatGptResponseLine);
+                }
+            }
+        }
+
         // 2023.7.29(토) 0h15 jpa update를 어떻게 하는 건지 갑자기 정확히 알지/이해 못하는 것 같아서 googling -> https://study-easy-coding.tistory.com/143
         // setter로 값 변경하면 변경 감지해서 수정 쿼리 날려 db에 반영 = dirty checking
 //        planRepository.save(findPlan);
         // 2023.7.29(토) 0h35 나의 궁금증 = 위 save() 호출 안 하는데, 왜 아직도 새로 저장되지..?
-    }
+    } // saveMyNewPlan() 메서드 종료
 
     // 2023.7.29(토) 22h20 추가 = 계산 결과 저장을 위해 로그인 하고 왔을 때 actionDates가 추가로 저장(추가로 insert문들이 나가고 있었음)되지 않도록 하기 위해 = 이 경우에는 해당 memberId도 member만 변경해주면 됨
     @Override
@@ -485,7 +506,9 @@ public class PlanServiceImpl implements PlanService {
         }
 
         String content = chatGptResponseDto.getChoices().get(0).getMessage().getContent();
-        return parseChatGptResponse(content);
+
+//        return parseChatGptResponse(content);
+        return replaceNewLineWithBr(content); // 2023.8.23(수) 16h35 게시글 관련 이 메서드 만든 게 생각나 바꿔봄
     }
 
     // 2023.8.5(토) 0h25 컨트롤러에서 하던 역할을 여기로 분리

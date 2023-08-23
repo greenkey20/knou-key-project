@@ -365,7 +365,48 @@
     <br>
     <br>
 
+    <!--2023.8.23(수) 17h30-->
+    <!--측정 어려운 일의 경우, chatGpt 답변을 line by line + checkbox 보여줌-->
+    <c:if test="${ !plan.isMeasurable }">
+        <div class="checkChatGptResponseLines">
+            * ChatGpt가 답변해준 활동 목록 예시 [<span id="chatgpt-toggle" onclick="openCloseChatGptLines()">보기</span>] (수행 완료한 활동이 있다면 체크해 보세요)
+            <div id="chatgpt-content" align="left">
+                <table border="darkgreen" align="center">
+                    <thead>
+                    <tr>
+                        <td>활동</td>
+                        <td>체크</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="line" items="${ chatGptResponseLines }">
+                        <c:if test="${ not empty line }">
+                            <tr>
+                                <td>${ line.chatGptResponseLineString }</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${ line.isDone eq true }">
+                                            <input class="chatgpt-check" type="checkbox" name="isDone" checked onclick="checkChatGpt(this);" value="${ line.chatGptResponseLineId }">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input class="chatgpt-check" type="checkbox" name="isDone" onclick="checkChatGpt(this);" value="${ line.chatGptResponseLineId }">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <input hidden name="chatGptResponseLineId" value="${ line.chatGptResponseLineId }">
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </c:if>
+    <br>
+    <br>
+
     <script>
+        // 토글 관련 함수들은 js 파일에 있음
         function check(box) {
             if (box.checked == true) {
                 console.log("체크박스 체크했음");
@@ -386,6 +427,33 @@
                     },
                     error: function () {
                         console.log("bookChIsDone Ajax 통신 실패")
+                    }
+                });
+            } else {
+                console.log("체크박스 해제했음")
+            }
+        }
+
+        function checkChatGpt(box) {
+            if (box.checked == true) {
+                console.log("체크박스 체크했음");
+                let $chatGptResponseLineId = box.value;
+                console.log("선택된 체크박스의 chatGptResponseLineId = " + $chatGptResponseLineId)
+
+                $.ajax({
+                    url: "chatGptResponseLineIsDone.cg",
+                    // dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        chatGptResponseLineId: $chatGptResponseLineId
+                    },
+                    success: function (result) {
+                        console.log("chatGptResponseLineIsDone Ajax 통신 성공!");
+                        console.log(result);
+
+                    },
+                    error: function () {
+                        console.log("chatGptResponseLineIsDone Ajax 통신 실패")
                     }
                 });
             } else {
