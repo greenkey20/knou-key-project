@@ -686,9 +686,15 @@ public class PlanServiceImpl implements PlanService {
         // 특정 회원이 진행 중(ACTIVE 상태)인 활동들의 기본 정보(planList) 및 몇 가지 통계 정보(statList) 필요
         List<MyPlanDetailResponseDto> planList = findAllActivePlansByMemberMemberId(findMemberId);  // planId 내림차순 정렬
         List<MyPlanStatisticDetailResponseDto> statList = findAllActiveStatisticDtosByMember(planList); // planList 리스트 순서대로 순회해서 만들어옴
+
+        return combineIntoMainPageResponseDtoList(planList, statList);
+    }
+
+    // 2023.8.24(목) 0h 추가
+    private List<MainPageResponseDto> combineIntoMainPageResponseDtoList(List<MyPlanDetailResponseDto> planList, List<MyPlanStatisticDetailResponseDto> statList) {
+        // 이론적으로 planList 및 statList의 크기는 동일해야 함 <- 특정 회원 id를 기준으로 조회한 planList를 가지고 statList를 만든 것임
         log.info("planList 크기 == statList 크기? = " + (planList.size() == statList.size()));
 
-        // 이론적으로 planList 및 statList의 크기는 동일해야 함 <- 특정 회원이
         List<MainPageResponseDto> mainPageResponseDtos = new ArrayList<>();
 
         for (int i = 0; i < planList.size(); i++) {
@@ -700,6 +706,19 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return mainPageResponseDtos;
+    }
+
+    // 2023.8.23(수) 23h45
+    @Override
+    public List<MainPageResponseDto> findPlanListInfoByMember(Long memberId) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+        Long findMemberId = findMember.getMemberId();
+
+        List<MyPlanDetailResponseDto> planList = findAllPlansByMemberMemberId(findMemberId);
+        List<MyPlanStatisticDetailResponseDto> statList = findAllStatisticDtosByMember(planList);
+        log.info("planList 크기 == statList 크기? = " + (planList.size() == statList.size()));
+
+        return combineIntoMainPageResponseDtoList(planList, statList);
     }
 
     // 2023.8.21(월) 17h40 추가
@@ -731,10 +750,27 @@ public class PlanServiceImpl implements PlanService {
         return statisticDtos;
     }
 
+    private List<MyPlanStatisticDetailResponseDto> findAllStatisticDtosByMember(List<MyPlanDetailResponseDto> planList) {
+        List<MyPlanStatisticDetailResponseDto> statisticDtos = new ArrayList<>();
+
+        for (MyPlanDetailResponseDto plan : planList) {
+            Long thisPlanId = plan.getPlanId();
+            MyPlanStatisticDetailResponseDto statisticDto = getPlanStatisticDetailById(thisPlanId);
+            statisticDtos.add(statisticDto);
+        }
+
+        return statisticDtos;
+    }
+
     // 2023.8.7(월) 4h55
     @Override
     public List<MyPlanDetailResponseDto> findAllActivePlansByMemberMemberId(Long memberId) {
         List<Plan> findPlans = planRepository.findAllActivePlansByMemberMemberId(memberId); // planId 내림차순 정렬
+        return planMapper.toMyPlanDetailResponseDtos(findPlans);
+    }
+
+    private List<MyPlanDetailResponseDto> findAllPlansByMemberMemberId(Long memberId) {
+        List<Plan> findPlans = planRepository.findAllPlansByMemberMemberId(memberId);
         return planMapper.toMyPlanDetailResponseDtos(findPlans);
     }
 
