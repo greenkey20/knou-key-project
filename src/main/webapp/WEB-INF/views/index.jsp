@@ -20,7 +20,10 @@
         <c:if test="${ not empty planList }">
             <h4>현재 수행 중인 활동</h4>
 
-            <div align="right"><button class="greenBtn" onclick="location.href='myPlanList.pl'">나의 일정 보기</button></div>
+            <div align="right">
+                <button class="greenBtn" onclick="location.href='myPlanList.pl'">나의 활동 전체 보기</button>
+                <button class="greenBtn" onclick="location.href='myTodayPlanList.pl'">오늘의 일정 보기</button>
+            </div>
             <br>
 
             <div id="my-plans-summary">
@@ -31,9 +34,13 @@
                             <td class="mainCheck">✔️</td>
                             <td>
                                 <span class="boldFont">[${ p.object }️] </span>
-                                <span class="boldFont">${ p.accumulatedNumOfActions }회</span>/총 ${ p.totalNumOfActions }회 |
-                                <span class="boldFont">${ p.ratioOfRealActionQuantityTillToday }% 분량</span>
-                                (<span class="boldFont">${ p.accumulatedRealActionQuantity }${ p.unit }</span>/총 ${ p.totalQuantity }${ p.unit }) 진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
+                                <span class="boldFont">${ p.accumulatedNumOfActions }회</span>/총 ${ p.totalNumOfActions }회
+                                <c:if test="${ p.isMeasurable }">
+                                    |
+                                    <span class="boldFont"> ${ p.ratioOfRealActionQuantityTillToday }% 분량</span>
+                                    (<span class="boldFont">${ p.accumulatedRealActionQuantity }${ p.unit }</span>/총 ${ p.totalQuantity }${ p.unit })
+                                </c:if>
+                                진행 중</td> <!--loginMemberDto 만들어서 필요한 통계 자료 받아와야 함 + Member 객체 속성 중 일부만 받아와도 됨-->
                         </tr>
                     </c:forEach>
                 </table>

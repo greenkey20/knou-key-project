@@ -51,7 +51,7 @@
                 <c:otherwise>
                     <!-- 로그인 후 -->
                     <div class="service_area">
-                        <a href="myPlanList.pl">My Page</a> | <a href="logout.me">로그아웃</a> <!--myPage.me-->
+                        <a href="myPage.me">My Page</a> | <a href="logout.me">로그아웃</a> <!--myPage.me-->
                     </div>
 
                     <!--2023.7.27(목) 1h20 위 메뉴로도 충분할 것 같은 바, 주석 처리함-->
