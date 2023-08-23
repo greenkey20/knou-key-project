@@ -93,6 +93,9 @@
         <br>
         <br>
     </div>
+    <div class="object" align="right">
+        <button type="button" onclick="location.href='myPlanList.pl'">목록으로 가기</button>
+    </div>
 
     <!--2023.7.31(월) 3h35 여기에도 활동기간의 달력 표시하고자 함-->
     <div class="calendar" align="center">
