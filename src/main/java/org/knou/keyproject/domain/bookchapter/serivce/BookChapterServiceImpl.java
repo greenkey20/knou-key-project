@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.knou.keyproject.global.utils.StringParsingUtils.splitIntoLinesByBr;
+
 @Slf4j
 @RequiredArgsConstructor
 @PropertySource(value = "classpath:application-local.yml")
@@ -47,7 +49,7 @@ public class BookChapterServiceImpl implements BookChapterService {
 
         findBookChapter.changeIsDone(true);
 
-        return "updateIsDone";
+        return "bookChapter update is done!";
     }
 
     private BookChapter findVerifiedBookChapter(Long bookChapterId) {
@@ -65,7 +67,8 @@ public class BookChapterServiceImpl implements BookChapterService {
             String tableOfContents = responseDto.getItem().get(0).getSubInfo().getToc();
             log.info("검색 책 목차 = " + tableOfContents);
 
-            String[] bookChapterStrings = tableOfContents.split("<BR>");
+//            String[] bookChapterStrings = tableOfContents.split("<BR>");
+            String[] bookChapterStrings = splitIntoLinesByBr(tableOfContents); // 2023.8.23(수) 16h40 메서드 만들고 활용해봄
             log.info("검색 책 목차 파싱 결과 = " + Arrays.toString(bookChapterStrings));
 
             for (String bookChapterString : bookChapterStrings) {
