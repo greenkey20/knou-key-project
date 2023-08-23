@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>일정 상세 보기</title>
+    <title>활동 일정 상세 보기</title>
     <link rel="stylesheet" href="resources/css/plan/myPlanDetailView.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
-    <h2>일정 상세 보기</h2>
+    <h2>활동 일정 상세 보기</h2>
     <br>
     <div class="object">
         <h3>${ plan.object }</h3>
@@ -196,7 +196,7 @@
 
     <div class="calendar" align="center">
         <br>
-        <h4> 일정 목록 </h4>
+        <h4> 활동 일정 목록 </h4>
 <%--        * 수행 여부를 체크하면 기본적으로 수행 예정 분량이 실제 수행 분량으로 기록됩니다<br>--%>
 <%--        * 상세 기록 버튼을 클릭해서 수행 소요 시간과 메모를 기억해 보세요~--%>
         <table class="actionDatesListTable" border="darkgreen" align="center">

@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>나의 일정</title>
+    <title>나의 활동</title>
     <link rel="stylesheet" href="resources/css/plan/myPlanListView.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
 
 <div class="outer"> <!--header 아래 모든 부분 감싸는 div-->
 
-    <h2>나의 일정</h2>
+    <h2>나의 활동</h2>
     <br>
 
     <!--2023.7.28(금) 17h 추가-->
