@@ -49,6 +49,7 @@ public class MyPlanDetailResponseDto {
 //    }
 
     private Boolean isChild;
+    private Long parentPlanId;
     private int sizeOfModifiedPlansList;
 
     // 2023.8.21(월) 14h55

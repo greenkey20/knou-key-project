@@ -96,6 +96,8 @@
 
     <!--2023.7.31(월) 3h35 여기에도 활동기간의 달력 표시하고자 함-->
     <div class="calendar" align="center">
+        <c:if test="${ empty calendars }"><br>일시 정지 전 활동 내역이 없습니다</c:if>
+
         <c:forEach var="calendarDatesList" items="${ calendars }" varStatus="status">
             <!--JSP/Java로 달력 만들기-->
             <div class="navigation"> <!--xxxx. x 형식의 제목 만들어야 함-->
@@ -504,6 +506,8 @@
         </c:otherwise>
     </c:choose>
     </div>
+    <br>
+    <br>
 </div> <!--header 아래 모든 부분 감싸는 div 'outer' 영역 끝-->
 
 <!-- The Modal : pauseForm -->

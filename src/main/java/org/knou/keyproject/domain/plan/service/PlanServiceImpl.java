@@ -292,6 +292,12 @@ public class PlanServiceImpl implements PlanService {
 
         myPlanDetailResponseDto.lastStatusChangedAt(findPlan.getLastStatusChangedAt());
         myPlanDetailResponseDto.isChild(findPlan.getIsChild());
+
+        // 2023.8.23(수) 22h 추가 = 일정 상세 조회 시 누군가의 child인 경우에는 부모의 목차 정보를 사용하기 위해서 추가
+        if (findPlan.getIsChild()) {
+            myPlanDetailResponseDto.parentPlanId(findPlan.getParentPlan().getPlanId());
+        }
+
         myPlanDetailResponseDto.sizeOfModifiedPlansList(findPlan.getModifiedPlans().size());
 
         // 2023.8.21(월) 14h55
@@ -619,9 +625,13 @@ public class PlanServiceImpl implements PlanService {
 //                originalActionDatesList.remove(originalActionDatesList.get(lastIndex));
                 actionDateRepository.delete(originalActionDatesList.get(lastIndex));
                 lastIndex--;
+
+                if (lastIndex < 0) {
+                    break;
+                }
             }
             log.info("for문 돌 때 date = " + date + ", lastIndex = " + lastIndex);
-        }
+        } // for문 영역 끝
 
 //        return originalActionDatesList;
     }
