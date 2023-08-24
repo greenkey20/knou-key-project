@@ -101,3 +101,11 @@ div {
 .actionDatesListTableArea {
     background-color: lightgreen;
 }
+
+.thisActionDateDetailLink {
+    text-decoration: none;
+    cursor: pointer;
+    background-color: lightgrey;
+    border-color: black;
+    color: black;
+}

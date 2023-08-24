@@ -247,12 +247,12 @@
     <script>
         // 2023.8.24(목) 18h45
         function searchThisDayPlanList(numOfDate) {
-            console.log("searchThisDayPlanList() 함수 안에 들어왔어요~");
+            // console.log("searchThisDayPlanList() 함수 안에 들어왔어요~");
 
             let $numOfYear = $("#this-year").text();
             let $numOfMonth = $("#this-month").text();
             let $numOfDate = numOfDate;
-            console.log($numOfYear + "년 " + $numOfMonth + "월 " + $numOfDate + "일 actionDatesList를 구하고자 함");
+            // console.log($numOfYear + "년 " + $numOfMonth + "월 " + $numOfDate + "일 actionDatesList를 구하고자 함");
 
             $.ajax({
                 url: "thisDayPlanList.pl",
@@ -263,7 +263,7 @@
                     date: $numOfDate
                 },
                 success: function (result) {
-                    console.log(result);
+                    // console.log(result);
 
                     let divContent = $numOfYear + "년 " + $numOfMonth + "월 " + $numOfDate + "일자 일정";
                     $("#this-date-area").text(divContent);
@@ -274,9 +274,7 @@
                         console.log("해당 날짜에 일정 없네요");
                         tbody = "<tr><td colspan='5'>해당 일자에 예정된 활동 일정이 없습니다</td></tr>";
                     } else {
-                        console.log("해당 날짜에 일정 있습니다"); // 2023.8.24(목) 21h5 확인
-
-
+                        // console.log("해당 날짜에 일정 있습니다"); // 2023.8.24(목) 21h5 확인
 
                         for (var i = 0; i < result.length; i++) {
                             tbody += "<tr>"
@@ -319,7 +317,7 @@
                                 tbody += "</td>";
                             }
 
-                            tbody += "<td><button type='button' onclick='location.href='myPlanDetail.pl?planId=" + result[i].planId + "''>활동 상세 조회</button></td>"
+                            tbody += "<td><a class='thisActionDateDetailLink' href='myPlanDetail.pl?planId=" + result[i].planId + "'>활동 상세 조회</td>"
                                 + "</tr>";
                         } // for문 영역 끝
                     } // if-else문 끝
