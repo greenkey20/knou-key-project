@@ -216,14 +216,6 @@ public class PlanController {
         return mv;
     }
 
-    // 2023.8.24(목) 0h45 추가
-    @GetMapping("myTodayPlanList.pl")
-    public String getMyTodayPlanList(Model model) {
-
-
-        return "plan/myTodayPlanListView";
-    }
-
     // 2023.7.28(금) 0h + 2023.7.30(일) 4h30 + 2023.7.31(월) 3h45 총 활동기간 달력 추가
     @GetMapping("myPlanDetail.pl")
     public String getMyPlanDetail(@RequestParam(name = "planId") @Positive Long planId, Model m) {
@@ -276,11 +268,10 @@ public class PlanController {
 //    @ResponseBody
     @RequestMapping(value = "calendar.pl", method = RequestMethod.GET)
     public ModelAndView getArrowCalendar(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
-                                         @RequestParam(name = "month", defaultValue = "7") int month,
+                                         @RequestParam(name = "month", defaultValue = "8") int month,
                                          ModelAndView mv) {
 //        log.info("calendar.pl 처리하는 controller에 들어오는 request params 값 = year " + year + ", month " + month);
         List<ActionDate> calendarDatesList = planService.getArrowCalendar(year, month);
-
 
 //        Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
@@ -290,8 +281,20 @@ public class PlanController {
 //        result.put("todayInfo", todayInfo);
 
 //        return new Gson().toJson(actionDateList);
-        mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/newPlanResultView");
+        mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/myTodayPlanListView");
         return mv;
+    }
+
+    // 2023.8.24(목) 0h45 추가
+    @GetMapping("myTodayPlanList.pl")
+    public String getMyTodayPlanList(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
+                                     @RequestParam(name = "month", defaultValue = "8") int month,
+//                                     @RequestParam(name = "date", defaultValue = "24") int date,
+                                     Model model) {
+        List<ActionDate> calendarDatesList = planService.getArrowCalendar(year, month/*, date*/);
+
+        model.addAttribute("calendarDatesList", calendarDatesList);
+        return "plan/myTodayPlanListView";
     }
 
     // 2023.7.31(월) 18h45

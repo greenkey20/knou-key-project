@@ -219,10 +219,21 @@ public class Calendar {
     // 2023.8.5(토) 컨트롤러에 있었던 기능을 여기로 옮김
     public List<ActionDate> getArrowCalendar(int year, int month) {
         if (month == 0) month = 12;
+//        if (month == 1) year++;
         LocalDate today = LocalDate.now();
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
         // searchDate로부터 todayInfo를 만들어냄
+        return getCalendarDatesList(searchDate);
+    }
+
+    // 2023.8.24(목) 12h
+    public List<ActionDate> getArrowCalendar(int year, int month, int date) {
+        if (month == 0) month = 12;
+        int dayOfWeekOfSearchDate = LocalDate.of(year, month, date).getDayOfWeek().getValue();
+        ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(date), dayOfWeekOfSearchDate, null);
+
+        // searchDate가 속한 연+월의 달력을 만들어옴
         return getCalendarDatesList(searchDate);
     }
 }
