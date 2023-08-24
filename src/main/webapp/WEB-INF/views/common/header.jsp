@@ -1,3 +1,4 @@
+<%@ page import="java.time.LocalDate" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -50,8 +51,23 @@
                 </c:when>
                 <c:otherwise>
                     <!-- 로그인 후 -->
+                    <%
+                        LocalDate today = LocalDate.now();
+                    %>
                     <div class="service_area">
-                        <a href="myPage.me">My Page</a> | <a href="logout.me">로그아웃</a> <!--myPage.me-->
+                        <span class="dropdown">
+                            <span><a class="dropA" href="myPage.me">📗 My Page</a></span>
+                            <div class="dropdownContent">
+                                <a href="myPlanList.pl">나의 활동 전체 보기</a>
+                                <a href="myTodayPlanList.pl?year=<%= today.getYear()%>&month=<%= today.getMonthValue()%>">나의 오늘의 일정 보기</a>
+                                <a href="#">나의 게시글 보기</a>
+                                <a href="#">내가 스크랩한 활동 보기</a>
+                                <a href="#">회원 정보 수정</a>
+                                <a href="#">고객 센터</a>
+                                <a href="logout.me">로그아웃</a>
+                            </div>
+                        </span>
+<%--                         | <a href="logout.me">로그아웃</a> <!--myPage.me-->--%>
                     </div>
 
                     <!--2023.7.27(목) 1h20 위 메뉴로도 충분할 것 같은 바, 주석 처리함-->
