@@ -91,3 +91,13 @@ div {
     cursor: pointer;
     color: green;
 }
+
+.clickActionDate {
+    /*text-decoration: none;*/
+    /*color: greenyellow;*/
+    cursor: pointer;
+}
+
+.actionDatesListTableArea {
+    background-color: lightgreen;
+}

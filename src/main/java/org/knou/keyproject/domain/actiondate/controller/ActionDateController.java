@@ -129,5 +129,19 @@ public class ActionDateController {
         return "plan/myTodayPlanListView";
     }
 
+    // 2023.8.24(목) 18h55
+    @ResponseBody
+    @RequestMapping("thisDayPlanList.pl")
+    public List<TodayActionDateResponseDto> ajaxSearchThisDayPlanList(int year, int month, int date, HttpSession session) {
+        log.info("actionDate 컨트롤러 메서드 searchThisDayPlanList()에 들어오는 데이터들 year month date = " + year + ", " + month + ", " + date);
+        // actionDate 컨트롤러 메서드 searchThisDayPlanList()에 들어오는 데이터들 year month date = 2023, 8, 24
+        if (month == 0) month = 12;
 
+        Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
+//        List<TodayActionDateResponseDto> myTodayActionDatesList = actionDateService.getMyTodayActionDates(memberId);
+        List<TodayActionDateResponseDto> myTodayActionDatesList = actionDateService.getThisDayActionDates(year, month, date, memberId);
+
+//        return "특정 날짜 일정 확인 메서드 반환 값!";
+        return myTodayActionDatesList;
+    }
 }

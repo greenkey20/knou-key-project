@@ -143,15 +143,27 @@ public class ActionDateServiceImpl implements ActionDateService {
         String todayFormat = today.format(formatter);
 
         List<ActionDate> actionDatesList = actionDateRepository.getMyTodayActionDates(findMember.getMemberId(), todayFormat);
-        List<TodayActionDateResponseDto> responseDtos = actionDateMapper.toTodayActionDateResponseDtos(actionDatesList);
-        return responseDtos;
+        return actionDateMapper.toTodayActionDateResponseDtos(actionDatesList);
     }
 
     // 2023.8.24(목) 16h50
     @Override
     public List<ActionDate> getArrowCalendarOfActionDates(int year, int month, Long memberId) {
-        List<String> actionDatesList = actionDateRepository.getActionDatesListByMemberAndYearAndMonth(year, month, memberId);
+        Member findMember = memberService.findVerifiedMember(memberId);
+        List<String> actionDatesList = actionDateRepository.getActionDatesListByMemberAndYearAndMonth(year, month, findMember.getMemberId());
         return calendar.getArrowCalendarOfActionDates(year, month, actionDatesList);
+    }
+
+    // 2023.8.24(목) 19h 생성 + 20h55 구현
+    @Override
+    public List<TodayActionDateResponseDto> getThisDayActionDates(int year, int month, int date, Long memberId) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+
+//        String thisDayFormat = String.format("%s-%02d-%s", numOfYear, numOfMonth, numOfDate);
+        String thisDayFormat = String.format("%d-%02d-%02d", year, month, date);
+        List<ActionDate> actionDatesList = actionDateRepository.getMyTodayActionDates(findMember.getMemberId(), thisDayFormat);
+
+        return actionDateMapper.toTodayActionDateResponseDtos(actionDatesList);
     }
 
     public ActionDate findVerifiedActionDate(Long actionDateId) {
