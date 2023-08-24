@@ -22,4 +22,6 @@ public interface ActionDateService {
     List<TodayActionDateResponseDto> getMyTodayActionDates(Long memberId);
 
     List<ActionDate> getArrowCalendarOfActionDates(int year, int month, Long memberId);
+
+    List<TodayActionDateResponseDto> getThisDayActionDates(int year, int month, int date, Long memberId);
 }
