@@ -102,15 +102,38 @@ public class BoardController {
         model.addAttribute("startBlockPage", startBlockPage);
         model.addAttribute("endBlockPage", endBlockPage);
         model.addAttribute("boardList", boardList);
-        model.addAttribute("list", responseDtos);
+        model.addAttribute("boardDtolist", responseDtos);
 
         return "board/boardListView";
     }
 
-    // 2023.8.24(목) 1h25 틀만 추가해 둠
+    // 2023.8.24(목) 1h25 틀만 추가해 둠 + 23h 작성
     @GetMapping("myBoardList.bd")
-    public String getMyBoardList(Model model) {
+    public String getMyBoardList(@PageableDefault(size = 10, sort = "boardId", direction = Sort.Direction.DESC) Pageable pageable,
+                                 @RequestParam(required = false, defaultValue = "") String keyword,
+                                 HttpSession session,
+                                 Model model) {
+        Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
+        Page<Board> boardList = boardService.findAllByMemberMemberIdOrderByBoardIdDesc(memberId, pageable);
 
+        if (keyword != null) {
+            boardList = boardService.findByTitleContainingOrContentContaining(keyword, pageable);
+        }
+
+        int pageNumber = boardList.getPageable().getPageNumber(); // 현재 페이지
+        int totalPages = boardList.getTotalPages(); // 총 페이지 수 = boardList의 size 값
+        int pageBlock = 5; // 블럭의 수
+        int startBlockPage = (pageNumber / pageBlock) * pageBlock + 1;
+        int endBlockPage = startBlockPage + pageBlock - 1;
+        endBlockPage = Math.min(totalPages, endBlockPage);
+
+        List<Board> list = boardList.getContent();
+        List<BoardListResponseDto> responseDtos = boardService.getBoardListResponseDtosList(list);
+
+        model.addAttribute("startBlockPage", startBlockPage);
+        model.addAttribute("endBlockPage", endBlockPage);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("boardDtolist", responseDtos);
 
         return "board/myBoardListView";
     }

@@ -57,7 +57,7 @@
             </tr>
 
                 <c:choose>
-                    <c:when test=" ${ empty list } ">
+                    <c:when test=" ${ empty boardDtolist } ">
                         <tr>
                             <td colspan="7" align="center">게시글이 없습니다</td>
                             <br>
@@ -66,7 +66,7 @@
                         </tr>
                     </c:when>
                     <c:otherwise>
-                        <c:forEach var="b" items="${ list }">
+                        <c:forEach var="b" items="${ boardDtolist }">
                             <tr>
                                 <td>${ b.boardId }</td>
                                 <td>

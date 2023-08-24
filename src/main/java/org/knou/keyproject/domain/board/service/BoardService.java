@@ -27,4 +27,6 @@ public interface BoardService {
     List<BoardListResponseDto> getBoardListResponseDtosList(List<Board> list);
 
     BoardDetailResponseDto getBoardDetailResponseDto(Long boardId);
+
+    Page<Board> findAllByMemberMemberIdOrderByBoardIdDesc(Long memberId, Pageable pageable);
 }

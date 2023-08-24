@@ -60,7 +60,7 @@
                             <div class="dropdownContent">
                                 <a href="myPlanList.pl">나의 활동 전체 보기</a>
                                 <a href="myTodayPlanList.pl?year=<%= today.getYear()%>&month=<%= today.getMonthValue()%>">나의 오늘의 일정 보기</a>
-                                <a href="#">나의 게시글 보기<span style="font-weight: bold"> (서비스 준비 중)</span></a>
+                                <a href="myBoardList.bd">나의 게시글 보기<span style="font-weight: bold"></span></a>
                                 <a href="#">내가 스크랩한 활동 보기<span style="font-weight: bold"> (서비스 준비 중)</span></a>
                                 <a href="#">회원 정보 수정<span style="font-weight: bold"> (서비스 준비 중)</span></a>
                                 <a href="#">고객 센터<span style="font-weight: bold"> (서비스 준비 중)</span></a>
