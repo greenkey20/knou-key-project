@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+div {
+    /*border: 1px solid green;*/
+    box-sizing: border-box;
+}
+
+/* 헤더 아래 영역 전체 */
+.outer {
+    /*width: 768px;*/
+    width: 100%;
+    margin: auto;
+    height: auto;
+    /*border: 1px blue;*/
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* 중간~우측 내용 영역 */
+/*.content {*/
+/*    width: 1000px;*/
+/*    height: 100%;*/
+/*    float: left;*/
+/*    padding: 50px 50px 50px 50px; !* 시계 방향으로 각각 지정 *!*/
+/*}*/
+
+/* footer에 float 적용되지 않도록 해제 */
+/*.footer {*/
+/*    clear: both;*/
+/*}*/
+
+#my-plan-detail-stats {
+    /*border: 1px yellow;*/
+    background-color: lightgreen;
+}
+
+.actionDatesListTable {
+    text-align: center;
+}
+
+.holiday {
+    color: seagreen;
+}
+
+.action {
+    color: greenyellow;
+}
+
+.today {
+    background-color: lightgray;
+}
+
+.done {
+    background-color: forestgreen;
+}
+
+.smallerLetters {
+    font-size: small;
+}
+
+.greenBtn {
+    background-color: #53C81E;
+}
+
+.orangeBtn {
+    background-color: rgb(255, 163, 63);
+    color: white;
+}
+
+.grayBtn {
+    background-color: gray;
+    color: white;
+}
+
+#toc-content {
+    display: none;
+}
+
+#toc-toggle {
+    cursor: pointer;
+    color: green;
+}
+
+#chatgpt-content {
+    display: none;
+}
+
+#chatgpt-toggle {
+    cursor: pointer;
+    color: green;
+}
