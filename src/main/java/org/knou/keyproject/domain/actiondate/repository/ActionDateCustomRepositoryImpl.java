@@ -3,10 +3,13 @@ package org.knou.keyproject.domain.actiondate.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.knou.keyproject.domain.actiondate.entity.ActionDate;
+import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.knou.keyproject.domain.actiondate.entity.QActionDate.actionDate;
 
@@ -48,6 +51,34 @@ public class ActionDateCustomRepositoryImpl implements ActionDateCustomRepositor
                 .from(actionDate)
                 .where(actionDate.plan.planId.eq(planId).and(actionDate.realActionDate.between(startDate, lastStatusChangedAt)))
                 .fetchOne();
+    }
+
+    // 2023.8.24(목) 16h10
+    /**
+     * 특정 회원이 참여 중인(ACTIVE) plans 관련 actionDates 중 수행 예정일이 오늘인 것을 조회하는 메서드
+     * @param memberId
+     * @param todayFormat
+     * @return
+     */
+    @Override
+    public List<ActionDate> getMyTodayActionDates(Long memberId, String todayFormat) {
+        return jpaQueryFactory
+                .selectFrom(actionDate)
+                .where(actionDate.plan.member.memberId.eq(memberId).and(actionDate.dateFormat.eq(todayFormat)).and(actionDate.plan.status.eq(PlanStatus.ACTIVE)))
+                .orderBy(actionDate.plan.planId.desc())
+                .fetch();
+    }
+
+    // 2023.8.24(목) 16h55
+    @Override
+    public List<String> getActionDatesListByMemberAndYearAndMonth(int year, int month, Long memberId) {
+        // select distinct(date_format) from action_date where num_of_year = 2023 and num_of_month = 8 order by num_of_date asc;
+        return jpaQueryFactory
+                .selectDistinct(actionDate.dateFormat)
+                .from(actionDate)
+                .where(actionDate.plan.member.memberId.eq(memberId).and(actionDate.numOfYear.eq(String.valueOf(year))).and(actionDate.numOfMonth.eq(month)))
+                .orderBy(actionDate.numOfDate.asc())
+                .fetch();
     }
 
     @Override

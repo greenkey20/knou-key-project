@@ -3,18 +3,23 @@ package org.knou.keyproject.domain.actiondate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDatePostRequestDto;
+import org.knou.keyproject.domain.actiondate.dto.TodayActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.repository.ActionDateRepository;
+import org.knou.keyproject.domain.member.entity.Member;
+import org.knou.keyproject.domain.member.service.MemberService;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.entity.PlanStatus;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
-import org.knou.keyproject.domain.plan.service.PlanService;
+import org.knou.keyproject.global.utils.Calendar;
 import org.knou.keyproject.global.utils.PlanStatisticUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.knou.keyproject.global.utils.StringParsingUtils.replaceNewLineWithBr;
 
@@ -25,9 +30,11 @@ import static org.knou.keyproject.global.utils.StringParsingUtils.replaceNewLine
 public class ActionDateServiceImpl implements ActionDateService {
     private final PlanRepository planRepository;
     private final ActionDateRepository actionDateRepository;
-//    private final ActionDateMapper actionDateMapper;
-//    private final PlanService planService;
+    private final ActionDateMapper actionDateMapper;
+    //    private final PlanService planService;
+    private final MemberService memberService;
     private final PlanStatisticUtils planStatisticUtils;
+    private final Calendar calendar;
 
     // 2023.7.29(토) 22h35
     @Override
@@ -123,6 +130,28 @@ public class ActionDateServiceImpl implements ActionDateService {
         actionDateToUpdate.setIsDone(true);
 
         return actionDateToUpdate;
+    }
+
+    // 2023.8.24(목) 16h
+    @Override
+    public List<TodayActionDateResponseDto> getMyTodayActionDates(Long memberId) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+
+        LocalDate today = LocalDate.now();
+        String pattern = "yyyy-MM-dd";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        String todayFormat = today.format(formatter);
+
+        List<ActionDate> actionDatesList = actionDateRepository.getMyTodayActionDates(findMember.getMemberId(), todayFormat);
+        List<TodayActionDateResponseDto> responseDtos = actionDateMapper.toTodayActionDateResponseDtos(actionDatesList);
+        return responseDtos;
+    }
+
+    // 2023.8.24(목) 16h50
+    @Override
+    public List<ActionDate> getArrowCalendarOfActionDates(int year, int month, Long memberId) {
+        List<String> actionDatesList = actionDateRepository.getActionDatesListByMemberAndYearAndMonth(year, month, memberId);
+        return calendar.getArrowCalendarOfActionDates(year, month, actionDatesList);
     }
 
     public ActionDate findVerifiedActionDate(Long actionDateId) {

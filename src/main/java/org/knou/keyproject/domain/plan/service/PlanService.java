@@ -42,7 +42,7 @@ public interface PlanService {
     List<List<ActionDate>> getPlanCalendars(Plan savedPlan);
 
     List<ActionDate> getArrowCalendar(int year, int month);
-    List<ActionDate> getArrowCalendar(int year, int month, int date);
+    List<ActionDate> getArrowCalendar(int year, int month, int day);
 
     Long resumePlan(Long planId);
 
@@ -69,4 +69,6 @@ public interface PlanService {
     MyPlanStatisticDetailResponseDto getPlanStatisticDetailAboutBoard(Long boardId);
 
     List<MainPageResponseDto> findPlanListInfoByMember(Long memberId);
+
+//    List<ActionDate> getArrowCalendarOfActionDates(int year, int month, Long memberId);
 }
