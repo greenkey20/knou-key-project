@@ -1,12 +1,15 @@
 package org.knou.keyproject.domain.actiondate.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.knou.keyproject.domain.actiondate.dto.ActionDatePostRequestDto;
+import org.knou.keyproject.domain.actiondate.dto.TodayActionDateResponseDto;
 import org.knou.keyproject.domain.actiondate.entity.ActionDate;
 import org.knou.keyproject.domain.actiondate.mapper.ActionDateMapper;
 import org.knou.keyproject.domain.actiondate.service.ActionDateService;
+import org.knou.keyproject.domain.member.dto.MemberResponseDto;
 import org.knou.keyproject.domain.plan.entity.Plan;
 import org.knou.keyproject.domain.plan.mapper.PlanMapper;
 import org.knou.keyproject.domain.plan.service.PlanService;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // 2023.7.30(일) 23h10
 @Slf4j
@@ -104,4 +109,25 @@ public class ActionDateController {
         actionDateService.deleteActionDate(actionDateId);
         return "redirect:myPlanDetail.pl?planId=" + planId;
     }
+
+    // 2023.8.24(목) 0h45 추가 + 16h5 필요한 actionDate 리스트를 응답하는 것이 주요 임무인 메서드인 바, planController로부터 여기로 옮김
+    @GetMapping("myTodayPlanList.pl")
+    public String getMyTodayPlanList(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
+                                     @RequestParam(name = "month", defaultValue = "8") int month,
+//                                     @RequestParam(name = "date", defaultValue = "24") int date,
+                                     HttpSession session,
+                                     Model model) {
+        if (month == 0) month = 12;
+
+        Long memberId = ((MemberResponseDto.AfterLoginMemberDto) session.getAttribute("loginUser")).getMemberId();
+        List<TodayActionDateResponseDto> myTodayActionDatesList = actionDateService.getMyTodayActionDates(memberId);
+//        List<ActionDate> calendarDatesList = planService.getArrowCalendar(year, month/*, date*/);
+        List<ActionDate> calendarDatesList = actionDateService.getArrowCalendarOfActionDates(year, month, memberId);
+
+        model.addAttribute("actionDatesList", myTodayActionDatesList);
+        model.addAttribute("calendarDatesList", calendarDatesList);
+        return "plan/myTodayPlanListView";
+    }
+
+
 }

@@ -48,7 +48,7 @@ public class PlanController {
     private final PlanService planService;
     private final PlanMapper planMapper;
     private final ActionDateMapper actionDateMapper;
-    private final ActionDateService actionDateService;
+//    private final ActionDateService actionDateService;
     private final BookChapterService bookChapterService;
     private final ChatGptResponseLineService chatGptResponseLineService;
 
@@ -266,6 +266,7 @@ public class PlanController {
 
     // 2023.7.25(화) 12h35 AJAX로 했으나 클라이언트에 [Object, Object]..로 전달됨 -> 21h40 생각해보니 꼭 AJAX로 하지 않아도 되는 것 같아, 접근 방식 변경
 //    @ResponseBody
+    /*
     @RequestMapping(value = "calendar.pl", method = RequestMethod.GET)
     public ModelAndView getArrowCalendar(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
                                          @RequestParam(name = "month", defaultValue = "8") int month,
@@ -284,18 +285,7 @@ public class PlanController {
         mv.addObject("calendarDatesList", calendarDatesList).setViewName("plan/myTodayPlanListView");
         return mv;
     }
-
-    // 2023.8.24(목) 0h45 추가
-    @GetMapping("myTodayPlanList.pl")
-    public String getMyTodayPlanList(@RequestParam(name = "year", defaultValue = "2023") @Positive int year,
-                                     @RequestParam(name = "month", defaultValue = "8") int month,
-//                                     @RequestParam(name = "date", defaultValue = "24") int date,
-                                     Model model) {
-        List<ActionDate> calendarDatesList = planService.getArrowCalendar(year, month/*, date*/);
-
-        model.addAttribute("calendarDatesList", calendarDatesList);
-        return "plan/myTodayPlanListView";
-    }
+     */
 
     // 2023.7.31(월) 18h45
     @ResponseBody

@@ -9,10 +9,7 @@ import org.knou.keyproject.domain.plan.entity.Plan;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +51,7 @@ public class Calendar {
 //            String dateMonthAndYear = extractYearAndMonthInStrFromLocalDate(date);
 
             ActionDate dateInAd = new ActionDate(String.valueOf(date.getYear()), date.getMonthValue(), String.valueOf(date.getDayOfMonth()), date.getDayOfWeek().getValue(), null);
-            List<ActionDate> calendarDatesList = getCalendarDatesList(dateInAd);
+            List<ActionDate> calendarDatesList = getCalendarDatesListOfActionDates(dateInAd);
 
             // 2023.7.26(수) 2h10 매개변수로 전달받은 actionDates에 해당하는 날의 dateData 객체 schedule 필드의 값을 'action'으로 세팅 -> JSP에서 이 값으로 CSS 다르게 줄 수 있을 것임
             // 2023.7.30(일) 0h20 나의 생각 = 여기 2중 for문이라 성능 안 좋은데, 어떻게 개선할 수 있을까? -> 2023.7.30(일) 3중 for문이 됨.. todo
@@ -157,7 +154,7 @@ public class Calendar {
         return year + ". " + month;
     }
 
-    public List<ActionDate> getCalendarDatesList(ActionDate searchDate) {
+    public List<ActionDate> getCalendarDatesListOfActionDates(ActionDate searchDate) {
         Map<String, Integer> todayInfo = searchDate.todayInfo(searchDate); // 21h50 이 메서드 내에서만 필요하고, JSP로 굳이 반환할 필요 없는 것 같은데..?
 
         List<ActionDate> calendarDatesList = new ArrayList<>(); // 이번 달 달력에 찍을 날짜들을 모은 리스트
@@ -216,6 +213,53 @@ public class Calendar {
         return calendarDatesList;
     }
 
+    // 2023.8.24(목) 17h10
+    /**
+     *
+     * @param searchDate 달력 만들 기준 일자의 ActionDate 객체
+     * @param actionDatesList 특정 회원이 해당 월에 활동 내역/계획이 있는 날짜들의 리스트("yyyy-MM-dd" 형태)
+     * @return
+     */
+    public List<ActionDate> getCalendarDatesListOfActionDates(ActionDate searchDate, List<String> actionDatesList) {
+        // searchDate의 월간 달력을 만들어옴
+        List<ActionDate> calendarDatesList = getCalendarDatesListOfActionDates(searchDate);
+
+        // 달력의 날짜 하나하나 순회하면서
+        for (ActionDate calendarDate : calendarDatesList) {
+            String thisCalendarDateFormat = calendarDate.getDateFormat();
+
+            for (String actionDateFormat : actionDatesList) {
+                // 해당 날짜가, 회원의 actionDate가 있는 날짜와 동일하면
+                if (thisCalendarDateFormat.equals(actionDateFormat)) {
+                    // 해당 날짜 객체의 schedule 필드에 'action'이라는 값을 세팅해 넣음
+                    calendarDate.setSchedule("action");
+
+                    // 일치하는 calendarDate를 찾은 바, actionDatesList를 더 순회할 필요 없으니까, 내부 반복문 탈출
+                    break;
+                }
+            }
+        }
+
+        /*
+        int count = 0;
+        for (int i = 0; i < calendarDatesList.size(); i++) {
+            ActionDate calendarDate = calendarDatesList.get(i);
+            if (calendarDate.getSchedule() != null) {
+                count++;
+            }
+        }
+
+        log.info("Calendar 클래스 getCalendarDatesListOfActionDates() 메서드에서 schedule에 'action' 찍힌 달력 날짜의 수 = " + count + ", actionDatesList의 수 = " + actionDatesList.size() + " -> 같아야 함"); // 2023.8.24(목) 18h15 현재 같음
+         */
+        return calendarDatesList;
+    }
+
+    // 2023.8.24(목) 17h
+    public List<ActionDate> getArrowCalendarOfActionDates(int year, int month, List<String> actionDatesList) {
+        ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(1), LocalDate.of(year, month, 1).getDayOfWeek().getValue(), null);
+        return getCalendarDatesListOfActionDates(searchDate, actionDatesList);
+    }
+
     // 2023.8.5(토) 컨트롤러에 있었던 기능을 여기로 옮김
     public List<ActionDate> getArrowCalendar(int year, int month) {
         if (month == 0) month = 12;
@@ -224,7 +268,7 @@ public class Calendar {
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(today.getDayOfMonth()), today.getDayOfWeek().getValue(), null);
 
         // searchDate로부터 todayInfo를 만들어냄
-        return getCalendarDatesList(searchDate);
+        return getCalendarDatesListOfActionDates(searchDate);
     }
 
     // 2023.8.24(목) 12h
@@ -234,6 +278,6 @@ public class Calendar {
         ActionDate searchDate = new ActionDate(String.valueOf(year), month, String.valueOf(date), dayOfWeekOfSearchDate, null);
 
         // searchDate가 속한 연+월의 달력을 만들어옴
-        return getCalendarDatesList(searchDate);
+        return getCalendarDatesListOfActionDates(searchDate);
     }
 }
