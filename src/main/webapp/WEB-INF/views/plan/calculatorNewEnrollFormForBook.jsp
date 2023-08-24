@@ -214,7 +214,7 @@
 <%-- 없으면 '저장하려면 로그인이 필요합니다' 모달 창 띄움 + 회원 가입이 필요한 경우 회원 가입 링크도 넣기(이건 계산 결과 페이지에서) --%>
 
 <div align="center">
-    <button type="button" onclick="location.href='/key-project'">취소</button>
+    <button type="button" onclick="location.href='mainPage.cm'">취소</button>
     <!--2023.7.24(월) 1810 나의 발견 = 계산 결과 화면으로부터 '새로 계산' 버튼 클릭해서 이 화면으로 넘어왔을 때, 이 버튼으로 '이전 화면'으로 가면(goBack() js 함수 호출) 이전 계산 결과 페이지로 감-->
     <%--            <button type="reset" class="grayBtn">초기화</button>--%>
     <button type="button" onclick="window.location.reload()" class="grayBtn">초기화</button>
