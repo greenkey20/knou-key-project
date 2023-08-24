@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.time.LocalDate" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +30,12 @@
             </tr>
             <tr class="title">
                 <td>🍀</td>
-                <td><a href="myTodayPlanList.pl">나의 오늘의 일정 보기</a></td>
+                <td>
+                    <%
+                        LocalDate today = LocalDate.now();
+                    %>
+                    <a href="myTodayPlanList.pl?year=<%= today.getYear()%>&month=<%= today.getMonthValue()%>">나의 오늘의 일정 보기</a>
+                </td>
             </tr>
             <tr class="title">
                 <td>🍀</td>

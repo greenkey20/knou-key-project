@@ -42,6 +42,7 @@ public interface PlanService {
     List<List<ActionDate>> getPlanCalendars(Plan savedPlan);
 
     List<ActionDate> getArrowCalendar(int year, int month);
+    List<ActionDate> getArrowCalendar(int year, int month, int date);
 
     Long resumePlan(Long planId);
 

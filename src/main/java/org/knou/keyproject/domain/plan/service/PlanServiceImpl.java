@@ -536,6 +536,12 @@ public class PlanServiceImpl implements PlanService {
         return calendar.getArrowCalendar(year, month);
     }
 
+    // 2023.8.24(목) 12h 추가
+    @Override
+    public List<ActionDate> getArrowCalendar(int year, int month, int date) {
+        return calendar.getArrowCalendar(year, month, date);
+    }
+
     @Override
     @Transactional
     public Long resumePlan(Long planId) {

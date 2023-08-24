@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.LocalDate" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +23,11 @@
 
             <div align="right">
                 <button class="greenBtn" onclick="location.href='myPlanList.pl'">나의 활동 전체 보기</button>
-                <button class="greenBtn" onclick="location.href='myTodayPlanList.pl'">오늘의 일정 보기</button>
+
+                <%
+                    LocalDate today = LocalDate.now();
+                %>
+                <button class="greenBtn" onclick="location.href='myTodayPlanList.pl?year=<%= today.getYear()%>&month=<%= today.getMonthValue()%>'">오늘의 일정 보기</button>
             </div>
             <br>
 
