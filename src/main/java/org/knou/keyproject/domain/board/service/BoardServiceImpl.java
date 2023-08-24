@@ -114,6 +114,12 @@ public class BoardServiceImpl implements BoardService {
         return boardDetailResponseDto.build();
     }
 
+    @Override
+    public Page<Board> findAllByMemberMemberIdOrderByBoardIdDesc(Long memberId, Pageable pageable) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+        return boardRepository.findAllByMemberMemberIdOrderByBoardIdDesc(findMember.getMemberId(), pageable);
+    }
+
     // 2023.8.6(일) 23h45
     @Override
     public Page<Board> findAllBoards(Pageable pageable) {

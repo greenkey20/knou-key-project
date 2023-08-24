@@ -152,7 +152,7 @@ INSERT INTO `plan` (`deadline_date`,`deadline_period_num`,`frequency_factor`,`ha
 VALUES ('2023-12-02',NULL,0.2857142857142857,true,true,false,false,true,NULL,1,NULL,'2023-08-22',102,29,15,'2023-08-22 09:36:37.748637','2023-08-22 09:37:00.612043',1,NULL,7,NULL,NULL,NULL,'DATE','주 2회','TIMES',NULL,'컴파일러 구성 기말시험','ACTIVE',NULL,'강');
 
 INSERT INTO `plan` (`deadline_date`,`deadline_period_num`,`frequency_factor`,`has_deadline`,`has_start_date`,`is_book`,`is_child`,`is_measurable`,`last_status_changed_at`,`quantity_per_day`,`quantity_per_day_predicted`,`start_date`,`total_duration_days`,`total_num_of_actions`,`total_quantity`,`created_at`,`last_modified_at`,`member_id`,`parent_plan_id`,`plan_id`,`chat_gpt_response`,`deadline_period`,`deadline_period_unit`,`deadline_type`,`frequency_detail`,`frequency_type`,`isbn13`,`object`,`status`,`table_of_contents`,`unit`)
-VALUES ('2023-10-12',NULL,0.2857142857142857,true,false,false,false,true,NULL,8,NULL,'2023-08-23',50,14,100,'2023-08-22 09:48:50.259391','2023-08-22 09:49:09.185503',1,NULL,8,NULL,NULL,NULL,'DATE','주 2회','TIMES',NULL,'운영체제 중간과제물 작성','ACTIVE',NULL,'%');
+VALUES ('2023-10-12',NULL,0.2857142857142857,true,false,false,false,true,NULL,8,NULL,'2023-08-23',50,14,100,'2023-08-22 09:48:50.259391','2023-08-22 09:49:09.185503',2,NULL,8,NULL,NULL,NULL,'DATE','주 2회','TIMES',NULL,'운영체제 중간과제물 작성','ACTIVE',NULL,'%');
 
 INSERT INTO `plan` (`deadline_date`,`deadline_period_num`,`frequency_factor`,`has_deadline`,`has_start_date`,`is_book`,`is_child`,`is_measurable`,`last_status_changed_at`,`quantity_per_day`,`quantity_per_day_predicted`,`start_date`,`total_duration_days`,`total_num_of_actions`,`total_quantity`,`created_at`,`last_modified_at`,`member_id`,`parent_plan_id`,`plan_id`,`chat_gpt_response`,`deadline_period`,`deadline_period_unit`,`deadline_type`,`frequency_detail`,`frequency_type`,`isbn13`,`object`,`status`,`table_of_contents`,`unit`)
 VALUES ('2023-12-25',4,0.5714285714285714,true,false,false,false,false,NULL,2,NULL,'2023-08-25',122,69,122,'2023-08-23 20:14:00.687174','2023-08-23 20:14:18.394765',1,NULL,9,'4개월 동안 바디프로필을 찍기 위한 주간 계획은 다음과 같이 세울 수 있습니다:<BR><BR>1주차:<BR>- 첫 주차는 목표를 설정하는 시간으로 활동 목표와 식단 목표를 설정합니다.<BR>- 식단은 균형잡힌 식사로 단백질, 탄수화물, 지방의 비율을 적절하게 조절합니다.<BR>- 첫 주차는 몸의 현재 상태를 파악하기 위해 체중 측정과 신체 측정을 진행합니다.<BR><BR>2주차:<BR>- 주간 운동 계획을 세우고 실행합니다. 신체의 여러 부분을 다루는 다양한 운동을 포함해야 합니다.<BR>- 근력 훈련, 유산소 운동, 신체 균형을 개선하는 운동 등을 포함합니다.<BR>- 식단은 계속적으로 균형잡힌 식사를 유지합니다.<BR><BR>3주차:<BR>- 운동 계획을 이전 주차보다 더욱 복잡하게 만듭니다. 운동 강도를 조금씩 증가시킵니다.<BR>- 근력 훈련에서는 무게를 늘리고 세트나 반복 수를 늘려갑니다.<BR>- 유산소 운동에서는 시간이나 거리를 조금씩 늘려갑니다.<BR><BR>4주차:<BR>- 이전 주차의 운동 계획에 더 해서, 개인의 목표에 따라 다양한 운동을 추가합니다.<BR>- 예를 들어, 복부 근육을 강화하는 운동, 상체와 하체의 균형을 유지하는 운동 등을 추가할 수 있습니다.<BR>- 식단 역시 개인의 목표에 맞게 조절합니다.<BR><BR>5주차부터 16주차까지:<BR>- 해당 주차마다 운동 계획을 변화시키며, 운동 강도를 점진적으로 증가시킵니다.<BR>- 식단도 계속적으로 조절하여 목표에 맞게 지속적으로 올라가는 형태를 유지합니다.<BR>- 각 주차마다 체중, 신체 측정, 사진 등을 통해 결과를 확인하고 조정합니다.<BR><BR>16주차 이후:<BR>- 목표한 바디프로필을 찍은 후에도, 건강한 식단과 운동 습관을 유지합니다.<BR>- 계속적인 식단 관리와 운동을 통해 보다 건강한 체질을 유지할 수 있습니다.','4개월','개월','PERIOD','주 4회','TIMES',NULL,'바디프로필 찍기','ACTIVE',NULL,NULL);
@@ -437,3 +437,57 @@ INSERT INTO `chat_gpt_response_line` (`is_done`,`chat_gpt_response_line_id`,`cre
 INSERT INTO `chat_gpt_response_line` (`is_done`,`chat_gpt_response_line_id`,`created_at`,`last_modified_at`,`plan_id`,`chat_gpt_response_line_string`) VALUES (false,28,'2023-08-23 20:14:18.372336','2023-08-23 20:14:18.372336',9,'16주차 이후:');
 INSERT INTO `chat_gpt_response_line` (`is_done`,`chat_gpt_response_line_id`,`created_at`,`last_modified_at`,`plan_id`,`chat_gpt_response_line_string`) VALUES (false,29,'2023-08-23 20:14:18.378070','2023-08-23 20:14:18.378070',9,'- 목표한 바디프로필을 찍은 후에도, 건강한 식단과 운동 습관을 유지합니다.');
 INSERT INTO `chat_gpt_response_line` (`is_done`,`chat_gpt_response_line_id`,`created_at`,`last_modified_at`,`plan_id`,`chat_gpt_response_line_string`) VALUES (false,30,'2023-08-23 20:14:18.384709','2023-08-23 20:14:18.384709',9,'- 계속적인 식단 관리와 운동을 통해 보다 건강한 체질을 유지할 수 있습니다.');
+
+/*
+-- Query: select * from board
+LIMIT 0, 2000
+
+-- Date: 2023-08-24 23:31
+*/
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (2,1,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,9,'PLAN','다짐을 더 잘 지키기 위해 목표를 공유해요~\r<BR>저는 4개월 내에 45kg으로 감량하는 것이 목표입니다!','목표 공표!');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,2,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',2,8,'PLAN','게시글2 내용입니다','게시글2 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (1,3,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,7,'PLAN','게시글3 내용입니다','게시글3 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,4,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,5,'SUCCESS','게시글4 내용입니다','게시글4 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,5,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,4,'PLAN','게시글5 내용입니다','게시글5 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (1,6,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,3,'PLAN','게시글6 내용입니다','게시글6 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,7,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,2,'PLAN','게시글7 내용입니다','게시글7 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,8,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,1,'PLAN','게시글8 내용입니다','게시글8 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (2,9,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,1,'PLAN','다짐을 더 잘 지키기 위해 목표를 공유해요~\r<BR>게시글9 내용입니다','게시글9 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,10,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,2,'PLAN','게시글10 내용입니다','게시글10 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (1,11,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,3,'PLAN','게시글11 내용입니다','게시글11 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,12,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,4,'PLAN','게시글12 내용입니다','게시글12 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,13,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,5,'PLAN','게시글13 내용입니다','게시글13 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (1,14,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,7,'PLAN','게시글14 내용입니다','게시글14 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,15,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',2,8,'PLAN','게시글15 내용입니다','게시글15 제목');
+
+INSERT INTO `board` (`read_count`,`board_id`,`created_at`,`last_modified_at`,`member_id`,`plan_id`,`board_type`,`content`,`title`)
+VALUES (3,16,'2023-08-24 23:27:57.153184','2023-08-24 23:27:57.153184',1,9,'PLAN','게시글16 내용입니다','게시글16 제목');
