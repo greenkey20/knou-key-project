@@ -26,8 +26,8 @@ import java.security.InvalidParameterException;
 import static org.knou.keyproject.global.exception.ErrorPageUrl.*;
 
 // 2023.8.20(일) 16h
-//@Order(1)
-//@ControllerAdvice(annotations = Controller.class)
+@Order(1)
+@ControllerAdvice(annotations = Controller.class)
 public class GlobalControllerExceptionHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
