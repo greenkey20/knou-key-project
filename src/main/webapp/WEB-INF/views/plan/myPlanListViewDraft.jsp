@@ -147,6 +147,42 @@
                 </c:forEach>
             </div>
             <!--테이블 영역 끝-->
+
+            <!--2023.7.27(목) 21h30 페이징 영역 시작-->
+            <div align="center">
+                <ul class="pagination justify-content-center">
+                    <!--이전-->
+                    <c:choose>
+                        <c:when test=" ${ planList.first }"></c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=0">처음</a></li>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number - 1}">⬅️</a></li>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <!--페이지 그룹-->
+                    <c:forEach begin="${ startBlockPage }" end="${ endBlockPage }" var="i">
+                        <c:choose>
+                            <c:when test="${ planList.pageable.pageNumber + 1 == i}">
+                                <li class="page-item disabled"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ i - 1}">${ i }</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ i - 1}">${ i }</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <!--다음-->
+                    <c:choose>
+                        <c:when test=" ${ planList.last }"></c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.number + 1}">➡️</a></li>
+                            <li class="page-item"><a class="page-link" href="myPlanList.pl?keyword=${ param.keyword }&page=${ planList.totalPages - 1}">마지막</a></li>
+                        </c:otherwise>
+                    </c:choose>
+                </ul>
+            </div>
+            <!--페이징 영역 끝-->
         </c:otherwise>
     </c:choose>
 
