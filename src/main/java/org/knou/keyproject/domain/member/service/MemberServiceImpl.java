@@ -8,8 +8,7 @@ import org.knou.keyproject.domain.member.entity.Member;
 import org.knou.keyproject.domain.member.mapper.MemberMapper;
 import org.knou.keyproject.domain.member.repository.MemberRepository;
 import org.knou.keyproject.domain.plan.repository.PlanRepository;
-import org.knou.keyproject.global.exception.BusinessLogicException;
-import org.knou.keyproject.global.exception.ExceptionCode;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
-    //    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberMapper memberMapper;
 
     @Override
@@ -48,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Long createMember(MemberPostRequestDto requestDto) {
-        Member member = memberMapper.toEntity(requestDto);
+        Member member = memberMapper.toEntity(requestDto, bCryptPasswordEncoder);
 
         Member savedMember;
         if (verifyExistingMember(member.getEmail()) == null) { // 중복 회원이 없으면, 정상 가입 가능!
