@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeRequests()
 //            .requestMatchers("/login", "/mainPage.cm", "/loginPage.me", "/login.me", "/enroll.me", "/newMemberInsert.me", "/logout.me").permitAll()
                 .anyRequest().permitAll()
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated() // 2023.10.1(일) 23h30 설정 후 실행 테스트 시 오류 = Factory method 'filterChain' threw exception with message: Can't configure anyRequest after itself
                 .and()
                 .formLogin()
                 .loginPage("/loginPage.me")

@@ -8,13 +8,14 @@ import org.knou.keyproject.domain.member.entity.MemberPlatform;
 import org.knou.keyproject.domain.member.entity.MemberStatus;
 import org.knou.keyproject.domain.member.entity.Role;
 import org.mapstruct.Mapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 
 // 2023.7.28(금) 1h30
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
-    default Member toEntity(MemberPostRequestDto memberPostRequestDto) {
+    default Member toEntity(MemberPostRequestDto memberPostRequestDto, BCryptPasswordEncoder bCryptPasswordEncoder) {
         int yearOfBirth = 0;
         if (memberPostRequestDto.getAge() != null) {
             yearOfBirth = LocalDate.now().getYear() - memberPostRequestDto.getAge();
@@ -23,7 +24,7 @@ public interface MemberMapper {
         return Member.builder()
                 .email(memberPostRequestDto.getEmail())
                 .nickname(memberPostRequestDto.getNickname())
-                .password(memberPostRequestDto.getPassword())
+                .password(bCryptPasswordEncoder.encode(memberPostRequestDto.getPassword()))
                 .age(memberPostRequestDto.getAge())
                 .yearOfBirth(yearOfBirth)
                 .gender(memberPostRequestDto.getGender())
