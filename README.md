@@ -8,6 +8,7 @@
 회원 가입을 하시면 계산 결과를 '나의 일정'으로 저장하여 수행 내역을 트래킹하고 통계 내역을 조회할 수 있습니다.
 또한 나의 활동 내역 및 성공적인 수행 내역에 대해 게시글로 경험 이야기를 나눠주실 수 있습니다.
 
+- 수상: 방송대 소프트웨어 경진대회 은상
 - 웹사이트: [Alloc](http://ec2-13-209-255-107.ap-northeast-2.compute.amazonaws.com:8080/key-project/)
 - 소스코드: [개발 브랜치](https://github.com/greenkey20/knou-key-project/tree/devBack)
 - 작업 일지: [Notion](https://greenkey20.notion.site/knou-SW-_-d45c4af16b474e7bab7b867205b4436e)
